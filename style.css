@@ -64,6 +64,8 @@ body {
 .app-header h1 a:focus-visible { color: var(--accent-hover); }
 .tagline { margin: 0.35rem 0 0; color: var(--muted); font-size: 0.85rem; }
 .tagline code { font-size: 0.85em; padding: 0.05rem 0.3rem; background: var(--panel-2); border-radius: 4px; }
+.tagline a { color: var(--accent); text-decoration: none; font-weight: 600; }
+.tagline a:hover, .tagline a:focus-visible { color: var(--accent-hover); text-decoration: underline; }
 .theme-toggle { min-width: 64px; }
 
 .layout {

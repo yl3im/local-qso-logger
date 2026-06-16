@@ -603,4 +603,13 @@
   applyTheme();
   ensureAtLeastOneLog();
   render();
+
+  // ---------- PWA service worker ----------
+  // Skipped on file:// (browsers refuse to register there) so the app still
+  // opens cleanly when launched directly from disk.
+  if ("serviceWorker" in navigator && location.protocol.startsWith("http")) {
+    window.addEventListener("load", () => {
+      navigator.serviceWorker.register("service-worker.js").catch(() => {});
+    });
+  }
 })();

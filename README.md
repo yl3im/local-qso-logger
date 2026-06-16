@@ -17,12 +17,15 @@ By [YL3IM](https://www.qrz.com/db/YL3IM).
 - Day / night themes (day is default; the toggle lives in the header).
 - Mobile-friendly responsive layout with touch-sized buttons.
 - Works fully offline — no network requests at any point.
+- Installable as a PWA (Add to Home Screen / Install app) when hosted over HTTPS.
 
 ## Getting started
 
 Just open `index.html` in a modern browser. There's no build step, no install, no server.
 
-If you want to host it, drop the four files (`index.html`, `style.css`, `app.js`, `favicon.svg`) onto any static host (GitHub Pages, Netlify, your own web server). It will work over `file://` as well.
+If you want to host it, drop the six static files (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`) onto any static host (GitHub Pages, Netlify, your own web server). It will work over `file://` as well — the service-worker registration is skipped automatically on the `file:` protocol so opening `index.html` directly from disk still works cleanly.
+
+When served over HTTPS, the app becomes installable as a PWA (the browser's *Install app* / *Add to Home Screen* menu) and works offline after the first visit thanks to a cache-first service worker that precaches all six static files.
 
 A default logbook is created automatically on first visit, so you can start logging immediately.
 

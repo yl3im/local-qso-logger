@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Local QSO Logger by YL3IM — client-side amateur-radio logbook</title>
+  <meta name="description" content="Local QSO Logger by YL3IM — a privacy-respecting amateur-radio QSO logger that runs entirely in your browser. No account, no server, no tracking, no analytics. Your logbooks live only in your browser's localStorage. ADIF (.adi) import and export, day/night theme, mobile-friendly, works offline." />
+  <meta name="author" content="YL3IM" />
+  <meta name="keywords" content="amateur radio, ham radio, QSO logger, QSO logbook, ADIF, ADI export, browser logbook, offline logger, YL3IM, hamlog" />
+  <meta name="robots" content="index, follow" />
+  <meta name="theme-color" content="#2563eb" />
+  <meta name="color-scheme" content="light dark" />
+  <link rel="icon" type="image/svg+xml" href="favicon.svg" />
+  <!-- Open Graph -->
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Local QSO Logger by YL3IM" />
+  <meta property="og:description" content="Browser-based amateur-radio QSO logbook with ADIF (.adi) export. Your data never leaves your device." />
+  <!-- Twitter card -->
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Local QSO Logger by YL3IM" />
+  <meta name="twitter:description" content="Browser-based amateur-radio QSO logbook with ADIF export. Data stays on your device." />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="app-header">
+    <div class="app-header-text">
+      <h1>Local QSO Logger by <a href="https://www.qrz.com/db/YL3IM" target="_blank" rel="noopener noreferrer external author">YL3IM</a></h1>
+      <p class="tagline">A privacy-respecting amateur-radio QSO logger that runs entirely in your browser. No account, no server, no tracking, no analytics &mdash; your logbooks live only in your browser&rsquo;s <code>localStorage</code>. ADIF (.adi) import &amp; export, day/night theme, works offline, mobile-friendly.</p>
+    </div>
+    <button id="theme-toggle" class="theme-toggle secondary" type="button" aria-label="Toggle day/night theme">Night</button>
+  </header>
+
+  <main class="layout">
+    <!-- Logs sidebar -->
+    <section class="panel logs-panel" aria-label="Logbooks">
+      <div class="panel-head">
+        <h2>Logbooks</h2>
+      </div>
+
+      <form id="log-form" class="stack" autocomplete="off">
+        <label>
+          Log name
+          <input type="text" id="log-name" placeholder="Field Day 2026 (auto if blank)" />
+        </label>
+        <button type="submit" class="primary">Create logbook</button>
+      </form>
+
+      <button id="import-btn" class="secondary import-btn" type="button">Import .adi file</button>
+      <input id="import-input" type="file" accept=".adi,.adif,text/plain" hidden />
+
+      <ul id="log-list" class="log-list"></ul>
+    </section>
+
+    <!-- QSO area -->
+    <section class="panel qso-panel" aria-label="QSOs">
+      <div id="no-log" class="empty-state">
+        <p>Select or create a logbook to start logging QSOs.</p>
+      </div>
+
+      <div id="log-detail" hidden>
+        <div class="panel-head detail-head">
+          <div class="detail-actions">
+            <button id="rename-btn" class="secondary" type="button">Rename</button>
+            <button id="export-btn" class="secondary" type="button">Export .adi</button>
+            <button id="delete-log-btn" class="danger" type="button">Delete log</button>
+          </div>
+          <div class="detail-title">
+            <h2 id="detail-name"></h2>
+            <input id="rename-input" class="rename-input" type="text" hidden />
+          </div>
+        </div>
+
+        <form id="qso-form" class="qso-form" autocomplete="off">
+          <label class="field-call">
+            Callsign
+            <input type="text" id="qso-call" placeholder="DL1ABC" required autocapitalize="characters" autocomplete="off" />
+            <span id="dup-indicator" class="dup-indicator" hidden>Duplicate in this log</span>
+          </label>
+          <label class="field-date">
+            Date (UTC)
+            <input type="date" id="qso-date" required />
+          </label>
+          <label class="field-time">
+            Time (UTC)
+            <input type="time" id="qso-time" step="1" required />
+          </label>
+          <label class="field-band">
+            Band
+            <select id="qso-band" required></select>
+          </label>
+          <label class="field-mode">
+            Mode
+            <select id="qso-mode" required></select>
+          </label>
+          <label class="field-rst">
+            RST sent
+            <input type="text" id="qso-rst-sent" placeholder="59" />
+          </label>
+          <label class="field-rst">
+            RST rcvd
+            <input type="text" id="qso-rst-rcvd" placeholder="59" />
+          </label>
+          <button id="qso-submit" type="submit" class="primary">Log QSO</button>
+          <button id="qso-cancel" class="secondary" type="button" hidden>Cancel</button>
+        </form>
+
+        <div class="qso-table-wrap">
+        <table class="qso-table">
+          <thead>
+            <tr>
+              <th aria-label="actions"></th>
+              <th aria-label="country"></th>
+              <th>Callsign</th>
+              <th>Date</th>
+              <th>Time</th>
+              <th>Band</th>
+              <th>Mode</th>
+              <th>RST S</th>
+              <th>RST R</th>
+            </tr>
+          </thead>
+          <tbody id="qso-tbody"></tbody>
+        </table>
+        </div>
+        <p id="qso-empty" class="muted">No QSOs logged yet.</p>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

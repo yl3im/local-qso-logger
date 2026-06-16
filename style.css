@@ -168,6 +168,11 @@ button.danger:hover { background: var(--danger); color: #fff; }
 .qso-form button { height: 38px; }
 .field-call { width: 150px; }
 #qso-call { background: var(--callsign-bg); }
+
+/* Date and time inputs only appear when editing an existing QSO; new QSOs
+   get the current UTC stamp automatically. */
+.qso-form .editing-only { display: none; }
+.qso-form.is-editing .editing-only { display: flex; }
 .field-date { width: 150px; }
 .field-time { width: 130px; }
 .field-band { width: 100px; }

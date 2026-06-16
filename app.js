@@ -229,9 +229,10 @@
   // ---------- Edit QSO ----------
   function startEdit(q) {
     editingId = q.id;
+    qsoForm.classList.add("is-editing");
     $("qso-call").value = q.call || "";
     $("qso-date").value = q.date || "";
-    $("qso-time").value = q.time || "";
+    $("qso-time").value = (q.time || "").slice(0, 5);
     $("qso-band").value = q.band || DEFAULT_BAND;
     $("qso-mode").value = q.mode || DEFAULT_MODE;
     $("qso-rst-sent").value = q.rstSent || "";
@@ -244,12 +245,14 @@
 
   function cancelEdit(opts) {
     editingId = null;
+    qsoForm.classList.remove("is-editing");
     $("qso-call").value = "";
+    $("qso-date").value = "";
+    $("qso-time").value = "";
     $("qso-rst-sent").value = "";
     $("qso-rst-rcvd").value = "";
     $("qso-submit").textContent = "Log QSO";
     $("qso-cancel").hidden = true;
-    prefillQsoTime();
     if (!(opts && opts.skipRender)) render();
     updateDupIndicator();
   }
@@ -353,7 +356,7 @@
       cells[1].title = iso || "";
       cells[2].textContent = q.call;
       cells[3].textContent = formatDate(q.date);
-      cells[4].textContent = q.time;
+      cells[4].textContent = (q.time || "").slice(0, 5);
       cells[5].textContent = q.band || "—";
       cells[6].textContent = q.mode || "—";
       cells[7].textContent = q.rstSent || "—";
@@ -379,12 +382,6 @@
       date: `${d.getUTCFullYear()}-${pad(d.getUTCMonth() + 1)}-${pad(d.getUTCDate())}`,
       time: `${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())}`,
     };
-  }
-
-  function prefillQsoTime() {
-    const { date, time } = nowUtcParts();
-    $("qso-date").value = date;
-    $("qso-time").value = time;
   }
 
   // ---------- ADIF export ----------
@@ -523,10 +520,24 @@
     const band = $("qso-band").value;
     const mode = $("qso-mode").value;
     const defaultRst = MODE_RST_DEFAULT[mode] || "59";
+
+    let date, time;
+    if (editingId) {
+      // Edit mode: use whatever the user typed (no seconds in the input).
+      date = $("qso-date").value;
+      const t = $("qso-time").value;
+      time = t.length === 5 ? t + ":00" : t;
+    } else {
+      // New QSO: auto-stamp current UTC at the moment of submit.
+      const now = nowUtcParts();
+      date = now.date;
+      time = now.time;
+    }
+
     const fields = {
       call: $("qso-call").value.trim().toUpperCase(),
-      date: $("qso-date").value,
-      time: $("qso-time").value.length === 5 ? $("qso-time").value + ":00" : $("qso-time").value,
+      date,
+      time,
       band,
       mode,
       rstSent: $("qso-rst-sent").value.trim() || defaultRst,
@@ -541,7 +552,6 @@
       $("qso-call").value = "";
       $("qso-rst-sent").value = "";
       $("qso-rst-rcvd").value = "";
-      prefillQsoTime();
     }
     // Band/mode stay sticky across QSOs in the same session.
     $("qso-band").value = band;
@@ -591,7 +601,6 @@
   }
 
   applyTheme();
-  prefillQsoTime();
   ensureAtLeastOneLog();
   render();
 })();

@@ -1,0 +1,21 @@
+{
+  "name": "Local QSO Logger by YL3IM",
+  "short_name": "QSO Logger",
+  "description": "Privacy-respecting amateur-radio QSO logger. Runs entirely in your browser. ADIF import/export, day/night theme, works offline.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f6f9",
+  "theme_color": "#2563eb",
+  "lang": "en",
+  "categories": ["productivity", "utilities"],
+  "icons": [
+    {
+      "src": "favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}

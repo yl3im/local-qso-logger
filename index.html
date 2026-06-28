@@ -29,29 +29,59 @@
 </head>
 <body>
   <header class="app-header">
-    <div class="app-header-text">
-      <h1>Local QSO Logger by <a href="https://www.qrz.com/db/YL3IM" target="_blank" rel="noopener noreferrer external author">YL3IM</a></h1>
-      <p class="tagline">A privacy-respecting amateur-radio QSO logger that runs entirely in your browser. No account, no server, no tracking, no analytics &mdash; your logbooks live only in your browser&rsquo;s <code>localStorage</code>. ADIF (.adi) import &amp; export, day/night theme, works offline, mobile-friendly. Open source &mdash; <a href="https://github.com/yl3im/local-qso-logger" target="_blank" rel="noopener noreferrer external">fork me on GitHub</a>.</p>
+    <h1><span data-i18n="header.brand_by">Local QSO Logger by</span> <a href="https://www.qrz.com/db/YL3IM" target="_blank" rel="noopener noreferrer external author">YL3IM</a></h1>
+    <div class="header-controls">
+      <select id="lang-select" class="lang-select" data-i18n-aria-label="aria.language" aria-label="Interface language">
+        <option value="en">🇺🇸 English</option>
+        <option value="cs">🇨🇿 Čeština</option>
+        <option value="da">🇩🇰 Dansk</option>
+        <option value="de">🇩🇪 Deutsch</option>
+        <option value="et">🇪🇪 Eesti</option>
+        <option value="es">🇪🇸 Español</option>
+        <option value="fr">🇫🇷 Français</option>
+        <option value="ga">🇮🇪 Gaeilge</option>
+        <option value="hr">🇭🇷 Hrvatski</option>
+        <option value="it">🇮🇹 Italiano</option>
+        <option value="lv">🇱🇻 Latviešu</option>
+        <option value="lt">🇱🇹 Lietuvių</option>
+        <option value="hu">🇭🇺 Magyar</option>
+        <option value="nl">🇳🇱 Nederlands</option>
+        <option value="no">🇳🇴 Norsk</option>
+        <option value="pl">🇵🇱 Polski</option>
+        <option value="pt">🇵🇹 Português</option>
+        <option value="ro">🇷🇴 Română</option>
+        <option value="sk">🇸🇰 Slovenčina</option>
+        <option value="sl">🇸🇮 Slovenščina</option>
+        <option value="fi">🇫🇮 Suomi</option>
+        <option value="sv">🇸🇪 Svenska</option>
+        <option value="be">🇧🇾 Беларуская</option>
+        <option value="bg">🇧🇬 Български</option>
+        <option value="ru">🇷🇺 Русский</option>
+        <option value="sr">🇷🇸 Српски</option>
+        <option value="uk">🇺🇦 Українська</option>
+        <option value="el">🇬🇷 Ελληνικά</option>
+      </select>
+      <button id="theme-toggle" class="theme-toggle secondary" type="button" data-i18n-aria-label="aria.theme_toggle" aria-label="Toggle day/night theme">Night</button>
     </div>
-    <button id="theme-toggle" class="theme-toggle secondary" type="button" aria-label="Toggle day/night theme">Night</button>
+    <p class="tagline" data-i18n-html="header.tagline_html">A privacy-respecting amateur-radio QSO logger that runs entirely in your browser. No account, no server, no tracking, no analytics &mdash; your logbooks live only in your browser&rsquo;s <code>localStorage</code>. ADIF (.adi) import &amp; export, day/night theme, works offline, mobile-friendly. Open source &mdash; <a href="https://github.com/yl3im/local-qso-logger" target="_blank" rel="noopener noreferrer external">see it on GitHub</a>.</p>
   </header>
 
   <main class="layout">
     <!-- Logs sidebar -->
     <section class="panel logs-panel" aria-label="Logbooks">
       <div class="panel-head">
-        <h2>Logbooks</h2>
+        <h2 data-i18n="logbook.heading">Logbooks</h2>
       </div>
 
       <form id="log-form" class="stack" autocomplete="off">
         <label>
-          Log name
-          <input type="text" id="log-name" placeholder="Field Day 2026 (auto if blank)" />
+          <span data-i18n="logbook.name.label">Log name</span>
+          <input type="text" id="log-name" data-i18n-placeholder="logbook.name.placeholder" placeholder="Field Day 2026 (auto if blank)" />
         </label>
-        <button type="submit" class="primary">Create logbook</button>
+        <button type="submit" class="primary" data-i18n="logbook.create">Create logbook</button>
       </form>
 
-      <button id="import-btn" class="secondary import-btn" type="button">Import .adi file</button>
+      <button id="import-btn" class="secondary import-btn" type="button" data-i18n="logbook.import">Import .adi file</button>
       <input id="import-input" type="file" accept=".adi,.adif,text/plain" hidden />
 
       <ul id="log-list" class="log-list"></ul>
@@ -60,15 +90,15 @@
     <!-- QSO area -->
     <section class="panel qso-panel" aria-label="QSOs">
       <div id="no-log" class="empty-state">
-        <p>Select or create a logbook to start logging QSOs.</p>
+        <p data-i18n="nolog.empty">Select or create a logbook to start logging QSOs.</p>
       </div>
 
       <div id="log-detail" hidden>
         <div class="panel-head detail-head">
           <div class="detail-actions">
-            <button id="rename-btn" class="secondary" type="button">Rename</button>
-            <button id="export-btn" class="secondary" type="button">Export .adi</button>
-            <button id="delete-log-btn" class="danger" type="button">Delete log</button>
+            <button id="rename-btn" class="secondary" type="button" data-i18n="detail.rename">Rename</button>
+            <button id="export-btn" class="secondary" type="button" data-i18n="detail.export">Export .adi</button>
+            <button id="delete-log-btn" class="danger" type="button" data-i18n="detail.delete">Delete log</button>
           </div>
           <div class="detail-title">
             <h2 id="detail-name"></h2>
@@ -78,36 +108,36 @@
 
         <form id="qso-form" class="qso-form" autocomplete="off">
           <label class="field-call">
-            Callsign
-            <input type="text" id="qso-call" placeholder="DL1ABC" required autocapitalize="characters" autocomplete="off" />
-            <span id="dup-indicator" class="dup-indicator" hidden>Duplicate in this log</span>
+            <span data-i18n="qso.callsign">Callsign</span>
+            <input type="text" id="qso-call" data-i18n-placeholder="qso.callsign.placeholder" placeholder="DL1ABC" required autocapitalize="characters" autocomplete="off" />
+            <span id="dup-indicator" class="dup-indicator" hidden data-i18n="qso.duplicate">Duplicate in this log</span>
           </label>
           <label class="field-date editing-only">
-            Date (UTC)
+            <span data-i18n="qso.date">Date (UTC)</span>
             <input type="date" id="qso-date" />
           </label>
           <label class="field-time editing-only">
-            Time (UTC)
+            <span data-i18n="qso.time">Time (UTC)</span>
             <input type="time" id="qso-time" />
           </label>
           <label class="field-band">
-            Band
+            <span data-i18n="qso.band">Band</span>
             <select id="qso-band" required></select>
           </label>
           <label class="field-mode">
-            Mode
+            <span data-i18n="qso.mode">Mode</span>
             <select id="qso-mode" required></select>
           </label>
           <label class="field-rst">
-            RST sent
-            <input type="text" id="qso-rst-sent" placeholder="59" />
+            <span data-i18n="qso.rst_sent">RST sent</span>
+            <input type="text" id="qso-rst-sent" data-i18n-placeholder="qso.rst.placeholder" placeholder="59" />
           </label>
           <label class="field-rst">
-            RST rcvd
-            <input type="text" id="qso-rst-rcvd" placeholder="59" />
+            <span data-i18n="qso.rst_rcvd">RST rcvd</span>
+            <input type="text" id="qso-rst-rcvd" data-i18n-placeholder="qso.rst.placeholder" placeholder="59" />
           </label>
-          <button id="qso-submit" type="submit" class="primary">Log QSO</button>
-          <button id="qso-cancel" class="secondary" type="button" hidden>Cancel</button>
+          <button id="qso-submit" type="submit" class="primary" data-i18n="qso.log">Log QSO</button>
+          <button id="qso-cancel" class="secondary" type="button" hidden data-i18n="qso.cancel">Cancel</button>
         </form>
 
         <div class="qso-table-wrap">
@@ -116,23 +146,51 @@
             <tr>
               <th aria-label="actions"></th>
               <th aria-label="country"></th>
-              <th>Callsign</th>
-              <th>Time</th>
-              <th>Date</th>
-              <th>Band</th>
-              <th>Mode</th>
-              <th>RST S</th>
-              <th>RST R</th>
+              <th data-i18n="table.callsign">Callsign</th>
+              <th data-i18n="table.time">Time</th>
+              <th data-i18n="table.date">Date</th>
+              <th data-i18n="table.band">Band</th>
+              <th data-i18n="table.mode">Mode</th>
+              <th data-i18n="table.rst_s">RST S</th>
+              <th data-i18n="table.rst_r">RST R</th>
             </tr>
           </thead>
           <tbody id="qso-tbody"></tbody>
         </table>
         </div>
-        <p id="qso-empty" class="muted">No QSOs logged yet.</p>
+        <p id="qso-empty" class="muted" data-i18n="table.empty">No QSOs logged yet.</p>
       </div>
     </section>
   </main>
 
+  <script src="i18n/en.js"></script>
+  <script src="i18n/cs.js"></script>
+  <script src="i18n/da.js"></script>
+  <script src="i18n/de.js"></script>
+  <script src="i18n/et.js"></script>
+  <script src="i18n/es.js"></script>
+  <script src="i18n/fr.js"></script>
+  <script src="i18n/ga.js"></script>
+  <script src="i18n/hr.js"></script>
+  <script src="i18n/it.js"></script>
+  <script src="i18n/lv.js"></script>
+  <script src="i18n/lt.js"></script>
+  <script src="i18n/hu.js"></script>
+  <script src="i18n/nl.js"></script>
+  <script src="i18n/no.js"></script>
+  <script src="i18n/pl.js"></script>
+  <script src="i18n/pt.js"></script>
+  <script src="i18n/ro.js"></script>
+  <script src="i18n/sk.js"></script>
+  <script src="i18n/sl.js"></script>
+  <script src="i18n/fi.js"></script>
+  <script src="i18n/sv.js"></script>
+  <script src="i18n/be.js"></script>
+  <script src="i18n/bg.js"></script>
+  <script src="i18n/ru.js"></script>
+  <script src="i18n/sr.js"></script>
+  <script src="i18n/uk.js"></script>
+  <script src="i18n/el.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

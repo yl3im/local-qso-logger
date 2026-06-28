@@ -1,0 +1,66 @@
+/* Irish (Gaeilge) translations for Local QSO Logger. */
+(function () {
+  window.I18N = window.I18N || {};
+  window.I18N.ga = {
+    "header.brand_by": "Local QSO Logger le",
+    "header.tagline_html":
+      'Loga QSO raidió amaitéarach a thugann meas don phríobháideacht agus a ritheann go hiomlán i do bhrabhsálaí. ' +
+      'Gan cuntas, gan freastalaí, gan rianú, gan anailísíocht &mdash; ní fhanann do lóganna ach in ' +
+      '<code>localStorage</code> do bhrabhsálaí. Iompórtáil agus easpórtáil ADIF (.adi), téama lae/oíche, oibríonn as líne, oiriúnach do ghuthán póca. ' +
+      'Foinse oscailte &mdash; <a href="https://github.com/yl3im/local-qso-logger" target="_blank" rel="noopener noreferrer external">féach ar GitHub</a>.',
+    "header.theme.day": "Lá",
+    "header.theme.night": "Oíche",
+    "aria.theme_toggle": "Athraigh téama lae/oíche",
+    "aria.language": "Teanga an chomhéadain",
+
+    "logbook.heading": "Lóganna",
+    "logbook.name.label": "Ainm an lóga",
+    "logbook.name.placeholder": "Field Day 2026 (uathoibríoch má tá folamh)",
+    "logbook.create": "Cruthaigh lóg",
+    "logbook.import": "Iompórtáil comhad .adi",
+
+    "nolog.empty": "Roghnaigh nó cruthaigh lóg chun QSOnna a thaifeadadh.",
+    "detail.rename": "Athainmnigh",
+    "detail.export": "Easpórtáil .adi",
+    "detail.delete": "Scrios an lóg",
+
+    "qso.callsign": "Glaomharc",
+    "qso.callsign.placeholder": "DL1ABC",
+    "qso.date": "Dáta (UTC)",
+    "qso.time": "Am (UTC)",
+    "qso.band": "Banda",
+    "qso.mode": "Mód",
+    "qso.rst_sent": "RST seolta",
+    "qso.rst_rcvd": "RST faighte",
+    "qso.rst.placeholder": "59",
+    "qso.log": "Taifead QSO",
+    "qso.update": "Nuashonraigh QSO",
+    "qso.cancel": "Cealaigh",
+    "qso.duplicate": "Dúblach sa lóg seo",
+
+    "table.callsign": "Glaomharc",
+    "table.time": "Am",
+    "table.date": "Dáta",
+    "table.band": "Banda",
+    "table.mode": "Mód",
+    "table.rst_s": "RST S",
+    "table.rst_r": "RST F",
+    "table.empty": "Níl QSO ar bith taifeadta fós.",
+    "table.edit": "Cuir in eagar",
+    "table.delete": "Scrios",
+    "table.edit.title": "Cuir QSO in eagar",
+    "table.delete.title": "Scrios QSO",
+
+    "confirm.delete_logbook": "Scrios an lóg „{0}\" agus a {1} QSO?",
+    "confirm.delete_qso": "Scrios an QSO le {0}?",
+    "confirm.no_callsign": "(gan glaomharc)",
+    "alert.no_qsos_in_adif": "Níor aimsíodh aon QSO sa chomhad ADIF seo.",
+    "alert.import_failed": "Theip ar iompórtáil an chomhaid: {0}",
+
+    "count.qso_one": "{0} QSO",
+    "count.qso_many": "{0} QSO",
+    "log.default_prefix": "Lóg",
+    "log.imported_prefix": "Iompórtáilte",
+    "log.utc_suffix": "UTC",
+  };
+})();

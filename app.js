@@ -201,9 +201,12 @@
   /** @typedef {{id:string,call:string,date:string,time:string,band:string,mode:string,rstSent:string,rstRcvd:string}} Qso */
   /** @typedef {{id:string,name:string,qsos:Qso[]}} Log */
 
-  /** @type {{logs: Log[], selectedId: string|null, theme: "day"|"night"}} */
+  const SUPPORTED_LANGS = ["en", "da", "de", "es", "fr", "it", "lv", "no", "pl", "pt", "fi", "sv", "be", "ru", "uk"];
+
+  /** @type {{logs: Log[], selectedId: string|null, theme: "day"|"night", lang: string}} */
   let state = load();
   if (state.theme !== "day" && state.theme !== "night") state.theme = "day";
+  if (!SUPPORTED_LANGS.includes(state.lang)) state.lang = "en";
 
   // Ephemeral (not persisted): id of the QSO currently being edited, or null.
   let editingId = null;
@@ -240,11 +243,62 @@
   const qsoEmpty = $("qso-empty");
   const themeToggle = $("theme-toggle");
   const dupIndicator = $("dup-indicator");
+  const langSelect = $("lang-select");
+
+  // ---------- i18n ----------
+  // Returns the translation for `key` in the active language, falling back to
+  // English then to the key itself. Positional placeholders {0}, {1}, ... are
+  // replaced by the corresponding `args` (stringified).
+  function t(key, ...args) {
+    const dict = (window.I18N && window.I18N[state.lang]) || {};
+    const en = (window.I18N && window.I18N.en) || {};
+    let s = dict[key];
+    if (s === undefined) s = en[key];
+    if (s === undefined) s = key;
+    args.forEach((v, i) => { s = s.split(`{${i}}`).join(String(v)); });
+    return s;
+  }
+
+  // Walk the DOM and update every element marked with a data-i18n* attribute.
+  // Also re-apply the state-dependent labels (theme button, submit button).
+  function applyLanguage() {
+    const dict = (window.I18N && window.I18N[state.lang]) || (window.I18N && window.I18N.en) || {};
+    document.documentElement.lang = state.lang;
+    document.querySelectorAll("[data-i18n]").forEach((el) => {
+      const v = dict[el.dataset.i18n];
+      if (v !== undefined) el.textContent = v;
+    });
+    document.querySelectorAll("[data-i18n-html]").forEach((el) => {
+      const v = dict[el.dataset.i18nHtml];
+      if (v !== undefined) el.innerHTML = v;
+    });
+    document.querySelectorAll("[data-i18n-placeholder]").forEach((el) => {
+      const v = dict[el.dataset.i18nPlaceholder];
+      if (v !== undefined) el.placeholder = v;
+    });
+    document.querySelectorAll("[data-i18n-aria-label]").forEach((el) => {
+      const v = dict[el.dataset.i18nAriaLabel];
+      if (v !== undefined) el.setAttribute("aria-label", v);
+    });
+    themeToggle.textContent = state.theme === "day" ? t("header.theme.night") : t("header.theme.day");
+    $("qso-submit").textContent = editingId ? t("qso.update") : t("qso.log");
+    if (langSelect) langSelect.value = state.lang;
+  }
+
+  if (langSelect) {
+    langSelect.addEventListener("change", () => {
+      const next = langSelect.value;
+      if (!SUPPORTED_LANGS.includes(next)) return;
+      state.lang = next;
+      applyLanguage();
+      render();
+    });
+  }
 
   // ---------- Theme ----------
   function applyTheme() {
     document.documentElement.setAttribute("data-theme", state.theme);
-    themeToggle.textContent = state.theme === "day" ? "Night" : "Day";
+    themeToggle.textContent = state.theme === "day" ? t("header.theme.night") : t("header.theme.day");
   }
 
   themeToggle.addEventListener("click", () => {
@@ -327,7 +381,7 @@
     $("qso-mode").value = q.mode || DEFAULT_MODE;
     $("qso-rst-sent").value = q.rstSent || "";
     $("qso-rst-rcvd").value = q.rstRcvd || "";
-    $("qso-submit").textContent = "Update QSO";
+    $("qso-submit").textContent = t("qso.update");
     $("qso-cancel").hidden = false;
     render();
     $("qso-call").focus();
@@ -341,7 +395,7 @@
     $("qso-time").value = "";
     $("qso-rst-sent").value = "";
     $("qso-rst-rcvd").value = "";
-    $("qso-submit").textContent = "Log QSO";
+    $("qso-submit").textContent = t("qso.log");
     $("qso-cancel").hidden = true;
     if (!(opts && opts.skipRender)) render();
     updateDupIndicator();
@@ -396,9 +450,13 @@
     for (const log of state.logs) {
       const li = document.createElement("li");
       if (log.id === state.selectedId) li.classList.add("active");
+      const countText = log.qsos.length === 1
+        ? t("count.qso_one", log.qsos.length)
+        : t("count.qso_many", log.qsos.length);
       li.innerHTML = `
         <div class="log-title"></div>
-        <span class="count">${log.qsos.length} QSO${log.qsos.length === 1 ? "" : "s"}</span>`;
+        <span class="count"></span>`;
+      li.querySelector(".count").textContent = countText;
       li.querySelector(".log-title").textContent = log.name;
       li.addEventListener("click", () => {
         if (log.id !== state.selectedId && editingId) cancelEdit({ skipRender: true });
@@ -428,8 +486,8 @@
       const tr = document.createElement("tr");
       tr.innerHTML = `
         <td class="row-actions">
-          <button class="row-edit btn-touch" type="button" aria-label="Edit QSO">Edit</button>
-          <button class="row-del btn-touch" type="button" aria-label="Delete QSO">Delete</button>
+          <button class="row-edit btn-touch" type="button"></button>
+          <button class="row-del btn-touch" type="button"></button>
         </td>
         <td class="flag"></td>
         <td></td>
@@ -439,6 +497,12 @@
         <td class="mono"></td>
         <td class="mono"></td>
         <td class="mono"></td>`;
+      const editBtn = tr.querySelector(".row-edit");
+      const delBtn = tr.querySelector(".row-del");
+      editBtn.textContent = t("table.edit");
+      editBtn.setAttribute("aria-label", t("table.edit.title"));
+      delBtn.textContent = t("table.delete");
+      delBtn.setAttribute("aria-label", t("table.delete.title"));
       if (q.id === editingId) tr.classList.add("editing");
       const cells = tr.querySelectorAll("td");
       const iso = callsignCountry(q.call);
@@ -451,9 +515,10 @@
       cells[6].textContent = q.mode || "—";
       cells[7].textContent = q.rstSent || "—";
       cells[8].textContent = q.rstRcvd || "—";
-      tr.querySelector(".row-edit").addEventListener("click", () => startEdit(q));
-      tr.querySelector(".row-del").addEventListener("click", () => {
-        if (!confirm(`Delete QSO with ${q.call || "(no callsign)"}?`)) return;
+      editBtn.addEventListener("click", () => startEdit(q));
+      delBtn.addEventListener("click", () => {
+        const who = q.call || t("confirm.no_callsign");
+        if (!confirm(t("confirm.delete_qso", who))) return;
         log.qsos = log.qsos.filter((x) => x.id !== q.id);
         if (editingId === q.id) cancelEdit({ skipRender: true });
         render();
@@ -552,13 +617,13 @@
   function importAdif(text) {
     const records = parseAdif(text);
     if (!records.length) {
-      alert("No QSO records found in this ADIF file.");
+      alert(t("alert.no_qsos_in_adif"));
       return;
     }
     const { date, time } = nowUtcParts();
     const log = {
       id: uid(),
-      name: `Imported ${date} ${time.slice(0, 5)} UTC`,
+      name: `${t("log.imported_prefix")} ${date} ${time.slice(0, 5)} ${t("log.utc_suffix")}`,
       qsos: records.map((r) => ({
         id: uid(),
         call: (r.CALL || "").toUpperCase(),
@@ -596,7 +661,7 @@
     let name = typedName;
     if (!name) {
       const { date, time } = nowUtcParts();
-      name = `Log ${date} ${time.slice(0, 5)} UTC`;
+      name = `${t("log.default_prefix")} ${date} ${time.slice(0, 5)} ${t("log.utc_suffix")}`;
     }
     const log = { id: uid(), name, qsos: [] };
     state.logs.push(log);
@@ -667,7 +732,7 @@
       const text = await file.text();
       importAdif(text);
     } catch (err) {
-      alert("Failed to import file: " + (err && err.message ? err.message : err));
+      alert(t("alert.import_failed", err && err.message ? err.message : err));
     } finally {
       e.target.value = "";
     }
@@ -676,7 +741,7 @@
   $("delete-log-btn").addEventListener("click", () => {
     const log = selectedLog();
     if (!log) return;
-    if (!confirm(`Delete logbook "${log.name}" and its ${log.qsos.length} QSO(s)?`)) return;
+    if (!confirm(t("confirm.delete_logbook", log.name, log.qsos.length))) return;
     if (editingId) cancelEdit({ skipRender: true });
     state.logs = state.logs.filter((l) => l.id !== log.id);
     state.selectedId = state.logs.length ? state.logs[0].id : null;
@@ -688,11 +753,12 @@
   function ensureAtLeastOneLog() {
     if (state.logs.length > 0) return;
     const { date, time } = nowUtcParts();
-    const log = { id: uid(), name: `Log ${date} ${time.slice(0, 5)} UTC`, qsos: [] };
+    const log = { id: uid(), name: `${t("log.default_prefix")} ${date} ${time.slice(0, 5)} ${t("log.utc_suffix")}`, qsos: [] };
     state.logs.push(log);
     state.selectedId = log.id;
   }
 
+  applyLanguage();
   applyTheme();
   ensureAtLeastOneLog();
   render();

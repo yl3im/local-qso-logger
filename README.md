@@ -1,5 +1,9 @@
 # Local QSO Logger
 
+## Read in your language
+
+🇺🇸 English · 🇨🇿 [Čeština](README.cs.md) · 🇩🇰 [Dansk](README.da.md) · 🇩🇪 [Deutsch](README.de.md) · 🇪🇪 [Eesti](README.et.md) · 🇪🇸 [Español](README.es.md) · 🇫🇷 [Français](README.fr.md) · 🇮🇪 [Gaeilge](README.ga.md) · 🇭🇷 [Hrvatski](README.hr.md) · 🇮🇹 [Italiano](README.it.md) · 🇱🇻 [Latviešu](README.lv.md) · 🇱🇹 [Lietuvių](README.lt.md) · 🇭🇺 [Magyar](README.hu.md) · 🇳🇱 [Nederlands](README.nl.md) · 🇳🇴 [Norsk](README.no.md) · 🇵🇱 [Polski](README.pl.md) · 🇵🇹 [Português](README.pt.md) · 🇷🇴 [Română](README.ro.md) · 🇸🇰 [Slovenčina](README.sk.md) · 🇸🇮 [Slovenščina](README.sl.md) · 🇫🇮 [Suomi](README.fi.md) · 🇸🇪 [Svenska](README.sv.md) · 🇧🇾 [Беларуская](README.be.md) · 🇧🇬 [Български](README.bg.md) · 🇷🇺 [Русский](README.ru.md) · 🇷🇸 [Српски](README.sr.md) · 🇺🇦 [Українська](README.uk.md) · 🇬🇷 [Ελληνικά](README.el.md)
+
 A privacy-respecting amateur-radio QSO logger that runs entirely in your browser. No account, no server, no tracking, no analytics — your logbooks live only in your browser's `localStorage` and never leave your device.
 
 By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.ham.lv](https://qso.ham.lv).
@@ -8,6 +12,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.ham.lv](https://
 
 ## Contents
 
+- [Read in your language](#read-in-your-language)
 - [Features](#features)
 - [Getting started](#getting-started)
 - [Install as a PWA on mobile](#install-as-a-pwa-on-mobile)

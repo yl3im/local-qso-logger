@@ -201,7 +201,12 @@
   /** @typedef {{id:string,call:string,date:string,time:string,band:string,mode:string,rstSent:string,rstRcvd:string}} Qso */
   /** @typedef {{id:string,name:string,qsos:Qso[]}} Log */
 
-  const SUPPORTED_LANGS = ["en", "da", "de", "es", "fr", "it", "lv", "no", "pl", "pt", "fi", "sv", "be", "ru", "uk"];
+  const SUPPORTED_LANGS = [
+    "en",
+    "cs", "da", "de", "et", "es", "fr", "ga", "hr", "it", "lv", "lt", "hu", "nl", "no", "pl", "pt", "ro", "sk", "sl", "fi", "sv",
+    "be", "bg", "ru", "sr", "uk",
+    "el",
+  ];
 
   /** @type {{logs: Log[], selectedId: string|null, theme: "day"|"night", lang: string}} */
   let state = load();

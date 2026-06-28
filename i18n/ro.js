@@ -1,0 +1,66 @@
+/* Romanian translations for Local QSO Logger. */
+(function () {
+  window.I18N = window.I18N || {};
+  window.I18N.ro = {
+    "header.brand_by": "Local QSO Logger de",
+    "header.tagline_html":
+      'Un jurnal QSO pentru radioamatori care respectă confidențialitatea și rulează în întregime în browserul dvs. ' +
+      'Fără cont, fără server, fără urmărire, fără analitică &mdash; jurnalele dvs. există doar în ' +
+      '<code>localStorage</code>-ul browserului. Import și export ADIF (.adi), temă zi/noapte, funcționează offline, prietenos cu mobilul. ' +
+      'Cod sursă deschis &mdash; <a href="https://github.com/yl3im/local-qso-logger" target="_blank" rel="noopener noreferrer external">vezi pe GitHub</a>.',
+    "header.theme.day": "Zi",
+    "header.theme.night": "Noapte",
+    "aria.theme_toggle": "Comută tema zi/noapte",
+    "aria.language": "Limba interfeței",
+
+    "logbook.heading": "Jurnale",
+    "logbook.name.label": "Numele jurnalului",
+    "logbook.name.placeholder": "Field Day 2026 (auto dacă e gol)",
+    "logbook.create": "Creează jurnal",
+    "logbook.import": "Importă fișier .adi",
+
+    "nolog.empty": "Selectați sau creați un jurnal pentru a începe să înregistrați QSO-uri.",
+    "detail.rename": "Redenumește",
+    "detail.export": "Exportă .adi",
+    "detail.delete": "Șterge jurnalul",
+
+    "qso.callsign": "Indicativ",
+    "qso.callsign.placeholder": "DL1ABC",
+    "qso.date": "Dată (UTC)",
+    "qso.time": "Oră (UTC)",
+    "qso.band": "Bandă",
+    "qso.mode": "Mod",
+    "qso.rst_sent": "RST transmis",
+    "qso.rst_rcvd": "RST recepționat",
+    "qso.rst.placeholder": "59",
+    "qso.log": "Înregistrează QSO",
+    "qso.update": "Actualizează QSO",
+    "qso.cancel": "Anulează",
+    "qso.duplicate": "Duplicat în acest jurnal",
+
+    "table.callsign": "Indicativ",
+    "table.time": "Oră",
+    "table.date": "Dată",
+    "table.band": "Bandă",
+    "table.mode": "Mod",
+    "table.rst_s": "RST T",
+    "table.rst_r": "RST R",
+    "table.empty": "Niciun QSO înregistrat încă.",
+    "table.edit": "Editează",
+    "table.delete": "Șterge",
+    "table.edit.title": "Editează QSO",
+    "table.delete.title": "Șterge QSO",
+
+    "confirm.delete_logbook": "Ștergi jurnalul „{0}\" și cele {1} QSO-uri ale sale?",
+    "confirm.delete_qso": "Ștergi QSO-ul cu {0}?",
+    "confirm.no_callsign": "(fără indicativ)",
+    "alert.no_qsos_in_adif": "Nu s-au găsit QSO-uri în acest fișier ADIF.",
+    "alert.import_failed": "Importul fișierului a eșuat: {0}",
+
+    "count.qso_one": "{0} QSO",
+    "count.qso_many": "{0} QSO",
+    "log.default_prefix": "Jurnal",
+    "log.imported_prefix": "Importat",
+    "log.utc_suffix": "UTC",
+  };
+})();

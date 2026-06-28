@@ -1,0 +1,66 @@
+/* Dutch translations for Local QSO Logger. */
+(function () {
+  window.I18N = window.I18N || {};
+  window.I18N.nl = {
+    "header.brand_by": "Local QSO Logger door",
+    "header.tagline_html":
+      'Een privacyrespecterende amateurradio-QSO-logger die volledig in je browser draait. ' +
+      'Geen account, geen server, geen tracking, geen analytics &mdash; je logboeken worden uitsluitend in de ' +
+      '<code>localStorage</code> van je browser bewaard. ADIF (.adi) import en export, dag/nacht thema, werkt offline, mobielvriendelijk. ' +
+      'Open source &mdash; <a href="https://github.com/yl3im/local-qso-logger" target="_blank" rel="noopener noreferrer external">bekijk op GitHub</a>.',
+    "header.theme.day": "Dag",
+    "header.theme.night": "Nacht",
+    "aria.theme_toggle": "Schakel dag-/nachtthema om",
+    "aria.language": "Interfacetaal",
+
+    "logbook.heading": "Logboeken",
+    "logbook.name.label": "Logboeknaam",
+    "logbook.name.placeholder": "Field Day 2026 (auto indien leeg)",
+    "logbook.create": "Logboek aanmaken",
+    "logbook.import": ".adi-bestand importeren",
+
+    "nolog.empty": "Selecteer of maak een logboek aan om QSO's te loggen.",
+    "detail.rename": "Hernoemen",
+    "detail.export": ".adi exporteren",
+    "detail.delete": "Logboek verwijderen",
+
+    "qso.callsign": "Roepteken",
+    "qso.callsign.placeholder": "DL1ABC",
+    "qso.date": "Datum (UTC)",
+    "qso.time": "Tijd (UTC)",
+    "qso.band": "Band",
+    "qso.mode": "Modus",
+    "qso.rst_sent": "RST verzonden",
+    "qso.rst_rcvd": "RST ontvangen",
+    "qso.rst.placeholder": "59",
+    "qso.log": "QSO loggen",
+    "qso.update": "QSO bijwerken",
+    "qso.cancel": "Annuleren",
+    "qso.duplicate": "Duplicaat in dit logboek",
+
+    "table.callsign": "Roepteken",
+    "table.time": "Tijd",
+    "table.date": "Datum",
+    "table.band": "Band",
+    "table.mode": "Modus",
+    "table.rst_s": "RST V",
+    "table.rst_r": "RST O",
+    "table.empty": "Nog geen QSO's gelogd.",
+    "table.edit": "Bewerken",
+    "table.delete": "Verwijderen",
+    "table.edit.title": "QSO bewerken",
+    "table.delete.title": "QSO verwijderen",
+
+    "confirm.delete_logbook": "Logboek „{0}\" en zijn {1} QSO('s) verwijderen?",
+    "confirm.delete_qso": "QSO met {0} verwijderen?",
+    "confirm.no_callsign": "(geen roepteken)",
+    "alert.no_qsos_in_adif": "Geen QSO's gevonden in dit ADIF-bestand.",
+    "alert.import_failed": "Importeren van bestand mislukt: {0}",
+
+    "count.qso_one": "{0} QSO",
+    "count.qso_many": "{0} QSO's",
+    "log.default_prefix": "Log",
+    "log.imported_prefix": "Geïmporteerd",
+    "log.utc_suffix": "UTC",
+  };
+})();

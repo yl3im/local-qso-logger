@@ -1,0 +1,66 @@
+/* Greek translations for Local QSO Logger. */
+(function () {
+  window.I18N = window.I18N || {};
+  window.I18N.el = {
+    "header.brand_by": "Local QSO Logger από",
+    "header.tagline_html":
+      'Ένας καταγραφέας QSO ραδιοερασιτεχνών που σέβεται την ιδιωτικότητα και εκτελείται εξ ολοκλήρου στον περιηγητή σας. ' +
+      'Χωρίς λογαριασμό, χωρίς διακομιστή, χωρίς παρακολούθηση, χωρίς αναλυτικά &mdash; τα ημερολόγιά σας υπάρχουν μόνο στο ' +
+      '<code>localStorage</code> του περιηγητή σας. Εισαγωγή και εξαγωγή ADIF (.adi), θέμα ημέρας/νύχτας, λειτουργεί εκτός σύνδεσης, φιλικό προς κινητά. ' +
+      'Ανοιχτός κώδικας &mdash; <a href="https://github.com/yl3im/local-qso-logger" target="_blank" rel="noopener noreferrer external">δείτε στο GitHub</a>.',
+    "header.theme.day": "Ημέρα",
+    "header.theme.night": "Νύχτα",
+    "aria.theme_toggle": "Εναλλαγή θέματος ημέρας/νύχτας",
+    "aria.language": "Γλώσσα διεπαφής",
+
+    "logbook.heading": "Ημερολόγια",
+    "logbook.name.label": "Όνομα ημερολογίου",
+    "logbook.name.placeholder": "Field Day 2026 (αυτόματα αν είναι κενό)",
+    "logbook.create": "Δημιουργία ημερολογίου",
+    "logbook.import": "Εισαγωγή αρχείου .adi",
+
+    "nolog.empty": "Επιλέξτε ή δημιουργήστε ένα ημερολόγιο για να ξεκινήσετε την καταγραφή QSO.",
+    "detail.rename": "Μετονομασία",
+    "detail.export": "Εξαγωγή .adi",
+    "detail.delete": "Διαγραφή ημερολογίου",
+
+    "qso.callsign": "Διακριτικό",
+    "qso.callsign.placeholder": "DL1ABC",
+    "qso.date": "Ημερομηνία (UTC)",
+    "qso.time": "Ώρα (UTC)",
+    "qso.band": "Μπάντα",
+    "qso.mode": "Τρόπος",
+    "qso.rst_sent": "RST απεσταλμένο",
+    "qso.rst_rcvd": "RST ληφθέν",
+    "qso.rst.placeholder": "59",
+    "qso.log": "Καταγραφή QSO",
+    "qso.update": "Ενημέρωση QSO",
+    "qso.cancel": "Ακύρωση",
+    "qso.duplicate": "Διπλότυπο σε αυτό το ημερολόγιο",
+
+    "table.callsign": "Διακριτικό",
+    "table.time": "Ώρα",
+    "table.date": "Ημ/νία",
+    "table.band": "Μπάντα",
+    "table.mode": "Τρόπος",
+    "table.rst_s": "RST Α",
+    "table.rst_r": "RST Λ",
+    "table.empty": "Δεν έχουν καταγραφεί ακόμα QSO.",
+    "table.edit": "Επεξ.",
+    "table.delete": "Διαγρ.",
+    "table.edit.title": "Επεξεργασία QSO",
+    "table.delete.title": "Διαγραφή QSO",
+
+    "confirm.delete_logbook": "Διαγραφή του ημερολογίου «{0}» και των {1} QSO του;",
+    "confirm.delete_qso": "Διαγραφή QSO με {0};",
+    "confirm.no_callsign": "(χωρίς διακριτικό)",
+    "alert.no_qsos_in_adif": "Δεν βρέθηκαν εγγραφές QSO σε αυτό το αρχείο ADIF.",
+    "alert.import_failed": "Η εισαγωγή του αρχείου απέτυχε: {0}",
+
+    "count.qso_one": "{0} QSO",
+    "count.qso_many": "{0} QSO",
+    "log.default_prefix": "Ημερολόγιο",
+    "log.imported_prefix": "Εισήχθη",
+    "log.utc_suffix": "UTC",
+  };
+})();

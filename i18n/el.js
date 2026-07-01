@@ -41,6 +41,8 @@
     "qso.sat_name": "Δορυφόρος",
     "qso.band_rx": "RX μπάντα",
     "qso.sat_mode": "Sat τρόπος",
+    "qso.sat_mode.modern": "μοντέρνα",
+    "qso.sat_mode.deprecated": "παρωχημένα",
     "qso.gridsquare": "Locator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Ο locator μου",

@@ -41,6 +41,8 @@
     "qso.sat_name": "Супутник",
     "qso.band_rx": "RX діапазон",
     "qso.sat_mode": "Сат режим",
+    "qso.sat_mode.modern": "сучасні",
+    "qso.sat_mode.deprecated": "застарілі",
     "qso.gridsquare": "Локатор",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Мій локатор",

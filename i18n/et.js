@@ -41,6 +41,8 @@
     "qso.sat_name": "Satelliit",
     "qso.band_rx": "RX riba",
     "qso.sat_mode": "Sat režiim",
+    "qso.sat_mode.modern": "kaasaegsed",
+    "qso.sat_mode.deprecated": "vananenud",
     "qso.gridsquare": "Lokaator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Minu lokaator",

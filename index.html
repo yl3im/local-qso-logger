@@ -128,6 +128,30 @@
             <span data-i18n="qso.mode">Mode</span>
             <select id="qso-mode" required></select>
           </label>
+          <label class="field-prop">
+            <span data-i18n="qso.prop_mode">Prop. mode</span>
+            <select id="qso-prop-mode"></select>
+          </label>
+          <label class="field-sat-name sat-only">
+            <span data-i18n="qso.sat_name">Satellite</span>
+            <select id="qso-sat-name"></select>
+          </label>
+          <label class="field-sat-mode sat-only">
+            <span data-i18n="qso.sat_mode">Sat mode</span>
+            <select id="qso-sat-mode"></select>
+          </label>
+          <label class="field-band-rx sat-only">
+            <span data-i18n="qso.band_rx">RX band</span>
+            <select id="qso-band-rx"></select>
+          </label>
+          <label class="field-gridsquare sat-only">
+            <span data-i18n="qso.gridsquare">Grid</span>
+            <input type="text" id="qso-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
+          </label>
+          <label class="field-my-gridsquare sat-only">
+            <span data-i18n="qso.my_gridsquare">My grid</span>
+            <input type="text" id="qso-my-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
+          </label>
           <label class="field-rst">
             <span data-i18n="qso.rst_sent">RST sent</span>
             <input type="text" id="qso-rst-sent" data-i18n-placeholder="qso.rst.placeholder" placeholder="59" />
@@ -151,6 +175,7 @@
               <th data-i18n="table.date">Date</th>
               <th data-i18n="table.band">Band</th>
               <th data-i18n="table.mode">Mode</th>
+              <th data-i18n="table.prop_mode">Prop</th>
               <th data-i18n="table.rst_s">RST S</th>
               <th data-i18n="table.rst_r">RST R</th>
             </tr>

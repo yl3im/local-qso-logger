@@ -3,6 +3,8 @@
   "use strict";
 
   const STORAGE_KEY = "local-qso:v1";
+  const APP_VERSION = "1.0";
+  const ADIF_VERSION = "3.1.7";
 
   // Listed from longest wavelength to shortest (the source had 3cm/6cm swapped — fixed).
   const BANDS = [
@@ -65,6 +67,167 @@
     "WSPR": [],
   };
   const MODE_NO_PARENT_OPTION = new Set(["DYNAMIC", "FSK", "MTONE"]);
+
+  // AMSAT satellite-mode letter designations. Each entry is
+  // [code, uplinkBand, downlinkBand] — bands match the values in BANDS.
+  // "10 GHz" resolves to our 3cm band; "1.2 GHz" resolves to 23cm.
+  const SAT_MODES = [
+    ["A", "2m",   "10m"],
+    ["B", "70cm", "2m"],
+    ["J", "2m",   "70cm"],
+    ["K", "15m",  "10m"],
+    ["L", "23cm", "70cm"],
+    ["R", "70cm", "3cm"],
+    ["S", "13cm", "3cm"],
+    ["T", "15m",  "2m"],
+    ["U", "70cm", "15m"],
+    ["V", "2m",   "23cm"],
+    ["W", "70cm", "3cm"],
+    ["X", "23cm", "3cm"],
+  ];
+
+  // ADIF SAT_NAME values, curated list. Stored value is the name (e.g.
+  // "AO-7"); the description is shown next to it in the dropdown for clarity.
+  const SAT_NAMES = [
+    ["AISAT1",   "AISAT-1 AMSAT India APRS Digipeater"],
+    ["AO-10",    "AMSAT-OSCAR 10"],
+    ["AO-109",   "AMSAT-OSCAR 109"],
+    ["AO-123",   "ASRTU-OSCAR 123"],
+    ["AO-13",    "AMSAT-OSCAR 13"],
+    ["AO-16",    "AMSAT-OSCAR 16"],
+    ["AO-21",    "OSCAR 21/RS-14"],
+    ["AO-27",    "AMRAD-OSCAR 27"],
+    ["AO-3",     "AMSAT-OSCAR 3"],
+    ["AO-4",     "AMSAT-OSCAR 4"],
+    ["AO-40",    "AMSAT-OSCAR 40"],
+    ["AO-51",    "AMSAT-OSCAR 51"],
+    ["AO-6",     "AMSAT-OSCAR 6"],
+    ["AO-7",     "AMSAT-OSCAR 7"],
+    ["AO-73",    "AMSAT-OSCAR 73"],
+    ["AO-8",     "AMSAT-OSCAR 8"],
+    ["AO-85",    "AMSAT-OSCAR 85 (Fox-1A)"],
+    ["AO-91",    "AMSAT-OSCAR 91 (RadFxSat / Fox-1B)"],
+    ["AO-92",    "AMSAT-OSCAR 92 (Fox-1D)"],
+    ["ARISS",    "ARISS"],
+    ["Arsene",   "OSCAR 24"],
+    ["BO-102",   "BIT Progress-OSCAR 102 (CAS-7B)"],
+    ["BY70-1",   "Bayi Kepu Weixing 1"],
+    ["CAS-2T",   "CAS-2T"],
+    ["CAS-3H",   "LilacSat-2"],
+    ["CAS-4A",   "CAMSAT 4A (CAS-4A)"],
+    ["CAS-4B",   "CAMSAT 4B (CAS-4B)"],
+    ["DO-64",    "Delfi OSCAR-64"],
+    ["EO-79",    "FUNcube-3"],
+    ["EO-88",    "Emirates-OSCAR 88 (Nayif-1)"],
+    ["FO-118",   "CAS-5A"],
+    ["FO-12",    "Fuji-OSCAR 12"],
+    ["FO-20",    "Fuji-OSCAR 20"],
+    ["FO-29",    "Fuji-OSCAR 29"],
+    ["FO-99",    "Fuji-OSCAR 99 (NEXUS)"],
+    ["FS-3",     "FalconSAT 3"],
+    ["HO-107",   "HuskySat OSCAR 107"],
+    ["HO-113",   "HO-113"],
+    ["HO-119",   "Hope-OSCAR 119"],
+    ["HO-68",    "Hope-Oscar 68"],
+    ["INSPR7",   "INSPIRE-Sat7"],
+    ["IO-117",   "GreenCube"],
+    ["IO-86",    "Indonesia-OSCAR 86 (LAPAN-ORARI)"],
+    ["JO-97",    "Jordan-OSCAR 97 (JY1Sat)"],
+    ["KEDR",     "ARISSat-1"],
+    ["LEDSAT",   "LEDSAT"],
+    ["LO-19",    "Lusat-OSCAR 19"],
+    ["LO-78",    "LituanicaSAT-1"],
+    ["LO-87",    "LUSEX-OSCAR 87"],
+    ["LO-90",    "LilacSat-OSCAR 90 (LilacSat-1)"],
+    ["MAYA-3",   "Cubesat"],
+    ["MAYA-4",   "Cubesat"],
+    ["MIREX",    "MIR Packet Digipeater"],
+    ["MO-112",   "Mirsat-1"],
+    ["MO-122",   "MESAT1-OSCAR 122"],
+    ["NO-103",   "Navy-OSCAR 103 (BRICSAT 2)"],
+    ["NO-104",   "Navy-OSCAR 104 (PSAT 2)"],
+    ["NO-44",    "Navy-OSCAR 44"],
+    ["NO-83",    "BRICsat"],
+    ["NO-84",    "PSAT"],
+    ["PO-101",   "Phillipines-OSCAR-101 (Diwata-2)"],
+    ["QO-100",   "Qatar-OSCAR 100 (Es'hail-2/P4A)"],
+    ["RS-1",     "Radio Sputnik 1"],
+    ["RS-10",    "Radio Sputnik 10"],
+    ["RS-11",    "Radio Sputnik 11"],
+    ["RS-12",    "Radio Sputnik 12"],
+    ["RS-13",    "Radio Sputnik 13"],
+    ["RS-15",    "Radio Sputnik 15"],
+    ["RS-2",     "Radio Sputnik 2"],
+    ["RS-44",    "Radio Sputnik 44 (DOSAAF-85)"],
+    ["RS-5",     "Radio Sputnik 5"],
+    ["RS-6",     "Radio Sputnik 6"],
+    ["RS-7",     "Radio Sputnik 7"],
+    ["RS-8",     "Radio Sputnik 8"],
+    ["SAREX",    "Shuttle Amateur Radio Experiment (SAREX) Digipeater"],
+    ["SO-121",   "Hades-D"],
+    ["SO-124",   "Hades-R"],
+    ["SO-125",   "Hades-ICM"],
+    ["SO-35",    "Sunsat-OSCAR 35"],
+    ["SO-41",    "Saudi-OSCAR 41"],
+    ["SO-50",    "Saudi-OSCAR 50"],
+    ["SO-67",    "Sumbandila Oscar 67"],
+    ["SONATE",   "SONATE-2"],
+    ["TAURUS",   "Taurus-1 (Jinniuzuo-1)"],
+    ["TEVEL1",   "Tevel-1"],
+    ["TEVEL2",   "Tevel-2"],
+    ["TEVEL3",   "Tevel-3"],
+    ["TEVEL4",   "Tevel-4"],
+    ["TEVEL5",   "Tevel-5"],
+    ["TEVEL6",   "Tevel-6"],
+    ["TEVEL7",   "Tevel-7"],
+    ["TEVEL8",   "Tevel-8"],
+    ["TO-108",   "TQ-OSCAR 108 (CAS-6 / TQ-1)"],
+    ["UKUBE1",   "UKube-1 (FUNcube-2)"],
+    ["UO-14",    "UOSAT-OSCAR 14"],
+    ["UVSQ",     "CubeSat"],
+    ["VO-52",    "VUsat-OSCAR 52"],
+    ["XW-2A",    "Hope 2A (CAS-3A)"],
+    ["XW-2B",    "Hope 2B (CAS-3B)"],
+    ["XW-2C",    "Hope 2C (CAS-3C)"],
+    ["XW-2D",    "Hope 2D (CAS-3D)"],
+    ["XW-2E",    "Hope 2E (CAS-3E)"],
+    ["XW-2F",    "Hope 2F (CAS-2F)"],
+    ["TEV2-1",   "Tevel2-1"],
+    ["TEV2-2",   "Tevel2-2"],
+    ["TEV2-3",   "Tevel2-3"],
+    ["TEV2-4",   "Tevel2-4"],
+    ["TEV2-5",   "Tevel2-5"],
+    ["TEV2-6",   "Tevel2-6"],
+    ["TEV2-7",   "Tevel2-7"],
+    ["TEV2-8",   "Tevel2-8"],
+    ["TEV2-9",   "Tevel2-9"],
+  ];
+
+  // ADIF 3.1.7 § III.B.13 Propagation Mode Enumeration.
+  // Stored value is the code (e.g. "AS"); the description is shown next to it
+  // in the dropdown for clarity.
+  const PROP_MODES = [
+    ["AS", "Aircraft Scatter"],
+    ["AUE", "Aurora-E"],
+    ["AUR", "Aurora"],
+    ["BS", "Back scatter"],
+    ["ECH", "EchoLink"],
+    ["EME", "Earth-Moon-Earth"],
+    ["ES", "Sporadic E"],
+    ["F2", "F2 Reflection"],
+    ["FAI", "Field Aligned Irregularities"],
+    ["GWAVE", "Ground Wave"],
+    ["INTERNET", "Internet-assisted"],
+    ["ION", "Ionoscatter"],
+    ["IRL", "IRLP"],
+    ["LOS", "Line of Sight"],
+    ["MS", "Meteor scatter"],
+    ["RPT", "Terrestrial or atmospheric repeater or transponder"],
+    ["RS", "Rain scatter"],
+    ["SAT", "Satellite"],
+    ["TEP", "Trans-equatorial"],
+    ["TR", "Tropospheric ducting"],
+  ];
   // AM kept here for legacy data even though it isn't in the new dropdown.
   const VOICE_PARENTS = new Set(["SSB", "FM", "AM", "DIGITALVOICE"]);
 
@@ -325,6 +488,99 @@
   }
   fillSelect($("qso-band"), BANDS, DEFAULT_BAND);
 
+  // Propagation-mode dropdown: first option is "no selection" (empty string,
+  // matching the ADIF convention that PROP_MODE is absent for typical HF QSOs).
+  function fillPropModeSelect(sel) {
+    sel.innerHTML = "";
+    const none = document.createElement("option");
+    none.value = "";
+    none.textContent = t("qso.prop_mode.none");
+    sel.appendChild(none);
+    for (const [code, desc] of PROP_MODES) {
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = `${code} — ${desc}`;
+      sel.appendChild(opt);
+    }
+  }
+  fillPropModeSelect($("qso-prop-mode"));
+
+  // Satellite fields are only relevant when propagation mode is SAT.
+  // Toggle the `.is-sat` class on the form to reveal them, and toggle the
+  // `required` attribute so the browser's native validation prompt (same UX
+  // as the empty-callsign case) fires on submit when they're not filled.
+  function updateSatVisibility() {
+    const isSat = $("qso-prop-mode").value === "SAT";
+    qsoForm.classList.toggle("is-sat", isSat);
+    $("qso-sat-name").required = isSat;
+    $("qso-sat-mode").required = isSat;
+    $("qso-band-rx").required = isSat;
+  }
+  $("qso-prop-mode").addEventListener("change", () => {
+    updateSatVisibility();
+    // Reselecting SAT clears the SAT_MODE dropdown so the operator picks
+    // one again — which fires the change handler and re-adjusts BAND/BAND_RX.
+    if ($("qso-prop-mode").value === "SAT") $("qso-sat-mode").value = "";
+  });
+
+  // BAND_RX: same options as BAND, but with a leading empty option because
+  // most QSOs (non-split, non-satellite) don't need a receive band.
+  function fillBandRxSelect(sel) {
+    sel.innerHTML = "";
+    const none = document.createElement("option");
+    none.value = "";
+    none.textContent = t("qso.prop_mode.none"); // reuse "(none)"
+    sel.appendChild(none);
+    for (const v of BANDS) {
+      const opt = document.createElement("option");
+      opt.value = v;
+      opt.textContent = v;
+      sel.appendChild(opt);
+    }
+  }
+  fillBandRxSelect($("qso-band-rx"));
+
+  // SAT_NAME: full satellite catalog with a leading empty option.
+  function fillSatNameSelect(sel) {
+    sel.innerHTML = "";
+    const none = document.createElement("option");
+    none.value = "";
+    none.textContent = t("qso.prop_mode.none");
+    sel.appendChild(none);
+    for (const [name, desc] of SAT_NAMES) {
+      const opt = document.createElement("option");
+      opt.value = name;
+      opt.textContent = `${name} — ${desc}`;
+      sel.appendChild(opt);
+    }
+  }
+  fillSatNameSelect($("qso-sat-name"));
+
+  // SAT_MODE: AMSAT mode letters. Selecting one auto-adjusts BAND (uplink)
+  // and BAND_RX (downlink) since operators pick a satellite mode first.
+  function fillSatModeSelect(sel) {
+    sel.innerHTML = "";
+    const none = document.createElement("option");
+    none.value = "";
+    none.textContent = t("qso.prop_mode.none");
+    sel.appendChild(none);
+    for (const [code, up, down] of SAT_MODES) {
+      const opt = document.createElement("option");
+      opt.value = code;
+      opt.textContent = `${code} — ${up} ↑ ${down} ↓`;
+      sel.appendChild(opt);
+    }
+  }
+  fillSatModeSelect($("qso-sat-mode"));
+
+  $("qso-sat-mode").addEventListener("change", () => {
+    const entry = SAT_MODES.find(([code]) => code === $("qso-sat-mode").value);
+    if (!entry) return;
+    const [, up, down] = entry;
+    $("qso-band").value = up;
+    $("qso-band-rx").value = down;
+  });
+
   function fillModeSelect(sel, defaultVal) {
     sel.innerHTML = "";
     for (const [parent, subs] of Object.entries(MODE_GROUPS)) {
@@ -373,6 +629,8 @@
     });
   }
   bindUppercase($("qso-call"));
+  bindUppercase($("qso-gridsquare"));
+  bindUppercase($("qso-my-gridsquare"));
   $("qso-call").addEventListener("input", updateDupIndicator);
 
   // ---------- Edit QSO ----------
@@ -384,8 +642,25 @@
     $("qso-time").value = (q.time || "").slice(0, 5);
     $("qso-band").value = q.band || DEFAULT_BAND;
     $("qso-mode").value = q.mode || DEFAULT_MODE;
+    $("qso-prop-mode").value = q.propMode || "";
     $("qso-rst-sent").value = q.rstSent || "";
     $("qso-rst-rcvd").value = q.rstRcvd || "";
+    $("qso-gridsquare").value = q.gridSquare || "";
+    $("qso-my-gridsquare").value = q.myGridSquare || "";
+    $("qso-band-rx").value = q.bandRx || "";
+    // Preserve legacy SAT_MODE values (like "U/V" from imported ADIF) that
+    // aren't in our AMSAT letter enum by adding them as a one-off option.
+    const satModeSel = $("qso-sat-mode");
+    satModeSel.value = q.satMode || "";
+    if (q.satMode && satModeSel.value !== q.satMode) {
+      const opt = document.createElement("option");
+      opt.value = q.satMode;
+      opt.textContent = q.satMode;
+      satModeSel.appendChild(opt);
+      satModeSel.value = q.satMode;
+    }
+    $("qso-sat-name").value = q.satName || "";
+    updateSatVisibility();
     $("qso-submit").textContent = t("qso.update");
     $("qso-cancel").hidden = false;
     render();
@@ -501,6 +776,7 @@
         <td class="mono"></td>
         <td class="mono"></td>
         <td class="mono"></td>
+        <td class="mono"></td>
         <td class="mono"></td>`;
       const editBtn = tr.querySelector(".row-edit");
       const delBtn = tr.querySelector(".row-del");
@@ -518,8 +794,9 @@
       cells[4].textContent = formatDate(q.date);
       cells[5].textContent = q.band || "—";
       cells[6].textContent = q.mode || "—";
-      cells[7].textContent = q.rstSent || "—";
-      cells[8].textContent = q.rstRcvd || "—";
+      cells[7].textContent = q.propMode || "—";
+      cells[8].textContent = q.rstSent || "—";
+      cells[9].textContent = q.rstRcvd || "—";
       editBtn.addEventListener("click", () => startEdit(q));
       delBtn.addEventListener("click", () => {
         const who = q.call || t("confirm.no_callsign");
@@ -544,6 +821,24 @@
     };
   }
 
+  // ADIF CREATED_TIMESTAMP: "YYYYMMDD HHMMSS" in UTC, 15 chars with a single space.
+  function nowAdifTimestamp() {
+    const d = new Date();
+    const pad = (n) => String(n).padStart(2, "0");
+    const date = `${d.getUTCFullYear()}${pad(d.getUTCMonth() + 1)}${pad(d.getUTCDate())}`;
+    const time = `${pad(d.getUTCHours())}${pad(d.getUTCMinutes())}${pad(d.getUTCSeconds())}`;
+    return `${date} ${time}`;
+  }
+
+  // Fields consumed by the app's typed QSO model. Any other ADIF field on
+  // import is preserved on q.extras and re-emitted on export, so round-tripping
+  // a foreign ADIF doesn't destroy data we don't yet surface in the UI.
+  const KNOWN_ADIF_FIELDS = new Set([
+    "CALL", "QSO_DATE", "TIME_ON", "BAND", "MODE", "SUBMODE",
+    "RST_SENT", "RST_RCVD", "PROP_MODE",
+    "GRIDSQUARE", "MY_GRIDSQUARE", "BAND_RX", "SAT_MODE", "SAT_NAME",
+  ]);
+
   // ---------- ADIF export ----------
   // ADIF field: <NAME:byteLength>VALUE
   function adifField(name, value) {
@@ -556,54 +851,105 @@
   function buildAdif(log) {
     const lines = [];
     lines.push(`ADIF export from Local QSO Logger`);
-    lines.push(adifField("ADIF_VER", "3.1.4").trim());
+    lines.push(adifField("ADIF_VER", ADIF_VERSION).trim());
     lines.push(adifField("PROGRAMID", "local-qso").trim());
+    lines.push(adifField("PROGRAMVERSION", APP_VERSION).trim());
+    lines.push(adifField("CREATED_TIMESTAMP", nowAdifTimestamp()).trim());
     lines.push("<EOH>");
     lines.push("");
 
     for (const q of log.qsos) {
       const parent = modeParent(q.mode);
       const submode = SUBMODE_TO_PARENT[q.mode] ? q.mode : "";
-      const rec =
+      let rec =
         adifField("CALL", q.call) +
         adifField("QSO_DATE", q.date.replace(/-/g, "")) +
         adifField("TIME_ON", q.time.replace(/:/g, "")) +
         adifField("BAND", q.band) +
         adifField("MODE", parent) +
         adifField("SUBMODE", submode) +
+        adifField("PROP_MODE", q.propMode) +
+        adifField("GRIDSQUARE", q.gridSquare) +
+        adifField("MY_GRIDSQUARE", q.myGridSquare) +
+        adifField("BAND_RX", q.bandRx) +
+        adifField("SAT_MODE", q.satMode) +
+        adifField("SAT_NAME", q.satName) +
         adifField("RST_SENT", q.rstSent) +
-        adifField("RST_RCVD", q.rstRcvd) +
-        "<EOR>";
+        adifField("RST_RCVD", q.rstRcvd);
+      // Preserve ADIF fields imported from other loggers that we don't model
+      // as first-class UI properties (COMMENT, NAME, GRIDSQUARE, FREQ, DXCC,
+      // QSL_*, POTA_REF, etc.). Full round-trip fidelity without UI churn.
+      if (q.extras) {
+        for (const [k, v] of Object.entries(q.extras)) rec += adifField(k, v);
+      }
+      rec += "<EOR>";
       lines.push(rec);
     }
     return lines.join("\n") + "\n";
   }
 
   // ---------- ADIF import ----------
-  // Parses a single record chunk into { FIELDNAME: value, ... } (uppercase keys).
-  function parseAdifRecord(chunk) {
+  // ADIF field length is a byte count (UTF-8), not a character count.
+  // Multi-byte content in text fields (e.g. COMMENT "Zambrów") is common and
+  // must be sliced at the byte level, so we scan the input as a Uint8Array.
+  // Field names and tags are ASCII in valid ADIF.
+  const ADIF_DECODER = new TextDecoder("utf-8");
+
+  // Case-insensitive search for a bare ASCII tag like "<EOR>" or "<EOH>".
+  function findAsciiTag(bytes, tagName, fromIdx) {
+    const target = tagName.toUpperCase();
+    const tLen = target.length;
+    outer:
+    for (let i = fromIdx; i <= bytes.length - tLen - 2; i++) {
+      if (bytes[i] !== 0x3C) continue; // '<'
+      if (bytes[i + tLen + 1] !== 0x3E) continue; // '>'
+      for (let k = 0; k < tLen; k++) {
+        let b = bytes[i + 1 + k];
+        if (b >= 0x61 && b <= 0x7A) b -= 0x20; // ASCII uppercase
+        if (b !== target.charCodeAt(k)) continue outer;
+      }
+      return i;
+    }
+    return -1;
+  }
+
+  // Parse one QSO chunk (bytes between preceding boundary and <EOR>) into
+  // { FIELDNAME: value, ... } with uppercase keys.
+  function parseAdifRecord(bytes) {
     const fields = {};
-    const fieldRe = /<([A-Za-z0-9_]+):(\d+)(?::[A-Za-z])?>/g;
-    let m;
-    while ((m = fieldRe.exec(chunk)) !== null) {
-      const name = m[1].toUpperCase();
-      const len = parseInt(m[2], 10);
-      const start = m.index + m[0].length;
-      fields[name] = chunk.slice(start, start + len);
+    let i = 0;
+    while (i < bytes.length) {
+      // Find next '<'
+      while (i < bytes.length && bytes[i] !== 0x3C) i++;
+      if (i >= bytes.length) break;
+      // Find matching '>' (tag content is ASCII in valid ADIF)
+      let j = i + 1;
+      while (j < bytes.length && bytes[j] !== 0x3E) j++;
+      if (j >= bytes.length) break;
+      const tag = ADIF_DECODER.decode(bytes.subarray(i + 1, j));
+      i = j + 1;
+      const parts = tag.split(":");
+      if (parts.length < 2) continue; // <EOR>/<EOH> or malformed
+      const name = parts[0].toUpperCase();
+      const len = parseInt(parts[1], 10);
+      if (!Number.isFinite(len) || len < 0) continue;
+      fields[name] = ADIF_DECODER.decode(bytes.subarray(i, i + len));
+      i += len;
     }
     return fields;
   }
 
   function parseAdif(text) {
-    const eoh = text.match(/<EOH>/i);
-    const body = eoh ? text.slice(eoh.index + eoh[0].length) : text;
+    const bytes = new TextEncoder().encode(text);
+    const eohIdx = findAsciiTag(bytes, "EOH", 0);
+    let cursor = eohIdx >= 0 ? eohIdx + 5 : 0; // "<EOH>" is 5 bytes
     const records = [];
-    const eorRe = /<EOR>/gi;
-    let last = 0, m;
-    while ((m = eorRe.exec(body)) !== null) {
-      const rec = parseAdifRecord(body.slice(last, m.index));
+    while (true) {
+      const eorIdx = findAsciiTag(bytes, "EOR", cursor);
+      if (eorIdx < 0) break;
+      const rec = parseAdifRecord(bytes.subarray(cursor, eorIdx));
       if (Object.keys(rec).length) records.push(rec);
-      last = m.index + m[0].length;
+      cursor = eorIdx + 5; // past "<EOR>"
     }
     return records;
   }
@@ -629,16 +975,34 @@
     const log = {
       id: uid(),
       name: `${t("log.imported_prefix")} ${date} ${time.slice(0, 5)} ${t("log.utc_suffix")}`,
-      qsos: records.map((r) => ({
-        id: uid(),
-        call: (r.CALL || "").toUpperCase(),
-        date: adifDateToIso(r.QSO_DATE || ""),
-        time: adifTimeToHms(r.TIME_ON || ""),
-        band: (r.BAND || "").toLowerCase(),
-        mode: ((r.SUBMODE || r.MODE) || "").toUpperCase(),
-        rstSent: r.RST_SENT || "",
-        rstRcvd: r.RST_RCVD || "",
-      })),
+      qsos: records.map((r) => {
+        // Everything the app doesn't model as a first-class field is stashed
+        // in q.extras so it survives a subsequent export unchanged.
+        const extras = {};
+        for (const [k, v] of Object.entries(r)) {
+          if (!KNOWN_ADIF_FIELDS.has(k) && v) extras[k] = v;
+        }
+        const qso = {
+          id: uid(),
+          call: (r.CALL || "").toUpperCase(),
+          date: adifDateToIso(r.QSO_DATE || ""),
+          time: adifTimeToHms(r.TIME_ON || ""),
+          band: (r.BAND || "").toLowerCase(),
+          mode: ((r.SUBMODE || r.MODE) || "").toUpperCase(),
+          propMode: (r.PROP_MODE || "").toUpperCase(),
+          rstSent: r.RST_SENT || "",
+          rstRcvd: r.RST_RCVD || "",
+        };
+        // Only attach satellite fields when the source record actually has
+        // them, so non-sat QSOs stay lean.
+        if (r.GRIDSQUARE)    qso.gridSquare   = r.GRIDSQUARE;
+        if (r.MY_GRIDSQUARE) qso.myGridSquare = r.MY_GRIDSQUARE;
+        if (r.BAND_RX)       qso.bandRx       = r.BAND_RX.toLowerCase();
+        if (r.SAT_MODE)      qso.satMode      = r.SAT_MODE;
+        if (r.SAT_NAME)      qso.satName      = r.SAT_NAME;
+        if (Object.keys(extras).length) qso.extras = extras;
+        return qso;
+      }),
     };
     state.logs.push(log);
     state.selectedId = log.id;
@@ -682,7 +1046,11 @@
     if (!log) return;
     const band = $("qso-band").value;
     const mode = $("qso-mode").value;
+    const propMode = $("qso-prop-mode").value;
     const defaultRst = rstDefaultFor(mode);
+    // Native `required` on the sat fields (toggled by updateSatVisibility)
+    // handles the empty-satellite-field prompt exactly like empty callsign.
+    const isSat = propMode === "SAT";
 
     let date, time;
     if (editingId) {
@@ -703,12 +1071,40 @@
       time,
       band,
       mode,
+      propMode,
       rstSent: $("qso-rst-sent").value.trim() || defaultRst,
       rstRcvd: $("qso-rst-rcvd").value.trim() || defaultRst,
     };
+    // Satellite-only fields are only attached to the QSO when it *is* a
+    // satellite QSO. Non-sat QSOs never carry sat properties; editing a sat
+    // QSO to a non-sat mode strips any previously stored sat data.
+    // Gridsquares specifically are only attached when the operator actually
+    // filled them in — empty inputs don't create empty properties.
+    if (isSat) {
+      const g = $("qso-gridsquare").value.trim();
+      const mg = $("qso-my-gridsquare").value.trim();
+      if (g) fields.gridSquare = g;
+      if (mg) fields.myGridSquare = mg;
+      fields.bandRx = $("qso-band-rx").value;
+      fields.satMode = $("qso-sat-mode").value;
+      fields.satName = $("qso-sat-name").value;
+    }
     if (editingId) {
       const q = log.qsos.find((x) => x.id === editingId);
-      if (q) Object.assign(q, fields);
+      if (q) {
+        Object.assign(q, fields);
+        if (!isSat) {
+          delete q.gridSquare;
+          delete q.myGridSquare;
+          delete q.bandRx;
+          delete q.satMode;
+          delete q.satName;
+        } else {
+          // Sat QSO with grids cleared by the operator — remove them from q.
+          if (!fields.gridSquare)   delete q.gridSquare;
+          if (!fields.myGridSquare) delete q.myGridSquare;
+        }
+      }
       cancelEdit({ skipRender: true });
     } else {
       log.qsos.push({ id: uid(), ...fields });
@@ -716,9 +1112,10 @@
       $("qso-rst-sent").value = "";
       $("qso-rst-rcvd").value = "";
     }
-    // Band/mode stay sticky across QSOs in the same session.
+    // Band/mode/prop-mode stay sticky across QSOs in the same session.
     $("qso-band").value = band;
     $("qso-mode").value = mode;
+    $("qso-prop-mode").value = propMode;
     $("qso-call").focus();
     render();
     updateDupIndicator();

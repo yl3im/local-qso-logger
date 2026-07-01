@@ -28,6 +28,12 @@
     "detail.delete": "Supprimer le carnet",
 
     // QSO form
+    "qso.block.station": "Données de la station",
+    "qso.block.operation": "Mode d'opération",
+    "qso.block.qso": "Données du QSO",
+    "qso.station_callsign": "Indicatif de la station",
+    "qso.operator": "Opérateur",
+    "qso.operator.placeholder": "Jean Dupont",
     "qso.callsign": "Indicatif",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Date (UTC)",
@@ -42,6 +48,8 @@
     "qso.gridsquare": "Locator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Mon locator",
+    "qso.comment": "Commentaire",
+    "qso.comment.placeholder": "",
     "qso.rst_sent": "RST envoyé",
     "qso.rst_rcvd": "RST reçu",
     "qso.rst.placeholder": "59",

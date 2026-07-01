@@ -28,6 +28,12 @@
     "detail.delete": "Удалить журнал",
 
     // QSO form
+    "qso.block.station": "Данные станции",
+    "qso.block.operation": "Режим работы",
+    "qso.block.qso": "Данные QSO",
+    "qso.station_callsign": "Позывной станции",
+    "qso.operator": "Оператор",
+    "qso.operator.placeholder": "Иван Иванов",
     "qso.callsign": "Позывной",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Дата (UTC)",
@@ -42,6 +48,8 @@
     "qso.gridsquare": "Локатор",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Мой локатор",
+    "qso.comment": "Комментарий",
+    "qso.comment.placeholder": "",
     "qso.rst_sent": "RST передал",
     "qso.rst_rcvd": "RST принял",
     "qso.rst.placeholder": "59",

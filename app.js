@@ -68,10 +68,23 @@
   };
   const MODE_NO_PARENT_OPTION = new Set(["DYNAMIC", "FSK", "MTONE"]);
 
-  // AMSAT satellite-mode letter designations. Each entry is
+  // AMSAT satellite-mode designations. Each entry is
   // [code, uplinkBand, downlinkBand] — bands match the values in BANDS.
   // "10 GHz" resolves to our 3cm band; "1.2 GHz" resolves to 23cm.
-  const SAT_MODES = [
+  // Modern two-letter codes (uplink/downlink pair, e.g. "LU" = 23cm ↑ / 70cm ↓)
+  // are preferred; the single-letter codes are legacy AMSAT designations kept
+  // for compatibility with historical logs.
+  const SAT_MODES_MODERN = [
+    ["LU", "23cm", "70cm"],
+    ["LV", "23cm", "2m"],
+    ["SX", "13cm", "3cm"],
+    ["UU", "70cm", "70cm"],
+    ["UV", "70cm", "2m"],
+    ["VA", "2m",   "10m"],
+    ["VU", "2m",   "70cm"],
+    ["VV", "2m",   "2m"],
+  ];
+  const SAT_MODES_DEPRECATED = [
     ["A", "2m",   "10m"],
     ["B", "70cm", "2m"],
     ["J", "2m",   "70cm"],
@@ -85,6 +98,8 @@
     ["W", "70cm", "3cm"],
     ["X", "23cm", "3cm"],
   ];
+  // Flat list used by the SAT_MODE change handler to look up an entry's bands.
+  const SAT_MODES = [...SAT_MODES_MODERN, ...SAT_MODES_DEPRECATED];
 
   // ADIF SAT_NAME values, curated list. Stored value is the name (e.g.
   // "AO-7"); the description is shown next to it in the dropdown for clarity.
@@ -376,6 +391,19 @@
   if (state.theme !== "day" && state.theme !== "night") state.theme = "day";
   if (!SUPPORTED_LANGS.includes(state.lang)) state.lang = "en";
 
+  // Legacy migration: earlier versions stored a submode directly in q.mode
+  // (e.g. q.mode = "USB"). The new model keeps them separate — q.mode is
+  // always the ADIF parent MODE, q.submode is the optional SUBMODE. Split
+  // once on load; harmless if already migrated.
+  for (const log of state.logs) {
+    for (const q of log.qsos) {
+      if (q && q.mode && SUBMODE_TO_PARENT[q.mode] && !q.submode) {
+        q.submode = q.mode;
+        q.mode = SUBMODE_TO_PARENT[q.mode];
+      }
+    }
+  }
+
   // Ephemeral (not persisted): id of the QSO currently being edited, or null.
   let editingId = null;
 
@@ -556,20 +584,29 @@
   }
   fillSatNameSelect($("qso-sat-name"));
 
-  // SAT_MODE: AMSAT mode letters. Selecting one auto-adjusts BAND (uplink)
-  // and BAND_RX (downlink) since operators pick a satellite mode first.
+  // SAT_MODE: AMSAT mode designations. Selecting one auto-adjusts BAND
+  // (uplink) and BAND_RX (downlink) since operators pick a satellite mode
+  // first. Modern two-letter codes are grouped at the top; legacy single-
+  // letter codes go under a "deprecated" group at the bottom.
   function fillSatModeSelect(sel) {
     sel.innerHTML = "";
     const none = document.createElement("option");
     none.value = "";
     none.textContent = t("qso.prop_mode.none");
     sel.appendChild(none);
-    for (const [code, up, down] of SAT_MODES) {
-      const opt = document.createElement("option");
-      opt.value = code;
-      opt.textContent = `${code} — ${up} ↑ ${down} ↓`;
-      sel.appendChild(opt);
-    }
+    const appendGroup = (label, list) => {
+      const og = document.createElement("optgroup");
+      og.label = label;
+      for (const [code, up, down] of list) {
+        const opt = document.createElement("option");
+        opt.value = code;
+        opt.textContent = `${code} — ${up} ↑ ${down} ↓`;
+        og.appendChild(opt);
+      }
+      sel.appendChild(og);
+    };
+    appendGroup("modern", SAT_MODES_MODERN);
+    appendGroup("deprecated", SAT_MODES_DEPRECATED);
   }
   fillSatModeSelect($("qso-sat-mode"));
 
@@ -629,6 +666,7 @@
     });
   }
   bindUppercase($("qso-call"));
+  bindUppercase($("qso-station-call"));
   bindUppercase($("qso-gridsquare"));
   bindUppercase($("qso-my-gridsquare"));
   $("qso-call").addEventListener("input", updateDupIndicator);
@@ -637,16 +675,24 @@
   function startEdit(q) {
     editingId = q.id;
     qsoForm.classList.add("is-editing");
+    // Station-data block — filled from the edited QSO's own values.
+    $("qso-station-call").value = q.stationCall || "";
+    $("qso-operator").value = q.operator || "";
+    $("qso-my-gridsquare").value = q.myGridSquare || "";
+    // QSO-data block
     $("qso-call").value = q.call || "";
+    $("qso-gridsquare").value = q.gridSquare || "";
+    $("qso-comment").value = q.comment || "";
     $("qso-date").value = q.date || "";
     $("qso-time").value = (q.time || "").slice(0, 5);
-    $("qso-band").value = q.band || DEFAULT_BAND;
-    $("qso-mode").value = q.mode || DEFAULT_MODE;
-    $("qso-prop-mode").value = q.propMode || "";
     $("qso-rst-sent").value = q.rstSent || "";
     $("qso-rst-rcvd").value = q.rstRcvd || "";
-    $("qso-gridsquare").value = q.gridSquare || "";
-    $("qso-my-gridsquare").value = q.myGridSquare || "";
+    // Operation-mode block
+    $("qso-band").value = q.band || DEFAULT_BAND;
+    // Prefer the submode (more specific) when both are stored — matches how
+    // the operator originally picked from the dropdown.
+    $("qso-mode").value = q.submode || q.mode || DEFAULT_MODE;
+    $("qso-prop-mode").value = q.propMode || "";
     $("qso-band-rx").value = q.bandRx || "";
     // Preserve legacy SAT_MODE values (like "U/V" from imported ADIF) that
     // aren't in our AMSAT letter enum by adding them as a one-off option.
@@ -670,7 +716,12 @@
   function cancelEdit(opts) {
     editingId = null;
     qsoForm.classList.remove("is-editing");
+    // Clear per-QSO fields only; the Station-data block stays sticky across
+    // consecutive contacts (station callsign / operator / my grid are session-
+    // stable), matching how band/mode/prop-mode carry over.
     $("qso-call").value = "";
+    $("qso-gridsquare").value = "";
+    $("qso-comment").value = "";
     $("qso-date").value = "";
     $("qso-time").value = "";
     $("qso-rst-sent").value = "";
@@ -793,7 +844,7 @@
       cells[3].textContent = (q.time || "").slice(0, 5);
       cells[4].textContent = formatDate(q.date);
       cells[5].textContent = q.band || "—";
-      cells[6].textContent = q.mode || "—";
+      cells[6].textContent = q.submode || q.mode || "—";
       cells[7].textContent = q.propMode || "—";
       cells[8].textContent = q.rstSent || "—";
       cells[9].textContent = q.rstRcvd || "—";
@@ -837,6 +888,7 @@
     "CALL", "QSO_DATE", "TIME_ON", "BAND", "MODE", "SUBMODE",
     "RST_SENT", "RST_RCVD", "PROP_MODE",
     "GRIDSQUARE", "MY_GRIDSQUARE", "BAND_RX", "SAT_MODE", "SAT_NAME",
+    "STATION_CALLSIGN", "OPERATOR", "COMMENT",
   ]);
 
   // ---------- ADIF export ----------
@@ -859,23 +911,24 @@
     lines.push("");
 
     for (const q of log.qsos) {
-      const parent = modeParent(q.mode);
-      const submode = SUBMODE_TO_PARENT[q.mode] ? q.mode : "";
       let rec =
+        adifField("STATION_CALLSIGN", q.stationCall) +
+        adifField("OPERATOR", q.operator) +
+        adifField("MY_GRIDSQUARE", q.myGridSquare) +
         adifField("CALL", q.call) +
         adifField("QSO_DATE", q.date.replace(/-/g, "")) +
         adifField("TIME_ON", q.time.replace(/:/g, "")) +
         adifField("BAND", q.band) +
-        adifField("MODE", parent) +
-        adifField("SUBMODE", submode) +
+        adifField("MODE", q.mode) +
+        adifField("SUBMODE", q.submode) +
         adifField("PROP_MODE", q.propMode) +
         adifField("GRIDSQUARE", q.gridSquare) +
-        adifField("MY_GRIDSQUARE", q.myGridSquare) +
         adifField("BAND_RX", q.bandRx) +
         adifField("SAT_MODE", q.satMode) +
         adifField("SAT_NAME", q.satName) +
         adifField("RST_SENT", q.rstSent) +
-        adifField("RST_RCVD", q.rstRcvd);
+        adifField("RST_RCVD", q.rstRcvd) +
+        adifField("COMMENT", q.comment);
       // Preserve ADIF fields imported from other loggers that we don't model
       // as first-class UI properties (COMMENT, NAME, GRIDSQUARE, FREQ, DXCC,
       // QSL_*, POTA_REF, etc.). Full round-trip fidelity without UI churn.
@@ -982,24 +1035,38 @@
         for (const [k, v] of Object.entries(r)) {
           if (!KNOWN_ADIF_FIELDS.has(k) && v) extras[k] = v;
         }
+        // ADIF stores MODE (parent) and SUBMODE (specific) separately. Preserve
+        // both. If a source omits MODE but supplies SUBMODE, derive the parent
+        // via SUBMODE_TO_PARENT; if the submode is unknown, fall back to using
+        // the raw value as the mode (best-effort round-trip).
+        const rawMode = (r.MODE || "").toUpperCase();
+        const rawSubmode = (r.SUBMODE || "").toUpperCase();
+        let mode = rawMode;
+        let submode = rawSubmode;
+        if (!mode && submode) mode = SUBMODE_TO_PARENT[submode] || submode;
         const qso = {
           id: uid(),
           call: (r.CALL || "").toUpperCase(),
           date: adifDateToIso(r.QSO_DATE || ""),
           time: adifTimeToHms(r.TIME_ON || ""),
           band: (r.BAND || "").toLowerCase(),
-          mode: ((r.SUBMODE || r.MODE) || "").toUpperCase(),
+          mode,
           propMode: (r.PROP_MODE || "").toUpperCase(),
           rstSent: r.RST_SENT || "",
           rstRcvd: r.RST_RCVD || "",
         };
-        // Only attach satellite fields when the source record actually has
-        // them, so non-sat QSOs stay lean.
-        if (r.GRIDSQUARE)    qso.gridSquare   = r.GRIDSQUARE;
-        if (r.MY_GRIDSQUARE) qso.myGridSquare = r.MY_GRIDSQUARE;
-        if (r.BAND_RX)       qso.bandRx       = r.BAND_RX.toLowerCase();
-        if (r.SAT_MODE)      qso.satMode      = r.SAT_MODE;
-        if (r.SAT_NAME)      qso.satName      = r.SAT_NAME;
+        if (submode) qso.submode = submode;
+        // Station data — MY_GRIDSQUARE is now general-purpose (not sat-only),
+        // and STATION_CALLSIGN / OPERATOR are always allowed.
+        if (r.STATION_CALLSIGN) qso.stationCall  = r.STATION_CALLSIGN.toUpperCase();
+        if (r.OPERATOR)         qso.operator     = r.OPERATOR;
+        if (r.MY_GRIDSQUARE)    qso.myGridSquare = r.MY_GRIDSQUARE;
+        if (r.GRIDSQUARE)       qso.gridSquare   = r.GRIDSQUARE;
+        if (r.COMMENT)          qso.comment      = r.COMMENT;
+        // Satellite-only fields — attached only when the source record has them.
+        if (r.BAND_RX)          qso.bandRx       = r.BAND_RX.toLowerCase();
+        if (r.SAT_MODE)         qso.satMode      = r.SAT_MODE;
+        if (r.SAT_NAME)         qso.satName      = r.SAT_NAME;
         if (Object.keys(extras).length) qso.extras = extras;
         return qso;
       }),
@@ -1045,7 +1112,13 @@
     const log = selectedLog();
     if (!log) return;
     const band = $("qso-band").value;
-    const mode = $("qso-mode").value;
+    // The dropdown selection may be a parent MODE ("SSB", "MFSK", …) or a
+    // SUBMODE ("USB", "FT4", …). Split into ADIF's two-field form:
+    //   q.mode    = parent (always set)
+    //   q.submode = specific submode (present only when the operator picked one)
+    const modeSelection = $("qso-mode").value;
+    const mode = modeParent(modeSelection);
+    const submodeSelection = SUBMODE_TO_PARENT[modeSelection] ? modeSelection : "";
     const propMode = $("qso-prop-mode").value;
     const defaultRst = rstDefaultFor(mode);
     // Native `required` on the sat fields (toggled by updateSatVisibility)
@@ -1065,6 +1138,16 @@
       time = now.time;
     }
 
+    // Station-data block — general fields (not sat-specific). Only attached
+    // to the QSO when the operator actually filled them in, so blank inputs
+    // don't pollute the stored record.
+    const stationCall = $("qso-station-call").value.trim();
+    const operator = $("qso-operator").value.trim();
+    const myGrid = $("qso-my-gridsquare").value.trim();
+    // QSO-data block — general per-contact fields.
+    const grid = $("qso-gridsquare").value.trim();
+    const comment = $("qso-comment").value.trim();
+
     const fields = {
       call: $("qso-call").value.trim().toUpperCase(),
       date,
@@ -1075,17 +1158,19 @@
       rstSent: $("qso-rst-sent").value.trim() || defaultRst,
       rstRcvd: $("qso-rst-rcvd").value.trim() || defaultRst,
     };
-    // Satellite-only fields are only attached to the QSO when it *is* a
-    // satellite QSO. Non-sat QSOs never carry sat properties; editing a sat
-    // QSO to a non-sat mode strips any previously stored sat data.
-    // Gridsquares specifically are only attached when the operator actually
-    // filled them in — empty inputs don't create empty properties.
+    // Only attach submode when the operator actually picked one; keeps the
+    // stored model clean and matches ADIF (SUBMODE is optional).
+    if (submodeSelection) fields.submode = submodeSelection;
+    if (stationCall) fields.stationCall = stationCall;
+    if (operator)    fields.operator    = operator;
+    if (myGrid)      fields.myGridSquare = myGrid;
+    if (grid)        fields.gridSquare   = grid;
+    if (comment)     fields.comment      = comment;
+    // Satellite-only fields — attached only when it *is* a satellite QSO.
+    // Non-sat QSOs never carry sat properties; editing a sat QSO to a non-sat
+    // mode strips any previously stored sat data.
     if (isSat) {
-      const g = $("qso-gridsquare").value.trim();
-      const mg = $("qso-my-gridsquare").value.trim();
-      if (g) fields.gridSquare = g;
-      if (mg) fields.myGridSquare = mg;
-      fields.bandRx = $("qso-band-rx").value;
+      fields.bandRx  = $("qso-band-rx").value;
       fields.satMode = $("qso-sat-mode").value;
       fields.satName = $("qso-sat-name").value;
     }
@@ -1093,28 +1178,39 @@
       const q = log.qsos.find((x) => x.id === editingId);
       if (q) {
         Object.assign(q, fields);
+        // Editing away from a submode-specific selection removes the stored
+        // q.submode (Object.assign didn't touch it since fields.submode was
+        // absent when the operator picked a parent-only value).
+        if (!submodeSelection) delete q.submode;
+        // Empty optional inputs delete the previously stored value.
+        if (!stationCall) delete q.stationCall;
+        if (!operator)    delete q.operator;
+        if (!myGrid)      delete q.myGridSquare;
+        if (!grid)        delete q.gridSquare;
+        if (!comment)     delete q.comment;
         if (!isSat) {
-          delete q.gridSquare;
-          delete q.myGridSquare;
           delete q.bandRx;
           delete q.satMode;
           delete q.satName;
-        } else {
-          // Sat QSO with grids cleared by the operator — remove them from q.
-          if (!fields.gridSquare)   delete q.gridSquare;
-          if (!fields.myGridSquare) delete q.myGridSquare;
         }
       }
       cancelEdit({ skipRender: true });
     } else {
       log.qsos.push({ id: uid(), ...fields });
+      // Clear per-QSO fields; station data (stationCall/operator/myGrid) stays
+      // sticky across contacts like band/mode/prop-mode.
       $("qso-call").value = "";
+      $("qso-gridsquare").value = "";
+      $("qso-comment").value = "";
       $("qso-rst-sent").value = "";
       $("qso-rst-rcvd").value = "";
     }
     // Band/mode/prop-mode stay sticky across QSOs in the same session.
+    // Restore the operator's exact dropdown selection (parent OR submode),
+    // not the split parent — otherwise consecutive submode QSOs would keep
+    // jumping back to the parent.
     $("qso-band").value = band;
-    $("qso-mode").value = mode;
+    $("qso-mode").value = modeSelection;
     $("qso-prop-mode").value = propMode;
     $("qso-call").focus();
     render();

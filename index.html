@@ -107,61 +107,87 @@
         </div>
 
         <form id="qso-form" class="qso-form" autocomplete="off">
-          <label class="field-call">
-            <span data-i18n="qso.callsign">Callsign</span>
-            <input type="text" id="qso-call" data-i18n-placeholder="qso.callsign.placeholder" placeholder="DL1ABC" required autocapitalize="characters" autocomplete="off" />
-            <span id="dup-indicator" class="dup-indicator" hidden data-i18n="qso.duplicate">Duplicate in this log</span>
-          </label>
-          <label class="field-date editing-only">
-            <span data-i18n="qso.date">Date (UTC)</span>
-            <input type="date" id="qso-date" />
-          </label>
-          <label class="field-time editing-only">
-            <span data-i18n="qso.time">Time (UTC)</span>
-            <input type="time" id="qso-time" />
-          </label>
-          <label class="field-band">
-            <span data-i18n="qso.band">Band</span>
-            <select id="qso-band" required></select>
-          </label>
-          <label class="field-mode">
-            <span data-i18n="qso.mode">Mode</span>
-            <select id="qso-mode" required></select>
-          </label>
-          <label class="field-prop">
-            <span data-i18n="qso.prop_mode">Prop. mode</span>
-            <select id="qso-prop-mode"></select>
-          </label>
-          <label class="field-sat-name sat-only">
-            <span data-i18n="qso.sat_name">Satellite</span>
-            <select id="qso-sat-name"></select>
-          </label>
-          <label class="field-sat-mode sat-only">
-            <span data-i18n="qso.sat_mode">Sat mode</span>
-            <select id="qso-sat-mode"></select>
-          </label>
-          <label class="field-band-rx sat-only">
-            <span data-i18n="qso.band_rx">RX band</span>
-            <select id="qso-band-rx"></select>
-          </label>
-          <label class="field-gridsquare sat-only">
-            <span data-i18n="qso.gridsquare">Grid</span>
-            <input type="text" id="qso-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
-          </label>
-          <label class="field-my-gridsquare sat-only">
-            <span data-i18n="qso.my_gridsquare">My grid</span>
-            <input type="text" id="qso-my-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
-          </label>
-          <label class="field-rst">
-            <span data-i18n="qso.rst_sent">RST sent</span>
-            <input type="text" id="qso-rst-sent" data-i18n-placeholder="qso.rst.placeholder" placeholder="59" />
-          </label>
-          <label class="field-rst">
-            <span data-i18n="qso.rst_rcvd">RST rcvd</span>
-            <input type="text" id="qso-rst-rcvd" data-i18n-placeholder="qso.rst.placeholder" placeholder="59" />
-          </label>
-          <button id="qso-submit" type="submit" class="primary" data-i18n="qso.log">Log QSO</button>
-          <button id="qso-cancel" class="secondary" type="button" hidden data-i18n="qso.cancel">Cancel</button>
+          <fieldset class="qso-block">
+            <legend data-i18n="qso.block.station">Station data</legend>
+            <label class="field-station-call">
+              <span data-i18n="qso.station_callsign">Station callsign</span>
+              <input type="text" id="qso-station-call" data-i18n-placeholder="qso.callsign.placeholder" placeholder="DL1ABC" autocapitalize="characters" autocomplete="off" />
+            </label>
+            <label class="field-operator">
+              <span data-i18n="qso.operator">Operator</span>
+              <input type="text" id="qso-operator" data-i18n-placeholder="qso.operator.placeholder" placeholder="John Doe" autocomplete="off" />
+            </label>
+            <label class="field-my-gridsquare">
+              <span data-i18n="qso.my_gridsquare">My grid</span>
+              <input type="text" id="qso-my-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
+            </label>
+          </fieldset>
+
+          <fieldset class="qso-block">
+            <legend data-i18n="qso.block.operation">Operation mode</legend>
+            <label class="field-prop">
+              <span data-i18n="qso.prop_mode">Prop. mode</span>
+              <select id="qso-prop-mode"></select>
+            </label>
+            <label class="field-sat-name sat-only">
+              <span data-i18n="qso.sat_name">Satellite</span>
+              <select id="qso-sat-name"></select>
+            </label>
+            <label class="field-mode">
+              <span data-i18n="qso.mode">Mode</span>
+              <select id="qso-mode" required></select>
+            </label>
+            <label class="field-sat-mode sat-only">
+              <span data-i18n="qso.sat_mode">Sat mode</span>
+              <select id="qso-sat-mode"></select>
+            </label>
+            <label class="field-band">
+              <span data-i18n="qso.band">Band</span>
+              <select id="qso-band" required></select>
+            </label>
+            <label class="field-band-rx sat-only">
+              <span data-i18n="qso.band_rx">RX band</span>
+              <select id="qso-band-rx"></select>
+            </label>
+          </fieldset>
+
+          <fieldset class="qso-block">
+            <legend data-i18n="qso.block.qso">QSO data</legend>
+            <label class="field-call">
+              <span data-i18n="qso.callsign">Callsign</span>
+              <input type="text" id="qso-call" data-i18n-placeholder="qso.callsign.placeholder" placeholder="DL1ABC" required autocapitalize="characters" autocomplete="off" />
+              <span id="dup-indicator" class="dup-indicator" hidden data-i18n="qso.duplicate">Duplicate in this log</span>
+            </label>
+            <label class="field-gridsquare">
+              <span data-i18n="qso.gridsquare">Grid</span>
+              <input type="text" id="qso-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
+            </label>
+            <label class="field-date editing-only">
+              <span data-i18n="qso.date">Date (UTC)</span>
+              <input type="date" id="qso-date" />
+            </label>
+            <label class="field-time editing-only">
+              <span data-i18n="qso.time">Time (UTC)</span>
+              <input type="time" id="qso-time" />
+            </label>
+            <label class="field-comment">
+              <span data-i18n="qso.comment">Comment</span>
+              <input type="text" id="qso-comment" data-i18n-placeholder="qso.comment.placeholder" placeholder="" autocomplete="off" />
+            </label>
+            <label class="field-rst">
+              <span data-i18n="qso.rst_rcvd">RST rcvd</span>
+              <input type="text" id="qso-rst-rcvd" data-i18n-placeholder="qso.rst.placeholder" placeholder="59" />
+            </label>
+            <label class="field-rst">
+              <span data-i18n="qso.rst_sent">RST sent</span>
+              <input type="text" id="qso-rst-sent" data-i18n-placeholder="qso.rst.placeholder" placeholder="59" />
+            </label>
+          </fieldset>
+
+          <div class="qso-actions">
+            <button id="qso-submit" type="submit" class="primary" data-i18n="qso.log">Log QSO</button>
+            <button id="qso-cancel" class="secondary" type="button" hidden data-i18n="qso.cancel">Cancel</button>
+          </div>
         </form>
 
         <div class="qso-table-wrap">

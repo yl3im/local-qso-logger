@@ -29,7 +29,6 @@
     "qso.block.qso": "Даныя QSO",
     "qso.station_callsign": "Пазыўны станцыі",
     "qso.operator": "Аператар",
-    "qso.operator.placeholder": "Іван Іваноў",
     "qso.callsign": "Пазыўны",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Дата (UTC)",

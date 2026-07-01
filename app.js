@@ -684,6 +684,7 @@
   }
   bindUppercase($("qso-call"));
   bindUppercase($("qso-station-call"));
+  bindUppercase($("qso-operator"));
   bindUppercase($("qso-gridsquare"));
   bindUppercase($("qso-my-gridsquare"));
   $("qso-call").addEventListener("input", updateDupIndicator);
@@ -929,9 +930,6 @@
 
     for (const q of log.qsos) {
       let rec =
-        adifField("STATION_CALLSIGN", q.stationCall) +
-        adifField("OPERATOR", q.operator) +
-        adifField("MY_GRIDSQUARE", q.myGridSquare) +
         adifField("CALL", q.call) +
         adifField("QSO_DATE", q.date.replace(/-/g, "")) +
         adifField("TIME_ON", q.time.replace(/:/g, "")) +
@@ -945,7 +943,10 @@
         adifField("SAT_NAME", q.satName) +
         adifField("RST_SENT", q.rstSent) +
         adifField("RST_RCVD", q.rstRcvd) +
-        adifField("COMMENT", q.comment);
+        adifField("COMMENT", q.comment) +
+        adifField("STATION_CALLSIGN", q.stationCall) +
+        adifField("OPERATOR", q.operator) +
+        adifField("MY_GRIDSQUARE", q.myGridSquare);
       // Preserve ADIF fields imported from other loggers that we don't model
       // as first-class UI properties (COMMENT, NAME, GRIDSQUARE, FREQ, DXCC,
       // QSL_*, POTA_REF, etc.). Full round-trip fidelity without UI churn.
@@ -1076,7 +1077,7 @@
         // Station data — MY_GRIDSQUARE is now general-purpose (not sat-only),
         // and STATION_CALLSIGN / OPERATOR are always allowed.
         if (r.STATION_CALLSIGN) qso.stationCall  = r.STATION_CALLSIGN.toUpperCase();
-        if (r.OPERATOR)         qso.operator     = r.OPERATOR;
+        if (r.OPERATOR)         qso.operator     = r.OPERATOR.toUpperCase();
         if (r.MY_GRIDSQUARE)    qso.myGridSquare = r.MY_GRIDSQUARE;
         if (r.GRIDSQUARE)       qso.gridSquare   = r.GRIDSQUARE;
         if (r.COMMENT)          qso.comment      = r.COMMENT;

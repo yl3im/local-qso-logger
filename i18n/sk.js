@@ -29,7 +29,6 @@
     "qso.block.qso": "Údaje o QSO",
     "qso.station_callsign": "Značka stanice",
     "qso.operator": "Operátor",
-    "qso.operator.placeholder": "Jozef Novák",
     "qso.callsign": "Volacia značka",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Dátum (UTC)",

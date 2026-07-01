@@ -29,7 +29,6 @@
     "qso.block.qso": "Date QSO",
     "qso.station_callsign": "Indicativ stație",
     "qso.operator": "Operator",
-    "qso.operator.placeholder": "Ion Popescu",
     "qso.callsign": "Indicativ",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Dată (UTC)",

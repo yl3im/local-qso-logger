@@ -29,7 +29,6 @@
     "qso.block.qso": "Podatki QSO",
     "qso.station_callsign": "Klicni znak postaje",
     "qso.operator": "Operater",
-    "qso.operator.placeholder": "Janez Novak",
     "qso.callsign": "Klicni znak",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datum (UTC)",

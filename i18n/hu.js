@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO adatai",
     "qso.station_callsign": "Állomás hívójele",
     "qso.operator": "Operátor",
-    "qso.operator.placeholder": "Kovács János",
     "qso.callsign": "Hívójel",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Dátum (UTC)",

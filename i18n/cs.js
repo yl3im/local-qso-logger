@@ -29,7 +29,6 @@
     "qso.block.qso": "Údaje o QSO",
     "qso.station_callsign": "Značka stanice",
     "qso.operator": "Operátor",
-    "qso.operator.placeholder": "Jan Novák",
     "qso.callsign": "Volací značka",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datum (UTC)",

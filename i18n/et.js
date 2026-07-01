@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO andmed",
     "qso.station_callsign": "Jaama kutsung",
     "qso.operator": "Operaator",
-    "qso.operator.placeholder": "Jaan Tamm",
     "qso.callsign": "Kutsung",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Kuupäev (UTC)",

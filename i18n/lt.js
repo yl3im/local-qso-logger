@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO duomenys",
     "qso.station_callsign": "Stoties šaukinys",
     "qso.operator": "Operatorius",
-    "qso.operator.placeholder": "Jonas Jonaitis",
     "qso.callsign": "Šaukinys",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Data (UTC)",

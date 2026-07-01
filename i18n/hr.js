@@ -29,7 +29,6 @@
     "qso.block.qso": "Podaci o QSO",
     "qso.station_callsign": "Pozivni znak stanice",
     "qso.operator": "Operater",
-    "qso.operator.placeholder": "Ivan Horvat",
     "qso.callsign": "Pozivni znak",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datum (UTC)",

@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO подаци",
     "qso.station_callsign": "Позивни знак станице",
     "qso.operator": "Оператер",
-    "qso.operator.placeholder": "Петар Петровић",
     "qso.callsign": "Позивни знак",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Датум (UTC)",

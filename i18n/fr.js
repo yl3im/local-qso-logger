@@ -33,7 +33,6 @@
     "qso.block.qso": "Données du QSO",
     "qso.station_callsign": "Indicatif de la station",
     "qso.operator": "Opérateur",
-    "qso.operator.placeholder": "Jean Dupont",
     "qso.callsign": "Indicatif",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Date (UTC)",

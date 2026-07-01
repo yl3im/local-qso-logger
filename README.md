@@ -31,7 +31,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.ham.lv](https://
 
 - Multiple logbooks; each with its own list of QSOs.
 - Logbook actions: create, rename, delete, import from ADIF, export to ADIF (`.adi`).
-- QSO form grouped into three blocks: **Station data** (station callsign, operator name, own grid) that stays sticky across QSOs; **Operation mode** (propagation mode, satellite, mode, sat mode, band, RX band) with satellite fields revealed only when propagation mode is *Satellite*; and **QSO data** (contacted callsign, contacted grid, UTC date/time when editing, comment, RST rcvd, RST sent).
+- QSO form grouped into three blocks: **Station data** (station callsign, operator callsign, own grid) that stays sticky across QSOs; **Operation mode** (propagation mode, satellite, mode, sat mode, band, RX band) with satellite fields revealed only when propagation mode is *Satellite*; and **QSO data** (contacted callsign, contacted grid, UTC date/time when editing, comment, RST sent, RST rcvd).
 - Full ADIF `MODE` → `SUBMODE` taxonomy in the mode dropdown — pick a parent mode (`SSB`, `MFSK`, …) or drill straight down to a specific submode (`USB`, `FT4`, …); the app stores both fields per ADIF, and the table shows the specific submode when there is one.
 - Full ADIF propagation-mode enumeration (SAT, RPT, EME, ES, MS, Aurora, etc.) as a dropdown.
 - Full AMSAT satellite catalog (~110 birds) and a two-tier **Sat mode** dropdown: preferred two-letter uplink/downlink codes at the top (LU, LV, SX, UU, UV, VA, VU, VV) and the legacy single-letter designations (A/B/J/K/L/R/S/T/U/V/W/X) grouped as *deprecated* below. Picking a sat mode auto-adjusts the uplink `BAND` and downlink `RX band`.
@@ -96,10 +96,10 @@ Higher-quality source: [media/Android_add_to_home_screen.mp4](media/Android_add_
 
 - Fill in the form and press **Log QSO**.
 - The form is organized in three blocks:
-  - **Station data** — *Station callsign* (your transmit callsign, ADIF `STATION_CALLSIGN`), *Operator* (the individual operator's name, ADIF `OPERATOR`), and *My grid* (ADIF `MY_GRIDSQUARE`). These stay sticky across QSOs in the same session — set them once and they carry over.
+  - **Station data** — *Station callsign* (your transmit callsign, ADIF `STATION_CALLSIGN`), *Operator* (the individual operator's callsign — distinct from *Station callsign* when a guest operator is at the mic of a club station; ADIF `OPERATOR`), and *My grid* (ADIF `MY_GRIDSQUARE`). These stay sticky across QSOs in the same session — set them once and they carry over.
   - **Operation mode** — *Prop. mode*, *Mode*, *Band*, plus the satellite-only *Satellite* / *Sat mode* / *RX band* when propagation mode is *Satellite*. Band, mode, and propagation mode are sticky like Station data.
-  - **QSO data** — per-contact fields: *Callsign*, *Grid* (the other station's Maidenhead), *Comment* (ADIF `COMMENT`), *RST rcvd*, *RST sent*. When editing an existing QSO, *Date (UTC)* and *Time (UTC)* also appear in this block. These fields clear after each *Log QSO*.
-- All callsigns (contacted, station, own) auto-uppercase as you type; both grid-square fields uppercase the same way. *Operator* is treated as a name (e.g. "John Doe") and is left as typed.
+  - **QSO data** — per-contact fields: *Callsign*, *Grid* (the other station's Maidenhead), *Comment* (ADIF `COMMENT`), *RST sent*, *RST rcvd*. When editing an existing QSO, *Date (UTC)* and *Time (UTC)* also appear in this block. These fields clear after each *Log QSO*.
+- All callsigns (contacted, station, operator) auto-uppercase as you type; both grid-square fields uppercase the same way.
 - Date and time pre-fill to *now* in UTC at submit; when editing, you can type any value.
 - RST sent / RST rcvd, if left blank, default to **59** for voice modes (SSB/FM/DIGITALVOICE) and **599** for CW and digital modes (CW/FT8/FT4/RTTY/PSK31/JT65). The default follows the parent MODE, so picking a specific submode like *USB* or *FT4* still yields the right default.
 - A *Duplicate in this log* chip appears under the callsign field if the call already exists in the current logbook. Duplicates are *not* blocked.
@@ -110,7 +110,7 @@ Higher-quality source: [media/Android_add_to_home_screen.mp4](media/Android_add_
 
 ## ADIF import & export
 
-- **Export**: click *Export .adi* in the logbook header. A file is downloaded conforming to **ADIF 3.1.7**. The header declares `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION`, and `CREATED_TIMESTAMP` (UTC). Per-QSO fields emitted (when non-empty): `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE`, `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT` — followed by every extra ADIF field that was preserved on import (see below).
+- **Export**: click *Export .adi* in the logbook header. A file is downloaded conforming to **ADIF 3.1.7**. The header declares `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION`, and `CREATED_TIMESTAMP` (UTC). Per-QSO fields emitted (when non-empty): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — followed by every extra ADIF field that was preserved on import (see below).
 - **Import**: click *Import .adi file* under the Create-logbook form and pick a `.adi` / `.adif` file. A new logbook is created from it, named `Imported YYYY-MM-DD HH:MM UTC`. Importing never merges into an existing logbook.
 - **Lossless round-trip**: on import, any ADIF field the app doesn't model in its UI (e.g. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` fields) is preserved on the QSO and re-emitted verbatim on the next export. So exporting a file that was itself imported preserves everything.
 - Field-length is treated as a UTF-8 byte count as the spec requires, so multi-byte text (e.g. accented callsigns in `COMMENT`) parses correctly.

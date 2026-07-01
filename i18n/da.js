@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO-data",
     "qso.station_callsign": "Stationskaldesignal",
     "qso.operator": "Operatør",
-    "qso.operator.placeholder": "Peter Jensen",
     "qso.callsign": "Kaldesignal",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Dato (UTC)",

@@ -28,6 +28,12 @@
     "detail.delete": "Logbuch löschen",
 
     // QSO form
+    "qso.block.station": "Stationsdaten",
+    "qso.block.operation": "Betriebsart",
+    "qso.block.qso": "QSO-Daten",
+    "qso.station_callsign": "Stationsrufzeichen",
+    "qso.operator": "Operator",
+    "qso.operator.placeholder": "Max Mustermann",
     "qso.callsign": "Rufzeichen",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datum (UTC)",
@@ -42,6 +48,8 @@
     "qso.gridsquare": "Locator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Mein Locator",
+    "qso.comment": "Kommentar",
+    "qso.comment.placeholder": "",
     "qso.rst_sent": "RST gesendet",
     "qso.rst_rcvd": "RST empfangen",
     "qso.rst.placeholder": "59",

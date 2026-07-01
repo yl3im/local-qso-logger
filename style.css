@@ -165,13 +165,34 @@ button.danger:hover { background: var(--danger); color: #fff; }
 
 .empty-state { color: var(--muted); text-align: center; padding: 3rem 1rem; }
 
+/* The QSO form itself flows vertically: three <fieldset> blocks stack,
+   then the action buttons row. Each block internally flexes its labels. */
 .qso-form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+.qso-block {
   display: flex;
   flex-wrap: wrap;
   gap: 0.6rem;
   align-items: end;
-  margin-bottom: 1rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.4rem 0.85rem 0.75rem;
+  margin: 0;
+  min-width: 0;
 }
+.qso-block > legend {
+  padding: 0 0.4rem;
+  font-weight: 700;
+  font-size: 0.7rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.qso-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 .qso-form button { height: 38px; }
 .field-call { width: 150px; }
 #qso-call { background: var(--callsign-bg); }
@@ -180,6 +201,8 @@ button.danger:hover { background: var(--danger); color: #fff; }
    get the current UTC stamp automatically. */
 .qso-form .editing-only { display: none; }
 .qso-form.is-editing .editing-only { display: flex; }
+.field-station-call { width: 150px; }
+.field-operator { width: 150px; }
 .field-date { width: 150px; }
 .field-time { width: 130px; }
 .field-band { width: 100px; }
@@ -191,6 +214,8 @@ button.danger:hover { background: var(--danger); color: #fff; }
 .field-sat-mode { width: 160px; }
 .field-gridsquare { width: 100px; }
 .field-my-gridsquare { width: 100px; }
+/* Comment lives on its own row inside the QSO data block. */
+.field-comment { flex: 1 1 100%; min-width: 200px; }
 
 /* Satellite-only fields — shown only when PROP_MODE = SAT. */
 .qso-form .sat-only { display: none; }
@@ -273,13 +298,14 @@ button.danger:hover { background: var(--danger); color: #fff; }
   .detail-actions button { flex: 1; }
   button { min-height: 40px; }
   /* Stack the QSO form on phones:
-     Callsign / Date / Time each on their own row, Band+Mode share a row,
-     RST sent + RST rcvd share a row. Buttons go full-width. */
-  .qso-form > label { width: 100%; }
+     labels default to full-row, Band+Mode share a row, RST sent + RST rcvd
+     share a row, and the action buttons go full-width. */
+  .qso-form label { width: 100%; }
   .qso-form .field-band,
   .qso-form .field-mode,
   .qso-form .field-rst { width: calc(50% - 0.3rem); }
-  .qso-form > button { width: 100%; }
+  .qso-actions { flex-direction: column; }
+  .qso-actions button { width: 100%; }
 
   /* iOS Safari fixes.
      1. Native <input type="date|time"> ships with internal padding + a picker

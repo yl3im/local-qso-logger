@@ -28,6 +28,12 @@
     "detail.delete": "Delete log",
 
     // QSO form
+    "qso.block.station": "Station data",
+    "qso.block.operation": "Operation mode",
+    "qso.block.qso": "QSO data",
+    "qso.station_callsign": "Station callsign",
+    "qso.operator": "Operator",
+    "qso.operator.placeholder": "John Doe",
     "qso.callsign": "Callsign",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Date (UTC)",
@@ -42,6 +48,8 @@
     "qso.gridsquare": "Grid",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "My grid",
+    "qso.comment": "Comment",
+    "qso.comment.placeholder": "",
     "qso.rst_sent": "RST sent",
     "qso.rst_rcvd": "RST rcvd",
     "qso.rst.placeholder": "59",

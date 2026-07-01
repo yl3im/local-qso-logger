@@ -28,6 +28,12 @@
     "detail.delete": "Dzēst žurnālu",
 
     // QSO form
+    "qso.block.station": "Stacijas dati",
+    "qso.block.operation": "Darbības režīms",
+    "qso.block.qso": "QSO dati",
+    "qso.station_callsign": "Stacijas izsaukuma signāls",
+    "qso.operator": "Operators",
+    "qso.operator.placeholder": "Jānis Bērziņš",
     "qso.callsign": "Izsaukums",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datums (UTC)",
@@ -42,6 +48,8 @@
     "qso.gridsquare": "Lokators",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Mans lokators",
+    "qso.comment": "Komentārs",
+    "qso.comment.placeholder": "",
     "qso.rst_sent": "RST nosūtīts",
     "qso.rst_rcvd": "RST saņemts",
     "qso.rst.placeholder": "59",

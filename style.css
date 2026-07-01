@@ -184,7 +184,17 @@ button.danger:hover { background: var(--danger); color: #fff; }
 .field-time { width: 130px; }
 .field-band { width: 100px; }
 .field-mode { width: 130px; }
+.field-prop { width: 120px; }
 .field-rst  { width: 75px; }
+.field-sat-name { width: 130px; }
+.field-band-rx { width: 100px; }
+.field-sat-mode { width: 160px; }
+.field-gridsquare { width: 100px; }
+.field-my-gridsquare { width: 100px; }
+
+/* Satellite-only fields — shown only when PROP_MODE = SAT. */
+.qso-form .sat-only { display: none; }
+.qso-form.is-sat .sat-only { display: flex; }
 
 .qso-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .qso-table { width: auto; border-collapse: collapse; font-size: 0.85rem; }
@@ -216,7 +226,10 @@ button.danger:hover { background: var(--danger); color: #fff; }
 .row-del:hover { background: var(--danger); color: #fff; }
 .qso-table tr.editing td { background: var(--accent-soft); }
 
-.detail-title { flex: 1; min-width: 0; }
+/* flex-basis of 220px is the minimum room the title needs before .detail-head
+   wraps it below the actions row (fixes iPad split-view where the two rows
+   otherwise both shrink and the title gets crammed into a very narrow column). */
+.detail-title { flex: 1 1 220px; min-width: 220px; overflow-wrap: anywhere; }
 .rename-input {
   font-size: 1.05rem;
   font-weight: 600;
@@ -253,6 +266,9 @@ button.danger:hover { background: var(--danger); color: #fff; }
   .layout { padding: 0.75rem; gap: 0.75rem; }
   .panel { padding: 0.85rem; }
   .detail-head { flex-direction: column; align-items: stretch; }
+  /* In column mode `flex: 1 1 220px` from the desktop rule becomes a 220px
+     *height* floor + vertical grow, producing a huge blank gap. Reset. */
+  .detail-title { flex: 0 0 auto; min-width: 0; }
   .detail-actions { width: 100%; }
   .detail-actions button { flex: 1; }
   button { min-height: 40px; }

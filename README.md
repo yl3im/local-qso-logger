@@ -31,7 +31,9 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.ham.lv](https://
 
 - Multiple logbooks; each with its own list of QSOs.
 - Logbook actions: create, rename, delete, import from ADIF, export to ADIF (`.adi`).
-- QSO fields: callsign, UTC date, UTC time, band, mode, RST sent, RST rcvd.
+- QSO fields: callsign, UTC date, UTC time, band, mode, propagation mode, RST sent, RST rcvd — plus satellite-specific fields (satellite name, satellite mode, RX band, contacted-station grid, own grid) that reveal themselves when propagation mode is *Satellite*.
+- Full ADIF propagation-mode enumeration (SAT, RPT, EME, ES, MS, Aurora, etc.) as a dropdown.
+- Full AMSAT satellite catalog (~110 birds) and the standard mode-letter table (A/B/J/K/L/R/S/T/U/V/W/X). Picking a sat mode auto-adjusts the uplink `BAND` and downlink `RX band`.
 - Edit and delete any QSO (with confirmation on delete).
 - Sensible defaults: today's UTC date/time pre-filled, mode-aware RST defaults (59 for voice modes, 599 for CW/digital), sticky band & mode across consecutive QSOs.
 - Live duplicate-callsign indicator (informational — duplicates are allowed).
@@ -92,19 +94,22 @@ Higher-quality source: [media/Android_add_to_home_screen.mp4](media/Android_add_
 ## QSOs
 
 - Fill in the form and press **Log QSO**.
-- Callsign is auto-uppercased as you type.
+- Callsign is auto-uppercased as you type. Both grid-square fields auto-uppercase the same way.
 - Date and time pre-fill to *now* in UTC and re-set after each logged QSO; you can still type any value.
 - Band and mode persist across QSOs in the same session so you don't have to re-select for every contact.
 - RST sent / RST rcvd, if left blank, default to **59** for voice modes (SSB/FM/AM/DIGITALVOICE) and **599** for CW and digital modes (CW/FT8/FT4/RTTY/PSK31/JT65).
 - A *Duplicate in this log* chip appears under the callsign field if the call already exists in the current logbook. Duplicates are *not* blocked.
+- **Propagation mode** — optional dropdown of ADIF propagation modes (SAT, RPT, EME, F2, Es, MS, LOS, etc.). Leave it empty for normal HF terrestrial QSOs.
+- **Satellite QSOs** — selecting propagation mode *Satellite* reveals five satellite-only fields: **Satellite** (dropdown of ~110 AMSAT-registered birds), **Sat mode** (AMSAT letter designations), **RX band** (downlink band), **Grid** (contacted-station Maidenhead), **My grid** (your Maidenhead). Satellite, Sat mode, and RX band are required — the browser will refuse to submit without them. Picking a **Sat mode** automatically fills the main **Band** with the uplink band and **RX band** with the downlink band (e.g. mode J → 2m uplink, 70cm downlink). Switching *back* to satellite from another propagation mode resets Sat mode so you're prompted to pick a fresh one. Non-satellite QSOs never carry satellite fields at all; switching an existing QSO from satellite to another prop-mode strips them cleanly.
 - **Edit a QSO** with the *Edit* button on the row. The form switches to *Update QSO* mode, the row is highlighted, and a *Cancel* button appears. Switching logbooks or deleting the log cancels the edit automatically.
 - **Delete a QSO** with the *Delete* button on the row (asks for confirmation).
 
 ## ADIF import & export
 
-- **Export**: click *Export .adi* in the logbook header. A file is downloaded with `ADIF_VER 3.1.4` and `PROGRAMID local-qso` in the header. Each record maps `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `RST_SENT`, `RST_RCVD`.
+- **Export**: click *Export .adi* in the logbook header. A file is downloaded conforming to **ADIF 3.1.7**. The header declares `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION`, and `CREATED_TIMESTAMP` (UTC). Per-QSO fields emitted (when non-empty): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `MY_GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD` — followed by every extra ADIF field that was preserved on import (see below).
 - **Import**: click *Import .adi file* under the Create-logbook form and pick a `.adi` / `.adif` file. A new logbook is created from it, named `Imported YYYY-MM-DD HH:MM UTC`. Importing never merges into an existing logbook.
-- Field-length count is treated as character count, which works for ASCII ADIF (all standard QSO fields). Multi-byte content in non-essential text fields may parse oddly.
+- **Lossless round-trip**: on import, any ADIF field the app doesn't model in its UI (e.g. `COMMENT`, `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` fields) is preserved on the QSO and re-emitted verbatim on the next export. So exporting a file that was itself imported preserves everything.
+- Field-length is treated as a UTF-8 byte count as the spec requires, so multi-byte text (e.g. accented callsigns in `COMMENT`) parses correctly.
 
 ## Privacy and data
 

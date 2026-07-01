@@ -1,6 +1,6 @@
 // Cache-first service worker for Local QSO Logger.
 // Bump CACHE when shipping new asset versions to evict the old cache.
-const CACHE = "local-qso-v6";
+const CACHE = "local-qso-v11";
 const ASSETS = [
   "./",
   "./index.html",

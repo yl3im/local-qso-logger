@@ -481,12 +481,29 @@
     if (langSelect) langSelect.value = state.lang;
   }
 
+  // Refill the four selects whose labels come from `t()` — otherwise a runtime
+  // language switch leaves their "(none)" / "modern" / "deprecated" strings
+  // in whatever language was active at page load. Preserves the current
+  // selection where possible.
+  function refillLocalizedSelects() {
+    const preserve = (sel, refill) => {
+      const v = sel.value;
+      refill(sel);
+      if (v) sel.value = v;
+    };
+    preserve($("qso-prop-mode"), fillPropModeSelect);
+    preserve($("qso-band-rx"),   fillBandRxSelect);
+    preserve($("qso-sat-name"),  fillSatNameSelect);
+    preserve($("qso-sat-mode"),  fillSatModeSelect);
+  }
+
   if (langSelect) {
     langSelect.addEventListener("change", () => {
       const next = langSelect.value;
       if (!SUPPORTED_LANGS.includes(next)) return;
       state.lang = next;
       applyLanguage();
+      refillLocalizedSelects();
       render();
     });
   }
@@ -605,8 +622,8 @@
       }
       sel.appendChild(og);
     };
-    appendGroup("modern", SAT_MODES_MODERN);
-    appendGroup("deprecated", SAT_MODES_DEPRECATED);
+    appendGroup(t("qso.sat_mode.modern"), SAT_MODES_MODERN);
+    appendGroup(t("qso.sat_mode.deprecated"), SAT_MODES_DEPRECATED);
   }
   fillSatModeSelect($("qso-sat-mode"));
 

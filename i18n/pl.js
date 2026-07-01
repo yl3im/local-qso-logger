@@ -41,6 +41,8 @@
     "qso.sat_name": "Satelita",
     "qso.band_rx": "RX pasmo",
     "qso.sat_mode": "Sat tryb",
+    "qso.sat_mode.modern": "nowoczesne",
+    "qso.sat_mode.deprecated": "przestarzałe",
     "qso.gridsquare": "Lokator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Mój lokator",

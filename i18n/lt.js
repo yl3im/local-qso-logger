@@ -41,6 +41,8 @@
     "qso.sat_name": "Palydovas",
     "qso.band_rx": "RX diapazonas",
     "qso.sat_mode": "Sat modas",
+    "qso.sat_mode.modern": "modernieji",
+    "qso.sat_mode.deprecated": "pasenę",
     "qso.gridsquare": "Lokatorius",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Mano lokatorius",

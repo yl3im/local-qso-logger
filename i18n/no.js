@@ -41,6 +41,8 @@
     "qso.sat_name": "Satellitt",
     "qso.band_rx": "RX bånd",
     "qso.sat_mode": "Sat modus",
+    "qso.sat_mode.modern": "moderne",
+    "qso.sat_mode.deprecated": "utdatert",
     "qso.gridsquare": "Locator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Min locator",

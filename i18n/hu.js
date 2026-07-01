@@ -41,6 +41,8 @@
     "qso.sat_name": "Műhold",
     "qso.band_rx": "RX sáv",
     "qso.sat_mode": "Sat mód",
+    "qso.sat_mode.modern": "modern",
+    "qso.sat_mode.deprecated": "elavult",
     "qso.gridsquare": "Locator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Saját locator",

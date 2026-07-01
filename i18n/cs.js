@@ -41,6 +41,8 @@
     "qso.sat_name": "Družice",
     "qso.band_rx": "RX pásmo",
     "qso.sat_mode": "Družicový mód",
+    "qso.sat_mode.modern": "moderní",
+    "qso.sat_mode.deprecated": "zastaralé",
     "qso.gridsquare": "Lokátor",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Můj lokátor",

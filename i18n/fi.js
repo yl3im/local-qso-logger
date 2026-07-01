@@ -41,6 +41,8 @@
     "qso.sat_name": "Satelliitti",
     "qso.band_rx": "RX-alue",
     "qso.sat_mode": "Sat tila",
+    "qso.sat_mode.modern": "nykyaikaiset",
+    "qso.sat_mode.deprecated": "vanhentuneet",
     "qso.gridsquare": "Lokaattori",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Oma lokaattori",

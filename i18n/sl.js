@@ -41,6 +41,8 @@
     "qso.sat_name": "Satelit",
     "qso.band_rx": "RX pas",
     "qso.sat_mode": "Sat način",
+    "qso.sat_mode.modern": "sodobno",
+    "qso.sat_mode.deprecated": "opuščeno",
     "qso.gridsquare": "Lokator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Moj lokator",

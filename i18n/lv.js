@@ -45,6 +45,8 @@
     "qso.sat_name": "Satelīts",
     "qso.band_rx": "RX josla",
     "qso.sat_mode": "Sat režīms",
+    "qso.sat_mode.modern": "modernie",
+    "qso.sat_mode.deprecated": "novecojušie",
     "qso.gridsquare": "Lokators",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Mans lokators",

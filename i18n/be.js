@@ -41,6 +41,8 @@
     "qso.sat_name": "Спадарожнік",
     "qso.band_rx": "RX дыяпазон",
     "qso.sat_mode": "Сат рэжым",
+    "qso.sat_mode.modern": "сучасныя",
+    "qso.sat_mode.deprecated": "састарэлыя",
     "qso.gridsquare": "Лакатар",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Мой лакатар",

@@ -41,6 +41,8 @@
     "qso.sat_name": "Satailít",
     "qso.band_rx": "Banda RX",
     "qso.sat_mode": "Mód sat",
+    "qso.sat_mode.modern": "nua-aimseartha",
+    "qso.sat_mode.deprecated": "dímholta",
     "qso.gridsquare": "Locator",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "Mo locator",

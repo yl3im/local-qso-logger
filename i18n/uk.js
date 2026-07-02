@@ -29,7 +29,6 @@
     "qso.block.qso": "Дані QSO",
     "qso.station_callsign": "Позивний станції",
     "qso.operator": "Оператор",
-    "qso.operator.placeholder": "Іван Іваненко",
     "qso.callsign": "Позивний",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Дата (UTC)",

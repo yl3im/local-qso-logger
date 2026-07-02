@@ -33,7 +33,6 @@
     "qso.block.qso": "Данные QSO",
     "qso.station_callsign": "Позывной станции",
     "qso.operator": "Оператор",
-    "qso.operator.placeholder": "Иван Иванов",
     "qso.callsign": "Позывной",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Дата (UTC)",

@@ -29,7 +29,6 @@
     "qso.block.qso": "Datos del QSO",
     "qso.station_callsign": "Indicativo de la estación",
     "qso.operator": "Operador",
-    "qso.operator.placeholder": "Juan Pérez",
     "qso.callsign": "Indicativo",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Fecha (UTC)",

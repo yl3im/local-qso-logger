@@ -1,148 +1,159 @@
 # Local QSO Logger
 
-## Berite v svojem jeziku
+## Beri v svojem jeziku
 
 🇺🇸 [English](README.md) · 🇨🇿 [Čeština](README.cs.md) · 🇩🇰 [Dansk](README.da.md) · 🇩🇪 [Deutsch](README.de.md) · 🇪🇪 [Eesti](README.et.md) · 🇪🇸 [Español](README.es.md) · 🇫🇷 [Français](README.fr.md) · 🇮🇪 [Gaeilge](README.ga.md) · 🇭🇷 [Hrvatski](README.hr.md) · 🇮🇹 [Italiano](README.it.md) · 🇱🇻 [Latviešu](README.lv.md) · 🇱🇹 [Lietuvių](README.lt.md) · 🇭🇺 [Magyar](README.hu.md) · 🇳🇱 [Nederlands](README.nl.md) · 🇳🇴 [Norsk](README.no.md) · 🇵🇱 [Polski](README.pl.md) · 🇵🇹 [Português](README.pt.md) · 🇷🇴 [Română](README.ro.md) · 🇸🇰 [Slovenčina](README.sk.md) · 🇸🇮 Slovenščina · 🇫🇮 [Suomi](README.fi.md) · 🇸🇪 [Svenska](README.sv.md) · 🇧🇾 [Беларуская](README.be.md) · 🇧🇬 [Български](README.bg.md) · 🇷🇺 [Русский](README.ru.md) · 🇷🇸 [Српски](README.sr.md) · 🇺🇦 [Українська](README.uk.md) · 🇬🇷 [Ελληνικά](README.el.md)
 
-QSO dnevnik za radioamaterje, ki spoštuje zasebnost in deluje v celoti v vašem brskalniku. Brez računa, brez strežnika, brez sledenja, brez analitike — vaši dnevniki obstajajo le v `localStorage` brskalnika in nikoli ne zapustijo vaše naprave.
+Dnevnik QSO za radioamaterje, ki spoštuje zasebnost in deluje povsem v vašem brskalniku. Brez računa, brez strežnika, brez sledenja, brez analitike — vaši dnevniki živijo le v `localStorage` vašega brskalnika in nikoli ne zapustijo vaše naprave.
 
 Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.ham.lv](https://qso.ham.lv).
 
-![Local QSO Logger na iPadu](media/iPad.png)
+![Local QSO Logger running on iPad](media/iPad.png)
 
 ## Vsebina
 
-- [Berite v svojem jeziku](#berite-v-svojem-jeziku)
+- [Beri v svojem jeziku](#beri-v-svojem-jeziku)
 - [Funkcije](#funkcije)
-- [Začnimo](#začnimo)
+- [Začetek](#začetek)
 - [Namestitev kot PWA na mobilni napravi](#namestitev-kot-pwa-na-mobilni-napravi)
   - [iOS (samo Safari)](#ios-samo-safari)
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Dnevniki](#dnevniki)
-- [QSO](#qso)
-- [ADIF uvoz in izvoz](#adif-uvoz-in-izvoz)
+- [QSO-ji](#qso-ji)
+- [Uvoz in izvoz ADIF](#uvoz-in-izvoz-adif)
 - [Zasebnost in podatki](#zasebnost-in-podatki)
 - [Jezik vmesnika](#jezik-vmesnika)
 - [Teme](#teme)
 - [Tehnične opombe](#tehnične-opombe)
-- [Zasluge](#zasluge)
+- [Zahvale](#zahvale)
 
 ## Funkcije
 
-- Več dnevnikov, vsak s svojim seznamom QSO.
-- Dejanja dnevnika: ustvarjanje, preimenovanje, brisanje, uvoz iz ADIF, izvoz v ADIF (`.adi`).
-- Polja QSO: klicni znak, datum UTC, čas UTC, pas, vrsta, RST oddan, RST sprejet.
-- Urejanje in brisanje katerega koli QSO (s potrditvijo pri brisanju).
-- Razumne privzete vrednosti: današnji datum/čas UTC predizpolnjen, privzete RST vrednosti glede na vrsto (59 za glasovne vrste, 599 za CW/digitalne), pas in vrsta sta lepljiva med zaporednimi QSO.
-- Realnočasovni indikator dvojnika klicnega znaka (informativen — dvojniki so dovoljeni).
-- Stolpec z državno zastavo, izpeljano iz predpone klicnega znaka (pokriva ≥99 % običajnih radioamaterskih predpon, vključno s prenosnimi klicnimi znaki, kot je `9A/M0NCG`).
-- Lokalizirano prikazovanje datuma v tabeli QSO; ISO shranjevanje in ADIF izhod ostaneta nespremenjena.
-- Dnevne/nočne teme (dan privzeto; stikalo v glavi).
-- Mobilno prijazna odzivna postavitev s tipkami, prilagojenimi dotiku.
-- Deluje popolnoma brez povezave — brez omrežnih zahtev kadar koli.
-- Namestljivo kot PWA (Dodaj na začetni zaslon / Namesti aplikacijo), ko gostuje prek HTTPS.
-- Vmesnik na voljo v **28 jezikih** (angleški plus 22 latiničnih, 5 cirilskih in grški); izbirnik z zastavnimi emojiji v glavi.
+- Več dnevnikov; vsak z lastnim seznamom QSO-jev.
+- Dejanja z dnevnikom: ustvarjanje, preimenovanje, brisanje, uvoz iz ADIF, izvoz v ADIF (`.adi`).
+- Obrazec QSO razdeljen v tri bloke: **Podatki postaje** (klicni znak postaje, klicni znak operaterja, lastna mreža) ostane lepljiv med QSO-ji; **Način delovanja** (način razširjanja, satelit, način, satelitni način, pas, RX pas) s satelitskimi polji, ki se razkrijejo le pri načinu razširjanja *Satelit*; in **Podatki QSO** (klicni znak klicane postaje, mreža klicane postaje, datum/čas UTC pri urejanju, komentar, RST poslan, RST sprejet).
+- Polna taksonomija ADIF `MODE` → `SUBMODE` v spustnem meniju — izberite nadrejeni način (`SSB`, `MFSK`, …) ali se spustite neposredno do specifičnega podnačina (`USB`, `FT4`, …); aplikacija shrani obe polji po ADIF in tabela prikaže specifični podnačin, kadar obstaja.
+- Polno naštevanje načinov razširjanja ADIF (SAT, RPT, EME, ES, MS, Aurora itd.) kot spustni meni.
+- Polni katalog satelitov AMSAT (~110 naprav) in dvonivojski spustni meni **Sat mode**: prednostni dvočrkovni kodi uplink/downlink na vrhu (LU, LV, SX, UU, UV, VA, VU, VV) in zastarele enočrkovne oznake (A/B/J/K/L/R/S/T/U/V/W/X) skupaj kot *zastarele* spodaj. Izbira satelitnega načina samodejno nastavi uplink `BAND` in downlink `RX band`.
+- Urejanje in brisanje katerega koli QSO-ja (s potrditvijo pri brisanju).
+- Razumne privzete vrednosti: današnji datum/čas UTC pred-izpolnjen, privzeti RST glede na način (59 za glasovne načine, 599 za CW/digitalne), lepljivi Podatki postaje + pas + način + način razširjanja med zaporednimi QSO-ji (le polja per-kontakt — klicni znak, mreža, komentar, RST — se počistijo po vsakem *Zabeleži QSO*).
+- Živi indikator podvojenega klicnega znaka (informativno — podvojene QSO so dovoljene).
+- Stolpec z zastavico države, izpeljan iz predpone klicnega znaka (pokriva ≥99 % pogostih radioamaterskih predpon, vključno s prenosnimi klici kot `9A/M0NCG`).
+- Prikaz datuma glede na lokalne nastavitve v tabeli QSO; shranjevanje in ADIF izhod ostaneta v ISO.
+- Vmesnik v **28 jezikih** (angleščina plus 22 latiničnih, 5 cirilskih in grščina); selektor z zastavičnimi emojiji v glavi.
+- Dnevna / nočna tema (dan je privzeta; stikalo je v glavi).
+- Mobilno odzivna postavitev z gumbi, primernimi za dotik.
+- Deluje popolnoma brez povezave — brez omrežnih zahtev kadarkoli.
+- Namestljivo kot PWA (Dodaj na začetni zaslon / Namesti aplikacijo) pri gostovanju prek HTTPS.
 
-## Začnimo
+## Začetek
 
-Preprosto odprite `index.html` v sodobnem brskalniku. Brez gradnje, brez namestitve, brez strežnika.
+Preprosto odprite `index.html` v sodobnem brskalniku. Brez koraka gradnje, brez namestitve, brez strežnika.
 
-Če ga želite gostiti, položite statične datoteke (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` in mapo `i18n/` z 28 prevajalskimi datotekami) na kateri koli statični gostitelj (GitHub Pages, Netlify, lasten spletni strežnik). Deluje tudi prek `file://` — registracija service workerja se samodejno preskoči za protokol `file:`, tako da odpiranje `index.html` neposredno z diska deluje čisto.
+Če ga želite gostovati, preprosto spustite statične datoteke (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` in mapo `i18n/` z 28 prevodnimi datotekami) na katerikoli statični gostovalnik (GitHub Pages, Netlify, vaš spletni strežnik). Deluje tudi prek `file://` — registracija storitvenega delavca se na protokolu `file:` preskoči samodejno, tako da neposredno odpiranje `index.html` z diska deluje čisto.
 
-Ko je serviran prek HTTPS, aplikacija postane namestljiva kot PWA (prek menija brskalnika *Namesti aplikacijo* / *Dodaj na začetni zaslon*) in deluje brez povezave po prvem obisku zaradi cache-first service workerja, ki vnaprej shrani vsako statično datoteko (UI + vsi prevodi).
+Ko je gostovano prek HTTPS, postane aplikacija namestljiva kot PWA (meni *Namesti aplikacijo* / *Dodaj na začetni zaslon*) in deluje brez povezave po prvem obisku, zahvaljujoč storitvenemu delavcu najprej iz predpomnilnika, ki vnaprej predpomnilniči vsako statično datoteko (UI + vse prevode).
 
-Privzeti dnevnik se samodejno ustvari ob prvem obisku, tako da lahko takoj začnete beležiti.
+Privzeti dnevnik je samodejno ustvarjen ob prvem obisku, tako da lahko takoj začnete beležiti.
 
 ## Namestitev kot PWA na mobilni napravi
 
-Ko je aplikacija servirana prek HTTPS (npr. GitHub Pages), jo lahko namestite na začetni zaslon telefona, tako da deluje na celozaslonskem zaslonu brez okvirja brskalnika. Po prvem zagonu service worker predpomni vse, tako da nadaljnji zagoni delujejo popolnoma brez povezave.
+Ko je aplikacija gostovana prek HTTPS (npr. GitHub Pages), jo lahko namestite na začetni zaslon telefona, kjer deluje v celozaslonskem načinu brez brskalniških elementov. Po prvem zagonu storitveni delavec predpomnilniči vse, zato nadaljnji zagoni delujejo popolnoma brez povezave.
 
 ### iOS (samo Safari)
 
-Na iOS lahko le Safari namesti PWA — brskalniki tretjih oseb ne morejo.
+V iOS lahko PWA namestijo samo Safari — brskalniki tretjih oseb tega ne morejo.
 
-1. Odprite stran v **Safari**.
-2. Tapnite gumb **Deli**.
+1. Odprite spletno mesto v **Safari**.
+2. Dotaknite se gumba **Skupna raba**.
 3. Izberite **Dodaj na začetni zaslon**, nato **Dodaj**.
 
-Vodnik:
+Vodič:
 
-![iOS vodnik za namestitev](media/iOS_add_to_home_screen.gif)
+![iOS install walkthrough](media/iOS_add_to_home_screen.gif)
 
 Vir višje kakovosti: [media/iOS_add_to_home_screen.mp4](media/iOS_add_to_home_screen.mp4).
 
 ### Android (Chrome / Edge / Firefox)
 
-1. Odprite stran v svojem brskalniku. Lahko se samodejno prikaže poziv *Namesti aplikacijo*.
-2. Sicer odprite **meni ⋮** → **Namesti aplikacijo** (ali **Dodaj na začetni zaslon** v starejših različicah).
+1. Odprite spletno mesto v brskalniku. Poziv *Namesti aplikacijo* se morda prikaže samodejno.
+2. Sicer odprite **meni ⋮** → **Namesti aplikacijo** (ali **Dodaj na začetni zaslon** pri starejših različicah).
 
-Vodnik:
+Vodič:
 
-![Android vodnik za namestitev](media/Android_add_to_home_screen.gif)
+![Android install walkthrough](media/Android_add_to_home_screen.gif)
 
 Vir višje kakovosti: [media/Android_add_to_home_screen.mp4](media/Android_add_to_home_screen.mp4).
 
 ## Dnevniki
 
-- **Ustvari:** vnesite ime v *Ime dnevnika* in oddajte. Če pustite ime prazno, je privzeto `Log YYYY-MM-DD HH:MM UTC`.
-- **Preklopi:** kliknite kateri koli dnevnik v stranski vrstici.
-- **Preimenuj:** kliknite *Preimenuj* v glavi dnevnika. Enter shrani, Escape prekliče.
+- **Ustvari:** vnesite ime v polje *Ime dnevnika* in oddajte. Če pustite ime prazno, se privzeto nastavi na `Log YYYY-MM-DD HH:MM UTC`.
+- **Preklopi:** kliknite katerikoli dnevnik v stranski vrstici.
+- **Preimenuj:** kliknite *Preimenuj* v glavi dnevnika. Pritisnite Enter za shranjevanje, Escape za preklic.
 - **Izbriši:** kliknite *Izbriši dnevnik*. Pozvani boste k potrditvi. Če izbrišete zadnji dnevnik, se samodejno ustvari nov.
 
-## QSO
+## QSO-ji
 
 - Izpolnite obrazec in pritisnite **Zabeleži QSO**.
-- Klicni znak se med tipkanjem samodejno pretvori v velike črke.
-- Datum in čas se predizpolnita s *trenutnim* UTC in se ponastavita po vsakem zabeleženem QSO; še vedno lahko vnesete katero koli vrednost.
-- Pas in vrsta se ohranita med QSO v isti seji, tako da vam ni treba znova izbirati za vsak stik.
-- RST oddan / RST sprejet, če sta pustila prazna, se vrneta na **59** za glasovne vrste (SSB/FM/AM/DIGITALVOICE) in na **599** za CW in digitalne vrste (CW/FT8/FT4/RTTY/PSK31/JT65).
-- Pod poljem klicnega znaka se pojavi čip *Dvojnik v tem dnevniku*, če klicni znak že obstaja v trenutnem dnevniku. Dvojniki *niso* blokirani.
-- **Uredi QSO** z gumbom *Uredi* v vrstici. Obrazec preklopi v način *Posodobi QSO*, vrstica je označena, in pojavi se gumb *Prekliči*. Preklop dnevnika ali brisanje dnevnika samodejno prekliče urejanje.
-- **Izbriši QSO** z gumbom *Izbriši* v vrstici (zahteva potrditev).
+- Obrazec je razdeljen v tri bloke:
+  - **Podatki postaje** — *Klicni znak postaje* (vaš oddajni klicni znak, ADIF `STATION_CALLSIGN`), *Operater* (klicni znak posameznega operaterja — ločen od *Klicnega znaka postaje*, ko je gostujoči operater pri mikrofonu klubske postaje; ADIF `OPERATOR`) in *Moja mreža* (ADIF `MY_GRIDSQUARE`). Ti ostanejo lepljivi med QSO-ji v isti seji — nastavite jih enkrat in se prenesejo.
+  - **Način delovanja** — *Način razš.*, *Način*, *Pas* in satelitska polja *Satelit* / *Sat mode* / *RX pas*, kadar je način razširjanja *Satelit*. Pas, način in način razširjanja so lepljivi kot Podatki postaje.
+  - **Podatki QSO** — polja per-kontakt: *Klicni znak*, *Mreža* (Maidenheadova mreža druge postaje), *Komentar* (ADIF `COMMENT`), *RST poslan*, *RST sprejet*. Pri urejanju obstoječega QSO-ja se v tem bloku prikažeta tudi *Datum (UTC)* in *Čas (UTC)*. Ta polja se počistijo po vsakem *Zabeleži QSO*.
+- Vsi klicni znaki (klicana, postaja, operater) se med tipkanjem samodejno pretvorijo v velike črke; obe mrežni polji enako.
+- Datum in čas se ob oddaji pred-izpolnita na *zdaj* v UTC; pri urejanju lahko vnesete katero koli vrednost.
+- RST poslan / RST sprejet, če sta prazna, se privzameta na **59** za glasovne načine (SSB/FM/DIGITALVOICE) in **599** za CW in digitalne načine (CW/FT8/FT4/RTTY/PSK31/JT65). Privzeta vrednost sledi nadrejenemu MODE, zato izbira specifičnega podnačina kot *USB* ali *FT4* še vedno da pravo privzeto vrednost.
+- Pod poljem klicnega znaka se prikaže žeton *Podvojeno v tem dnevniku*, če klicni znak že obstaja v trenutnem dnevniku. Podvojene QSO *niso* blokirane.
+- **Način razširjanja** — neobvezni spustni meni načinov razširjanja ADIF (SAT, RPT, EME, F2, Es, MS, LOS itd.). Pustite prazno za navadne HF zemeljske QSO-je.
+- **Satelitski QSO-ji** — izbira načina razširjanja *Satelit* razkrije tri satelitska polja: **Satelit** (spustni meni ~110 AMSAT-registriranih naprav), **Sat mode** (črkovne oznake AMSAT, razvrščene kot *moderne* dvočrkovne kode uplink/downlink na vrhu in *zastarele* enočrkovne kode spodaj) in **RX pas** (downlink pas). Satelit, Sat mode in RX pas so obvezni — brskalnik bo zavrnil oddajo brez njih. Izbira **Sat mode** samodejno izpolni glavni **Pas** z uplink pasom in **RX pas** z downlink pasom (npr. način J → 2m uplink, 70cm downlink). Preklop *nazaj* na satelit iz drugega načina razširjanja ponastavi Sat mode, tako da boste pozvani, da izberete novega. Nesatelitski QSO-ji nikoli ne vsebujejo satelitskih polj; preklop obstoječega QSO-ja iz satelita na drug prop-mode jih čisto odstrani. **Mreža** in **Moja mreža** sta splošni polji (prav tako koristni za VHF/UHF mrežna tekmovanja) in ostaneta vidni za vsak QSO.
+- **Uredi QSO** z gumbom *Uredi* na vrstici. Obrazec preklopi v način *Posodobi QSO*, vrstica se označi in prikaže se gumb *Prekliči*. Preklop dnevnikov ali brisanje dnevnika samodejno prekliče urejanje.
+- **Izbriši QSO** z gumbom *Izbriši* na vrstici (zahteva potrditev).
 
-## ADIF uvoz in izvoz
+## Uvoz in izvoz ADIF
 
-- **Izvoz**: kliknite *Izvozi .adi* v glavi dnevnika. Prenese se datoteka z `ADIF_VER 3.1.4` in `PROGRAMID local-qso` v glavi. Vsak zapis preslika `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `RST_SENT`, `RST_RCVD`.
-- **Uvoz**: kliknite *Uvozi datoteko .adi* pod obrazcem za ustvarjanje dnevnika in izberite datoteko `.adi`/`.adif`. Ustvari se nov dnevnik z imenom `Uvožen YYYY-MM-DD HH:MM UTC`. Uvoz se nikoli ne združi v obstoječi dnevnik.
-- Število dolžine polja se obravnava kot število znakov, kar deluje za ASCII ADIF (vsa standardna polja QSO). Večbajtna vsebina v nebistvenih besedilnih poljih lahko parsa čudno.
+- **Izvoz**: kliknite *Izvozi .adi* v glavi dnevnika. Prenese se datoteka v skladu z **ADIF 3.1.7**. Glava deklarira `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` in `CREATED_TIMESTAMP` (UTC). Oddana polja QSO (kadar niso prazna): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — čemur sledijo vsa dodatna polja ADIF, ohranjena pri uvozu (glejte spodaj).
+- **Uvoz**: kliknite *Uvozi datoteko .adi* pod obrazcem za ustvarjanje dnevnika in izberite datoteko `.adi` / `.adif`. Ustvari se nov dnevnik, poimenovan `Imported YYYY-MM-DD HH:MM UTC`. Uvoz se nikoli ne zlije z obstoječim dnevnikom.
+- **Brezizgubni round-trip**: pri uvozu se vsako polje ADIF, ki ga aplikacija ne modelira v UI (npr. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, polja `APP_*`) ohrani na QSO-ju in se pri naslednjem izvozu re-emitira verbatim. Izvoz datoteke, ki je bila sama uvožena, torej ohrani vse.
+- Dolžina polja se obravnava kot število UTF-8 bajtov po specifikaciji, tako da se večbajtno besedilo (npr. naglašeni klicni znaki v `COMMENT`) razčleni pravilno.
 
 ## Zasebnost in podatki
 
-- Vsi podatki so shranjeni v `localStorage` brskalnika pod ključem `local-qso:v1`.
-- Nič se ne prenaša nikamor. Brez backenda, brez API klicev, brez telemetrije, brez analitike.
-- Brisanje podatkov spletnega mesta, uporaba zasebnega/inkognito načina ali uporaba drugega brskalnika/naprave pomeni prazen dnevnik — za varnostno kopiranje uporabite *Izvozi .adi*.
+- Vsi podatki so shranjeni v `localStorage` vašega brskalnika pod ključem `local-qso:v1`.
+- Nič se nikamor ne pošilja. Brez zaledja, brez klica API, brez telemetrije, brez analitike.
+- Brisanje podatkov spletnega mesta brskalnika, uporaba zasebnega/inkognito načina ali drugega brskalnika/naprave pomeni svež prazen dnevnik — za varnostno kopiranje uporabite *Izvozi .adi*.
 
 ## Jezik vmesnika
 
-Izbirnik jezika v glavi pokriva **28 jezikov**. Izberite enega in preostali vmesnik se takoj ponovno izriše; vaša izbira je shranjena z vašimi dnevniki in upoštevana ob naslednjem obisku. Angleški je privzeti.
+Selektor jezika v glavi pokriva **28 jezikov**. Izberite enega in preostalo UI se takoj ponovno izriše; vaša izbira je shranjena skupaj z dnevniki in se upošteva ob naslednjem obisku. Privzeta je angleščina.
 
-Razpoložljivi jeziki (zastavna emojija + samolastno ime; po abecedi znotraj vsake pisave):
+Razpoložljivi jeziki (zastavica emoji + domače ime; razvrščeni po abecedi znotraj vsakega pisma):
 
 🇺🇸 English · 🇨🇿 Čeština · 🇩🇰 Dansk · 🇩🇪 Deutsch · 🇪🇪 Eesti · 🇪🇸 Español · 🇫🇷 Français · 🇮🇪 Gaeilge · 🇭🇷 Hrvatski · 🇮🇹 Italiano · 🇱🇻 Latviešu · 🇱🇹 Lietuvių · 🇭🇺 Magyar · 🇳🇱 Nederlands · 🇳🇴 Norsk · 🇵🇱 Polski · 🇵🇹 Português · 🇷🇴 Română · 🇸🇰 Slovenčina · 🇸🇮 Slovenščina · 🇫🇮 Suomi · 🇸🇪 Svenska · 🇧🇾 Беларуская · 🇧🇬 Български · 🇷🇺 Русский · 🇷🇸 Српски · 🇺🇦 Українська · 🇬🇷 Ελληνικά
 
-Univerzalne tehnične oznake ostajajo v svoji kanonični obliki v vseh jezikih: imena pasov (`20m`, `70cm`, …), kode ADIF vrst (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` in ISO kode držav.
+Splošne tehnične oznake ostajajo v kanonični obliki v vseh jezikih: imena pasov (`20m`, `70cm`, …), kode načinov ADIF (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` in ISO kode držav.
 
-Manjka niz v vašem jeziku? Vsak jezik je ena majhna datoteka v [`i18n/`](i18n/) — kopirajte `i18n/en.js`, prevedite vrednosti, shranite kot `i18n/<koda>.js`, nato dodajte `<script>` značko plus `<select>` možnost v `index.html` in kodo v `SUPPORTED_LANGS` v `app.js`.
+Manjka niz v vašem jeziku? Vsak jezik je ena majhna datoteka v [`i18n/`](i18n/) — kopirajte `i18n/en.js`, prevedite vrednosti, shranite kot `i18n/<code>.js`, nato dodajte oznako `<script>` in možnost `<select>` v `index.html` ter kodo v `SUPPORTED_LANGS` v `app.js`.
 
 ## Teme
 
-Stikalo teme v glavi preklaplja med dnevom (privzeto) in nočjo. Nastavitev je shranjena z vašimi dnevniki in upoštevana ob naslednjem obisku. Domorodni izbiralniki datuma/časa sledijo temi prek `color-scheme`.
+Stikalo teme v glavi preklopi med dnevno (privzeto) in nočno. Nastavitev je shranjena skupaj z dnevniki in se upošteva ob naslednjem obisku. Domači izbirniki datuma/časa sledijo temi prek `color-scheme`.
 
 ## Tehnične opombe
 
-- Enostranska aplikacija, čist HTML + CSS + JavaScript. Brez ogrodja, brez gradnje, brez odvisnosti.
+- Enostranična aplikacija, čist HTML + CSS + JavaScript. Brez ogrodij, brez koraka gradnje, brez odvisnosti.
 - Izvorne datoteke:
-  - `index.html` — markup in meta oznake.
-  - `style.css` — teme in postavitev (spremenljivke dan/noč, mobilne media queries).
-  - `app.js` — stanje, vztrajnost, izris, ADIF parser/serializer, iskanje predpone klicnega znaka → država.
-  - `favicon.svg` — vgrajen SVG favicon.
-  - `manifest.webmanifest` — Web App Manifest (ime, barva teme, scope, ikona), da je aplikacija namestljiva kot PWA na mobilnih napravah in namizjih.
-  - `service-worker.js` — cache-first service worker, ki ob namestitvi predpomni vsako statično datoteko, ob aktivaciji izprazni stare pomnilnike in po prvem obisku ohranja aplikacijo popolnoma brez povezave. Registracija je samodejno preskočena za protokol `file://`, tako da odpiranje `index.html` neposredno z diska ostaja čisto.
-  - `i18n/<lang>.js` — ena datoteka prevoda na podprt jezik (skupaj 28). Vsaka je majhen IIFE, ki dodeli `window.I18N[<lang>]` ravno karto ključ→niz. `t()` in `applyLanguage()` v `app.js` upravljata iskanja (z angleškim rezervnim načinom) in se sprehajata po DOM, posodabljajoč vsak element `[data-i18n*]`.
-- Preizkušeno na novejših brskalnikih Chromium, Firefox in Safari (namizje + iOS).
+  - `index.html` — označevanje in meta oznake.
+  - `style.css` — teme in postavitev (dnevne/nočne spremenljivke, mobilne medijske poizvedbe).
+  - `app.js` — stanje, persistenca, izrisovanje, ADIF razčlenjevalnik/serializator, iskanje predpona klicnega znaka → država.
+  - `favicon.svg` — vgrajeni SVG favicon.
+  - `manifest.webmanifest` — Web App Manifest (ime, barva teme, obseg, ikona), da je aplikacija namestljiva kot PWA na mobilni napravi in namizju.
+  - `service-worker.js` — storitveni delavec najprej iz predpomnilnika, ki vnaprej predpomnilniči vsako statično datoteko pri namestitvi, izprazni stare predpomnilnike pri aktivaciji in ohranja aplikacijo v celoti brez povezave po prvem obisku. Registracija se na protokolu `file://` preskoči samodejno, tako da neposredno odpiranje `index.html` z diska ostane čisto.
+  - `i18n/<lang>.js` — ena prevodna datoteka za vsak podprti jezik (skupaj 28). Vsaka je majhen IIFE, ki dodeli `window.I18N[<lang>]` plosko preslikavo ključ→niz. `t()` in `applyLanguage()` v `app.js` upravljata iskanja (z angleškim nadomestnim) in hodita po DOM-u posodabljajočem vsak element `[data-i18n*]`.
+- Testirano na aktualnem Chromium, Firefox in Safari (namizje + iOS).
 
-## Zasluge
+## Zahvale
 
-Zgradil [YL3IM](https://www.qrz.com/db/YL3IM).
+Razvil [YL3IM](https://www.qrz.com/db/YL3IM).
 
-Državne zastave se opirajo na zaporedja Unicode regionalnih indikatorjev. Pravilno se izrišejo na macOS, iOS, Linux (s pisavo emoji, ki podpira zastave) in Android. Windows ne vsebuje sistemske pisave zastav, zato se zastavne emojije tam lahko prikazujejo kot pari črk.
+Zahvala [A65BR](https://www.qrz.com/db/A65BR) Olegu za neprecenljive namige, ki so naredili del satelitskega QSO resnično uporaben — moderne dvočrkovne oznake Sat-mode, katalog AMSAT in samodejno nastavitev uplink/downlink gre vse zahvaliti njegovi povratni informaciji.
+
+Zastavice držav se opirajo na sekvence regionalnih kazalnikov Unicode. Pravilno se prikazujejo na macOS, iOS, Linux (z emojijsko pisavo, ki podpira zastavice) in Android. Windows ne vključuje sistemske pisave zastavic, zato se emojiji zastavic tam morda prikažejo kot pari črk.

@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO-tiedot",
     "qso.station_callsign": "Aseman kutsu",
     "qso.operator": "Operaattori",
-    "qso.operator.placeholder": "Matti Meikäläinen",
     "qso.callsign": "Kutsumerkki",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Päivä (UTC)",

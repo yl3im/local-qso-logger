@@ -29,7 +29,6 @@
     "qso.block.qso": "Dados do QSO",
     "qso.station_callsign": "Indicativo da estação",
     "qso.operator": "Operador",
-    "qso.operator.placeholder": "João Silva",
     "qso.callsign": "Indicativo",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Data (UTC)",

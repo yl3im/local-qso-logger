@@ -33,7 +33,6 @@
     "qso.block.qso": "QSO dati",
     "qso.station_callsign": "Stacijas izsaukuma signāls",
     "qso.operator": "Operators",
-    "qso.operator.placeholder": "Jānis Bērziņš",
     "qso.callsign": "Izsaukums",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datums (UTC)",

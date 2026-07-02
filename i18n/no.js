@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO-data",
     "qso.station_callsign": "Stasjonens kallesignal",
     "qso.operator": "Operatør",
-    "qso.operator.placeholder": "Ola Nordmann",
     "qso.callsign": "Kallesignal",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Dato (UTC)",

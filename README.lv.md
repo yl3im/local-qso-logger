@@ -1,18 +1,18 @@
 # Local QSO Logger
 
-## Lasiet savā valodā
+## Lasīt savā valodā
 
 🇺🇸 [English](README.md) · 🇨🇿 [Čeština](README.cs.md) · 🇩🇰 [Dansk](README.da.md) · 🇩🇪 [Deutsch](README.de.md) · 🇪🇪 [Eesti](README.et.md) · 🇪🇸 [Español](README.es.md) · 🇫🇷 [Français](README.fr.md) · 🇮🇪 [Gaeilge](README.ga.md) · 🇭🇷 [Hrvatski](README.hr.md) · 🇮🇹 [Italiano](README.it.md) · 🇱🇻 Latviešu · 🇱🇹 [Lietuvių](README.lt.md) · 🇭🇺 [Magyar](README.hu.md) · 🇳🇱 [Nederlands](README.nl.md) · 🇳🇴 [Norsk](README.no.md) · 🇵🇱 [Polski](README.pl.md) · 🇵🇹 [Português](README.pt.md) · 🇷🇴 [Română](README.ro.md) · 🇸🇰 [Slovenčina](README.sk.md) · 🇸🇮 [Slovenščina](README.sl.md) · 🇫🇮 [Suomi](README.fi.md) · 🇸🇪 [Svenska](README.sv.md) · 🇧🇾 [Беларуская](README.be.md) · 🇧🇬 [Български](README.bg.md) · 🇷🇺 [Русский](README.ru.md) · 🇷🇸 [Српски](README.sr.md) · 🇺🇦 [Українська](README.uk.md) · 🇬🇷 [Ελληνικά](README.el.md)
 
-Privātumu cienošs amatieru radio QSO žurnāls, kas pilnībā strādā jūsu pārlūkprogrammā. Bez konta, bez servera, bez izsekošanas, bez analītikas — jūsu žurnāli glabājas tikai pārlūka `localStorage` atmiņā un nekad neaiziet no jūsu ierīces.
+Privātumu respektējošs radioamatieru QSO reģistrētājs, kas darbojas pilnībā tavā pārlūkprogrammā. Nav konta, nav servera, nav izsekošanas, nav analītikas — tavi žurnāli dzīvo tikai tavas pārlūkprogrammas `localStorage` un nekad neatstāj tavu ierīci.
 
 Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.ham.lv](https://qso.ham.lv).
 
-![Local QSO Logger uz iPad](media/iPad.png)
+![Local QSO Logger darbojās uz iPad](media/iPad.png)
 
 ## Saturs
 
-- [Lasiet savā valodā](#lasiet-savā-valodā)
+- [Lasīt savā valodā](#lasīt-savā-valodā)
 - [Funkcijas](#funkcijas)
 - [Darba sākšana](#darba-sākšana)
 - [Instalēt kā PWA mobilajā ierīcē](#instalēt-kā-pwa-mobilajā-ierīcē)
@@ -20,129 +20,140 @@ Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.h
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Žurnāli](#žurnāli)
 - [QSO](#qso)
-- [ADIF imports un eksports](#adif-imports-un-eksports)
+- [ADIF importēšana un eksportēšana](#adif-importēšana-un-eksportēšana)
 - [Privātums un dati](#privātums-un-dati)
-- [Saskarnes valoda](#saskarnes-valoda)
+- [Interfeisa valoda](#interfeisa-valoda)
 - [Tēmas](#tēmas)
-- [Tehniskās piezīmes](#tehniskās-piezīmes)
+- [Tehniskie piezīmes](#tehniskie-piezīmes)
 - [Pateicības](#pateicības)
 
 ## Funkcijas
 
-- Vairāki žurnāli, katram savs QSO saraksts.
-- Žurnāla darbības: izveidot, pārdēvēt, dzēst, importēt no ADIF, eksportēt uz ADIF (`.adi`).
-- QSO lauki: izsaukums, UTC datums, UTC laiks, josla, veids, RST nosūtīts, RST saņemts.
-- Jebkura QSO labošana un dzēšana (ar apstiprinājumu dzēšanai).
-- Saprātīgi noklusējumi: šodienas UTC datums/laiks iepriekš aizpildīts, no veida atkarīgi RST noklusējumi (59 balss veidiem, 599 CW/digital), lipīga josla un veids starp secīgiem QSO.
-- Reāllaika dublikāta izsaukuma indikators (informatīvs — dublikāti ir atļauti).
-- Valsts karoga kolonna, kas atvasināta no izsaukuma prefiksa (sedz ≥99 % bieži sastopamo amatieru radio prefiksu, ieskaitot pārvietojamus izsaukumus kā `9A/M0NCG`).
-- Lokalizācijai atbilstoša datuma attēlošana QSO tabulā; ISO uzglabāšana un ADIF izvade paliek nemainīgas.
-- Dienas/nakts tēmas (diena pēc noklusējuma; pārslēgs atrodas galvenē).
-- Mobilajām ierīcēm draudzīgs reaģējošs izkārtojums ar pieskāriena izmēra pogām.
-- Strādā pilnībā bezsaistē — nekādu tīkla pieprasījumu.
-- Instalējams kā PWA (Pievienot sākuma ekrānam / Instalēt lietotni), kad hostēts caur HTTPS.
-- Saskarne pieejama **28 valodās** (angļu plus 22 latīņu, 5 kirilicas un grieķu); karoga emoji izvēlne galvenē.
+- Vairāki žurnāli; katrs ar savu QSO sarakstu.
+- Žurnāla darbības: izveidot, pārdēvēt, dzēst, importēt no ADIF, eksportēt ADIF (`.adi`).
+- QSO veidlapa sadalīta trīs blokos: **Stacijas dati** (stacijas izsaukuma signāls, operatora izsaukuma signāls, savs tīklojums), kas paliek saistīti starp QSO; **Darbības režīms** (izplatīšanas režīms, satelīts, režīms, satelīta režīms, josla, RX josla) ar satelīta laukiem, kas redzami tikai tad, kad izplatīšanas režīms ir *Satelīts*; un **QSO dati** (saziņas izsaukuma signāls, saziņas tīklojums, UTC datums/laiks rediģēšanas laikā, komentārs, RST sūtīts, RST saņemts).
+- Pilna ADIF `MODE` → `SUBMODE` taksonomija režīmu nolaižamajā sarakstā — izvēlies vecāku režīmu (`SSB`, `MFSK`, …) vai dodies tieši uz konkrētu apakšrežīmu (`USB`, `FT4`, …); lietotne saglabā abus laukus atbilstoši ADIF un tabula rāda konkrēto apakšrežīmu, ja tāds ir.
+- Pilns ADIF izplatīšanas režīmu uzskaitījums (SAT, RPT, EME, ES, MS, Aurora utt.) kā nolaižamais saraksts.
+- Pilns AMSAT satelītu katalogs (~110 satelīti) un divlīmeņu **Satelīta režīma** nolaižamais saraksts: vēlamie divu burtu uplink/downlink kodi augšpusē (LU, LV, SX, UU, UV, VA, VU, VV) un vecākie viena burta apzīmējumi (A/B/J/K/L/R/S/T/U/V/W/X) grupēti kā *novecojuši* apakšā. Satelīta režīma izvēle automātiski pielāgo `BAND` (uplink) un `RX band` (downlink).
+- Jebkura QSO rediģēšana un dzēšana (ar apstiprinājumu dzēšanas laikā).
+- Saprātīgas noklusējuma vērtības: UTC datums/laiks aizpildīts uz *tagad*, režīmam atbilstošs RST noklusējums (59 balss režīmiem, 599 CW/ciparu), saistīti stacijas dati + josla + režīms + izplatīšanas režīms starp secīgiem QSO (tikai kontakta lauki — izsaukuma signāls, viņu tīklojums, komentārs, RST — tiek notīrīti pēc katra *Reģistrēt QSO*).
+- Tiešraides dublēta izsaukuma signāla indikators (informatīvs — dublāti ir atļauti).
+- Valsts karoga kolonna, kas iegūta no izsaukuma signāla prefiksa (aptver ≥99 % izplatītu radioamatieru prefiksu, tostarp pārnēsājamos signālus kā `9A/M0NCG`).
+- Lokalizēts datuma attēlojums QSO tabulā; ISO glabāšana un ADIF izvade paliek nemainīgas.
+- Interfeiss pieejams **28 valodās** (angļu valoda plus 22 latīņu, 5 kirilicā un grieķu); karodziņu emoji atlasītājs galvenē.
+- Dienas / nakts tēmas (diena ir noklusējums; pārslēgšana ir galvenē).
+- Mobilajām ierīcēm draudzīgs responsīvs izkārtojums ar pieskāriena izmēra pogām.
+- Darbojas pilnībā bezsaistē — nekādiem tīkla pieprasījumiem nekad.
+- Instalējams kā PWA (Pievienot sākuma ekrānam / Instalēt lietotni) mitinot ar HTTPS.
 
 ## Darba sākšana
 
-Vienkārši atveriet `index.html` modernā pārlūkā. Nav nepieciešama būvēšana, instalēšana, serveris.
+Vienkārši atver `index.html` modernā pārlūkprogrammā. Nav veidošanas soļa, nav instalācijas, nav servera.
 
-Ja vēlaties to mitināt, novietojiet statiskos failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` un mapi `i18n/` ar 28 tulkojumu failiem) jebkurā statiskā mitinātājā (GitHub Pages, Netlify, savs tīmekļa serveris). Tas darbosies arī caur `file://` — service workera reģistrācija tiek automātiski izlaista `file:` protokolam, tāpēc `index.html` tieša atvēršana no diska darbojas tīri.
+Ja vēlies to mitināt, novieto statiskos failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` un `i18n/` direktoriju ar 28 tulkojumu failiem) uz jebkura statiskā hosta (GitHub Pages, Netlify, savs tīmekļa serveris). Darbojas arī ar `file://` — pakalpojuma darbinieka reģistrācija automātiski tiek izlaista `file:` protokolā, tāpēc `index.html` atvēršana tieši no diska darbojas tīri.
 
-Kad tas tiek pasniegts caur HTTPS, lietotne kļūst instalējama kā PWA (caur pārlūka *Instalēt lietotni* / *Pievienot sākuma ekrānam* izvēlni) un strādā bezsaistē pēc pirmās apmeklējuma, pateicoties cache-first service workerim, kas iepriekš kešo katru statisko failu (UI + visi tulkojumi).
+Mitinot ar HTTPS, lietotne kļūst instalējama kā PWA (pārlūkprogrammas izvēlne *Instalēt lietotni* / *Pievienot sākuma ekrānam*) un darbojas bezsaistē pēc pirmās apmeklēšanas, pateicoties kešatmiņai prioritizētam pakalpojuma darbiniekam, kas iepriekš kešo visus statiskos failus (UI + visi tulkojumi).
 
-Noklusējuma žurnāls tiek automātiski izveidots pirmajā apmeklējumā, lai jūs varētu nekavējoties sākt reģistrēšanu.
+Noklusējuma žurnāls tiek automātiski izveidots pirmajā apmeklēšanas reizē, lai varētu nekavējoties sākt reģistrēšanu.
 
 ## Instalēt kā PWA mobilajā ierīcē
 
-Kad lietotne tiek pasniegta caur HTTPS (piemēram, GitHub Pages), jūs varat to instalēt savā telefona sākuma ekrānā, lai tā darbotos pilnekrāna režīmā bez pārlūka apvalka. Pēc pirmā palaišanas service worker kešo visu, tāpēc nākamie palaišana darbojas pilnībā bezsaistē.
+Kad lietotne tiek mitināta ar HTTPS (piemēram, GitHub Pages), vari to instalēt tālruņa sākuma ekrānā, lai tā darbotos pilnekrāna režīmā bez pārlūkprogrammas elementiem. Pēc pirmās palaišanas pakalpojuma darbinieks kešo visu, tāpēc turpmākās palaišanas darbojas pilnībā bezsaistē.
 
 ### iOS (tikai Safari)
 
-iOS sistēmā tikai Safari var instalēt PWA — trešās puses pārlūki to nevar.
+iOS ierīcēs tikai Safari var instalēt PWA — trešo pušu pārlūkprogrammas nevar.
 
-1. Atveriet vietni programmā **Safari**.
-2. Pieskarieties pogai **Kopīgot**.
-3. Izvēlieties **Pievienot sākuma ekrānam**, pēc tam **Pievienot**.
+1. Atver vietni **Safari**.
+2. Pieskar pogu **Kopīgot**.
+3. Izvēlies **Pievienot sākuma ekrānam**, tad **Pievienot**.
 
-Demonstrācija:
+Pamācība:
 
-![iOS instalēšanas demonstrācija](media/iOS_add_to_home_screen.gif)
+![iOS instalācijas pamācība](media/iOS_add_to_home_screen.gif)
 
 Augstākas kvalitātes avots: [media/iOS_add_to_home_screen.mp4](media/iOS_add_to_home_screen.mp4).
 
 ### Android (Chrome / Edge / Firefox)
 
-1. Atveriet vietni savā pārlūkā. Var automātiski parādīties *Instalēt lietotni* uzaicinājums.
-2. Pretējā gadījumā atveriet **⋮ izvēlni** → **Instalēt lietotni** (vai **Pievienot sākuma ekrānam** vecākās versijās).
+1. Atver vietni pārlūkprogrammā. Var automātiski parādīties uzaicinājums *Instalēt lietotni*.
+2. Ja nē, atver **⋮ izvēlni** → **Instalēt lietotni** (vai **Pievienot sākuma ekrānam** vecākās versijās).
 
-Demonstrācija:
+Pamācība:
 
-![Android instalēšanas demonstrācija](media/Android_add_to_home_screen.gif)
+![Android instalācijas pamācība](media/Android_add_to_home_screen.gif)
 
 Augstākas kvalitātes avots: [media/Android_add_to_home_screen.mp4](media/Android_add_to_home_screen.mp4).
 
 ## Žurnāli
 
-- **Izveidot:** ievadiet nosaukumu laukā *Žurnāla nosaukums* un iesniedziet. Ja atstājat nosaukumu tukšu, pēc noklusējuma būs `Log YYYY-MM-DD HH:MM UTC`.
-- **Pārslēgties:** noklikšķiniet uz jebkura žurnāla sānu joslā.
-- **Pārdēvēt:** noklikšķiniet uz *Pārdēvēt* žurnāla galvenē. Enter saglabā, Escape atceļ.
-- **Dzēst:** noklikšķiniet uz *Dzēst žurnālu*. Jums tiks lūgts apstiprināt. Ja izdzēsīsiet pēdējo žurnālu, automātiski tiks izveidots jauns.
+- **Izveidot:** ieraksti nosaukumu *Žurnāla nosaukumā* un iesniedz. Ja atstāj nosaukumu tukšu, noklusējums ir `Log YYYY-MM-DD HH:MM UTC`.
+- **Pārslēgt:** noklikšķini uz jebkura žurnāla sānjoslā.
+- **Pārdēvēt:** noklikšķini *Pārdēvēt* žurnāla galvenē. Nospied Enter, lai saglabātu, Escape, lai atceltu.
+- **Dzēst:** noklikšķini *Dzēst žurnālu*. Tiks lūgts apstiprināt. Ja dzēš pēdējo žurnālu, automātiski tiek izveidots jauns.
 
 ## QSO
 
-- Aizpildiet formu un nospiediet **Reģistrēt QSO**.
-- Izsaukums automātiski tiek pārveidots lielajos burtos rakstīšanas laikā.
-- Datums un laiks tiek iepriekš aizpildīti uz *tagad* UTC un atiestatās pēc katra reģistrētā QSO; jūs joprojām varat ievadīt jebkuru vērtību.
-- Josla un veids saglabājas starp QSO vienas sesijas ietvaros, lai jums nebūtu jāatlasa tie no jauna katram kontaktam.
-- RST nosūtīts / RST saņemts, ja atstāti tukši, pārslēdzas uz **59** balss veidiem (SSB/FM/AM/DIGITALVOICE) un uz **599** CW un digitālajiem veidiem (CW/FT8/FT4/RTTY/PSK31/JT65).
-- *Dublikāts šajā žurnālā* žetons parādās zem izsaukuma lauka, ja izsaukums jau eksistē pašreizējā žurnālā. Dublikāti *netiek* bloķēti.
-- **Labot QSO** ar *Labot* pogu rindā. Forma pārslēdzas uz *Atjaunināt QSO* režīmu, rinda tiek izgaismota un parādās *Atcelt* poga. Žurnāla pārslēgšana vai žurnāla dzēšana automātiski atceļ labošanu.
-- **Dzēst QSO** ar *Dzēst* pogu rindā (lūdz apstiprinājumu).
+- Aizpildi veidlapu un nospied **Reģistrēt QSO**.
+- Veidlapa ir organizēta trīs blokos:
+  - **Stacijas dati** — *Stacijas izsaukuma signāls* (tavs raidīšanas izsaukuma signāls, ADIF `STATION_CALLSIGN`), *Operators* (atsevišķa operatora izsaukuma signāls — atšķiras no *stacijas izsaukuma signāla*, ja viesoperators atrodas kluba stacijas mikrofonā; ADIF `OPERATOR`) un *Mans tīklojums* (ADIF `MY_GRIDSQUARE`). Tie paliek saistīti starp QSO tajā pašā sesijā — iestatiet tos vienu reizi un tie pārnešas.
+  - **Darbības režīms** — *Izplatīšanas režīms*, *Režīms*, *Josla*, plus tikai satelīta lauki *Satelīts* / *Satelīta režīms* / *RX josla*, kad izplatīšanas režīms ir *Satelīts*. Josla, režīms un izplatīšanas režīms ir saistīti tāpat kā stacijas dati.
+  - **QSO dati** — lauki katram kontaktam: *Izsaukuma signāls*, *Tīklojums* (otras stacijas Maidenhead), *Komentārs* (ADIF `COMMENT`), *RST sūtīts*, *RST saņemts*. Rediģējot esošu QSO, šajā blokā parādās arī *Datums (UTC)* un *Laiks (UTC)*. Šie lauki tiek notīrīti pēc katra *Reģistrēt QSO*.
+- Visi izsaukuma signāli (saziņas, stacijas, operatora) tiek automātiski rakstīti ar lielajiem burtiem ierakstīšanas laikā; abi tīklojuma lauki dara to pašu.
+- Datums un laiks iesniegšanas brīdī tiek aizpildīti uz *tagad* UTC; rediģēšanas laikā vari ierakstīt jebkuru vērtību.
+- RST sūtīts / RST saņemts, ja atstāts tukšs, noklusējums ir **59** balss režīmiem (SSB/FM/DIGITALVOICE) un **599** CW un ciparu režīmiem (CW/FT8/FT4/RTTY/PSK31/JT65). Noklusējums seko vecākajam MODE, tāpēc konkrēta apakšrežīma izvēle kā *USB* vai *FT4* joprojām dod pareizo noklusējumu.
+- *Dublāts šajā žurnālā* čips parādās zem izsaukuma signāla lauka, ja signāls jau pastāv pašreizējā žurnālā. Dublāti *netiek* bloķēti.
+- **Izplatīšanas režīms** — izvēles ADIF izplatīšanas režīmu nolaižamais saraksts (SAT, RPT, EME, F2, Es, MS, LOS utt.). Atstāj tukšu normāliem zemes HF QSO.
+- **Satelīta QSO** — izplatīšanas režīma *Satelīts* izvēle atklāj trīs tikai satelīta laukus: **Satelīts** (nolaižamais saraksts ar ~110 AMSAT reģistrētiem satelītiem), **Satelīta režīms** (AMSAT burtu apzīmējumi, grupēti kā *mūsdienīgi* divu burtu uplink/downlink kodi augšā un *novecojuši* viena burta kodi apakšā) un **RX josla** (downlink josla). Satelīts, satelīta režīms un RX josla ir obligāti — pārlūkprogramma atteiks iesniegšanu bez tiem. Izvēloties **Satelīta režīmu**, automātiski tiek aizpildīta galvenā **Josla** ar uplink joslu un **RX josla** ar downlink joslu (piemēram, režīms J → uplink 2m, downlink 70cm). Pārslēdzoties *atpakaļ* uz satelītu no cita izplatīšanas režīma, satelīta režīms tiek atiestatīts, lai varētu izvēlēties jaunu. Nesatelīta QSO nekad nesatur satelīta laukus; esošā QSO pārslēgšana no satelīta uz citu izplatīšanas režīmu tos notīra. **Tīklojums** un **Mans tīklojums** ir vispārīgi lauki (noderīgi arī VHF/UHF tīklojuma sacensībām) un paliek redzami visiem QSO.
+- **Rediģēt QSO** ar pogu *Rediģēt* rindā. Veidlapa pārslēdzas uz *Atjaunināt QSO* režīmu, rinda tiek izgaismota, un parādās poga *Atcelt*. Žurnālu pārslēgšana vai žurnāla dzēšana automātiski atceļ rediģēšanu.
+- **Dzēst QSO** ar pogu *Dzēst* rindā (prasa apstiprinājumu).
 
-## ADIF imports un eksports
+## ADIF importēšana un eksportēšana
 
-- **Eksports**: noklikšķiniet uz *Eksportēt .adi* žurnāla galvenē. Tiek lejupielādēts fails ar `ADIF_VER 3.1.4` un `PROGRAMID local-qso` galvenē. Katrs ieraksts kartē `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `RST_SENT`, `RST_RCVD`.
-- **Imports**: noklikšķiniet uz *Importēt .adi failu* zem žurnāla izveides formas un atlasiet `.adi`/`.adif` failu. Tiek izveidots jauns žurnāls ar nosaukumu `Importēts YYYY-MM-DD HH:MM UTC`. Imports nekad netiek apvienots esošā žurnālā.
-- Lauka garuma skaitlis tiek apstrādāts kā rakstzīmju skaits, kas darbojas ASCII ADIF (visiem standarta QSO laukiem). Daudzbaitu saturs nesvarīgos teksta laukos var tikt parsēts dīvaini.
+- **Eksportēt**: noklikšķini *Eksportēt .adi* žurnāla galvenē. Tiek lejupielādēts fails atbilstoši **ADIF 3.1.7**. Galvene deklarē `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` un `CREATED_TIMESTAMP` (UTC). Lauki par QSO, kas tiek raidīti (ja nav tukši): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — kam seko katrs papildu ADIF lauks, kas saglabāts importēšanas laikā (sk. zemāk).
+- **Importēt**: noklikšķini *Importēt .adi failu* zem žurnāla izveidošanas veidlapas un izvēlies `.adi` / `.adif` failu. No tā tiek izveidots jauns žurnāls ar nosaukumu `Imported YYYY-MM-DD HH:MM UTC`. Importēšana nekad nesaplūst ar esošu žurnālu.
+- **Bezraidumu aprites cikls**: importēšanas laikā jebkurš ADIF lauks, ko lietotne nemodelē savā interfeisā (piemēram, `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` lauki), tiek saglabāts QSO un burtiski atkārtoti raidīts nākamajā eksportēšanas reizē. Tādējādi faila eksportēšana, kas pats tika importēts, saglabā visu.
+- Lauka garums tiek uzskatīts par UTF-8 baitu skaitu, kā prasa specifikācija, tāpēc daudzbaitu teksts (piemēram, uzsvērtās rakstzīmes `COMMENT`) tiek parsēts pareizi.
 
 ## Privātums un dati
 
-- Visi dati tiek glabāti pārlūka `localStorage` ar atslēgu `local-qso:v1`.
-- Nekas netiek pārraidīts uz nekurieni. Nav backend, nav API izsaukumu, nav telemetrijas, nav analītikas.
-- Pārlūka vietnes datu dzēšana, privātā/inkognito režīma izmantošana vai cita pārlūka/ierīces izmantošana nozīmē tukšu žurnālu — izmantojiet *Eksportēt .adi* dublēšanai.
+- Visi dati tiek glabāti tavas pārlūkprogrammas `localStorage` zem atslēgas `local-qso:v1`.
+- Nekas netiek nosūtīts nekur. Nav aizmugures sistēmas, API izsaukumu, telemetrijas vai analītikas.
+- Pārlūkprogrammas vietnes datu dzēšana, privātā/inkognito režīma izmantošana vai citas pārlūkprogrammas/ierīces izmantošana nozīmē jaunu tukšu žurnālu — izmanto *Eksportēt .adi* dublēšanai.
 
-## Saskarnes valoda
+## Interfeisa valoda
 
-Galvenē esošā valodas izvēlne aptver **28 valodas**. Izvēlieties vienu un pārējā saskarne nekavējoties tiek atjaunota; jūsu izvēle tiek saglabāta kopā ar jūsu žurnāliem un ievērota nākamajā apmeklējumā. Pēc noklusējuma — angļu.
+Valodas atlasītājs galvenē aptver **28 valodas**. Izvēlies vienu un pārējais interfeiss tiek nekavējoties pārrenderēts; tava izvēle tiek saglabāta kopā ar žurnāliem un tiek respektēta nākamajā apmeklēšanas reizē. Noklusējums ir angļu valoda.
 
-Pieejamās valodas (karoga emoji + dzimtais nosaukums; alfabētiskā secībā katras rakstības ietvaros):
+Pieejamās valodas (karodziņu emoji + vietējais nosaukums; alfabētiskā secībā katrā rakstā):
 
 🇺🇸 English · 🇨🇿 Čeština · 🇩🇰 Dansk · 🇩🇪 Deutsch · 🇪🇪 Eesti · 🇪🇸 Español · 🇫🇷 Français · 🇮🇪 Gaeilge · 🇭🇷 Hrvatski · 🇮🇹 Italiano · 🇱🇻 Latviešu · 🇱🇹 Lietuvių · 🇭🇺 Magyar · 🇳🇱 Nederlands · 🇳🇴 Norsk · 🇵🇱 Polski · 🇵🇹 Português · 🇷🇴 Română · 🇸🇰 Slovenčina · 🇸🇮 Slovenščina · 🇫🇮 Suomi · 🇸🇪 Svenska · 🇧🇾 Беларуская · 🇧🇬 Български · 🇷🇺 Русский · 🇷🇸 Српски · 🇺🇦 Українська · 🇬🇷 Ελληνικά
 
-Universālas tehniskās etiķetes paliek savā kanoniskajā formā visās valodās: joslu nosaukumi (`20m`, `70cm`, …), ADIF režīmu kodi (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` un ISO valstu kodi.
+Universālās tehniskās etiķetes paliek savā kanoniskajā formā visās valodās: joslu nosaukumi (`20m`, `70cm`, …), ADIF režīmu kodi (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` un ISO valstu kodi.
 
-Trūkst rinda jūsu valodā? Katra valoda ir viens mazs fails mapē [`i18n/`](i18n/) — kopējiet `i18n/en.js`, tulkojiet vērtības, saglabājiet kā `i18n/<kods>.js`, pēc tam pievienojiet `<script>` tagu plus `<select>` opciju `index.html` un kodu `SUPPORTED_LANGS` `app.js`.
+Trūkst virknes tavā valodā? Katra valoda ir viens neliels fails [`i18n/`](i18n/) — kopē `i18n/en.js`, tulko vērtības, saglabā kā `i18n/<code>.js`, tad pievieno `<script>` atzīmi un `<select>` opciju `index.html` un kodu `SUPPORTED_LANGS` `app.js`.
 
 ## Tēmas
 
-Galvenē esošais tēmas pārslēgs maina starp dienu (noklusējums) un nakti. Iestatījums tiek saglabāts kopā ar jūsu žurnāliem un ievērots nākamajā apmeklējumā. Vietējās datuma/laika izvēlnes seko tēmai caur `color-scheme`.
+Tēmas pārslēgšana galvenē pārslēdzas starp dienu (noklusējums) un nakti. Preferences tiek saglabātas kopā ar žurnāliem un tiek respektētas nākamajā apmeklēšanas reizē. Vietējie datuma/laika atlasītāji seko tēmai caur `color-scheme`.
 
-## Tehniskās piezīmes
+## Tehniskie piezīmes
 
-- Viena lapas lietotne, tīrs HTML + CSS + JavaScript. Nav ietvaru, nav būvēšanas, nav atkarību.
-- Pirmkoda faili:
-  - `index.html` — iezīmējums un meta tagi.
-  - `style.css` — tēmas un izkārtojums (dienas/nakts mainīgie, mobilās media query).
-  - `app.js` — stāvoklis, persistence, renderēšana, ADIF parsētājs/sērjalizators, izsaukuma prefiksa → valsts meklēšana.
-  - `favicon.svg` — iekļauts SVG favicon.
-  - `manifest.webmanifest` — Web App Manifest (nosaukums, tēmas krāsa, scope, ikona), lai lietotne būtu instalējama kā PWA mobilajā un galddatorā.
-  - `service-worker.js` — cache-first service worker, kas instalācijā iepriekš kešo katru statisko failu, aktivizācijā izmet vecās keša un saglabā lietotni pilnībā bezsaistē pēc pirmās apmeklējuma. Reģistrācija automātiski tiek izlaista `file://` protokolam, lai `index.html` tieša atvēršana no diska paliktu tīra.
-  - `i18n/<lang>.js` — viens tulkojuma fails katrai atbalstītajai valodai (kopā 28). Katrs ir maza IIFE, kas piešķir `window.I18N[<lang>]` plakanu atslēgas→teksta karti. `t()` un `applyLanguage()` `app.js` apstrādā meklējumus (ar angļu valodas atkāpšanos) un staigā pa DOM, atjauninot katru `[data-i18n*]` elementu.
-- Pārbaudīts pēdējās Chromium, Firefox un Safari versijās (galddators + iOS).
+- Vienas lapas lietotne, vanilla HTML + CSS + JavaScript. Nav ietvaru, nav veidošanas soļa, nav atkarību.
+- Avota faili:
+  - `index.html` — iezīmējums un meta atzīmes.
+  - `style.css` — tēmas un izkārtojums (dienas/nakts mainīgie, mobilās medija vaicājumi).
+  - `app.js` — stāvoklis, noturība, renderēšana, ADIF parsētājs/serializators, izsaukuma signāla prefiksa → valsts meklēšana.
+  - `favicon.svg` — iekļauta SVG favikona.
+  - `manifest.webmanifest` — Web App Manifest (nosaukums, tēmas krāsa, apjoms, ikona), lai lietotne būtu instalējama kā PWA mobilajā ierīcē un darbvirsmā.
+  - `service-worker.js` — kešatmiņai prioritizēts pakalpojuma darbinieks, kas instalēšanas laikā iepriekš kešo visus statiskos failus, aktivizēšanas laikā dzēš veco kešatmiņu un pēc pirmās apmeklēšanas saglabā lietotni pilnīgi bezsaistē. Reģistrācija automātiski tiek izlaista `file://` protokolā, lai `index.html` atvēršana tieši no diska paliktu tīra.
+  - `i18n/<lang>.js` — viens tulkojumu fails katrai atbalstītajai valodai (kopā 28). Katrs ir neliels IIFE, kas piešķir `window.I18N[<lang>]` plakanu atslēga→virkne kartēšanu. `t()` un `applyLanguage()` `app.js` apstrādā meklēšanas (ar angļu valodas rezervi) un iziet DOM atjauninot katru `[data-i18n*]` elementu.
+- Pārbaudīts uz jaunākiem Chromium, Firefox un Safari (darbvirsma + iOS).
 
 ## Pateicības
 
-Veidojis [YL3IM](https://www.qrz.com/db/YL3IM).
+Izveidojis [YL3IM](https://www.qrz.com/db/YL3IM).
 
-Valstu karogi balstās uz Unicode reģionālo indikatoru secībām. Tie pareizi atveidojas macOS, iOS, Linux (ar karoga atbalstu emoji fontu) un Android. Windows nesatur sistēmas karoga fontu, tāpēc karoga emoji tur var parādīties kā burtu pāri.
+Paldies [A65BR](https://www.qrz.com/db/A65BR) Olegam par nenovērtējamajiem padomiem, kas padarīja satelīta QSO daļu patiešām lietojamu — mūsdienīgie divu burtu satelīta režīma apzīmējumi, AMSAT katalogs un automātiskā uplink/downlink pielāgošana — viss tas cēlies no viņa atgriezeniskās saites.
+
+Valstu karogi balstās uz Unicode reģionālo indikatoru sekvencēm. Tie pareizi tiek attēloti macOS, iOS, Linux (ar karogu spējīgu emoji fontu) un Android. Windows neietver sistēmas karogu fontu, tāpēc karogu emoji tur var parādīties kā burtu pāri.

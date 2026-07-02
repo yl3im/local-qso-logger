@@ -33,7 +33,6 @@
     "qso.block.qso": "QSO-Daten",
     "qso.station_callsign": "Stationsrufzeichen",
     "qso.operator": "Operator",
-    "qso.operator.placeholder": "Max Mustermann",
     "qso.callsign": "Rufzeichen",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datum (UTC)",

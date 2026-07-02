@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO-data",
     "qso.station_callsign": "Stationens anropssignal",
     "qso.operator": "Operatör",
-    "qso.operator.placeholder": "Anna Andersson",
     "qso.callsign": "Anropssignal",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datum (UTC)",

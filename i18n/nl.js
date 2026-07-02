@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO-gegevens",
     "qso.station_callsign": "Stationsroepnaam",
     "qso.operator": "Operator",
-    "qso.operator.placeholder": "Jan Jansen",
     "qso.callsign": "Roepteken",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Datum (UTC)",

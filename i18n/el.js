@@ -29,7 +29,6 @@
     "qso.block.qso": "Στοιχεία QSO",
     "qso.station_callsign": "Διακριτικό σταθμού",
     "qso.operator": "Χειριστής",
-    "qso.operator.placeholder": "Γιάννης Παπαδόπουλος",
     "qso.callsign": "Διακριτικό",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Ημερομηνία (UTC)",

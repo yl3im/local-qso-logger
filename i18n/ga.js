@@ -29,7 +29,6 @@
     "qso.block.qso": "Sonraí QSO",
     "qso.station_callsign": "Comhartha glaoigh an stáisiúin",
     "qso.operator": "Oibreoir",
-    "qso.operator.placeholder": "Seán Ó Murchú",
     "qso.callsign": "Glaomharc",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Dáta (UTC)",

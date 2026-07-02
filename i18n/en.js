@@ -33,7 +33,6 @@
     "qso.block.qso": "QSO data",
     "qso.station_callsign": "Station callsign",
     "qso.operator": "Operator",
-    "qso.operator.placeholder": "John Doe",
     "qso.callsign": "Callsign",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Date (UTC)",

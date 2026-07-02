@@ -29,7 +29,6 @@
     "qso.block.qso": "QSO данни",
     "qso.station_callsign": "Позивна на станцията",
     "qso.operator": "Оператор",
-    "qso.operator.placeholder": "Иван Иванов",
     "qso.callsign": "Позивна",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Дата (UTC)",

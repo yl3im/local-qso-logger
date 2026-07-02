@@ -29,7 +29,6 @@
     "qso.block.qso": "Dane QSO",
     "qso.station_callsign": "Znak stacji",
     "qso.operator": "Operator",
-    "qso.operator.placeholder": "Jan Kowalski",
     "qso.callsign": "Znak",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Data (UTC)",

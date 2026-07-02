@@ -29,7 +29,6 @@
     "qso.block.qso": "Dati QSO",
     "qso.station_callsign": "Nominativo stazione",
     "qso.operator": "Operatore",
-    "qso.operator.placeholder": "Mario Rossi",
     "qso.callsign": "Nominativo",
     "qso.callsign.placeholder": "DL1ABC",
     "qso.date": "Data (UTC)",

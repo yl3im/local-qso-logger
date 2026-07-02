@@ -1,148 +1,159 @@
 # Local QSO Logger
 
-## In Ihrer Sprache lesen
+## In deiner Sprache lesen
 
 🇺🇸 [English](README.md) · 🇨🇿 [Čeština](README.cs.md) · 🇩🇰 [Dansk](README.da.md) · 🇩🇪 Deutsch · 🇪🇪 [Eesti](README.et.md) · 🇪🇸 [Español](README.es.md) · 🇫🇷 [Français](README.fr.md) · 🇮🇪 [Gaeilge](README.ga.md) · 🇭🇷 [Hrvatski](README.hr.md) · 🇮🇹 [Italiano](README.it.md) · 🇱🇻 [Latviešu](README.lv.md) · 🇱🇹 [Lietuvių](README.lt.md) · 🇭🇺 [Magyar](README.hu.md) · 🇳🇱 [Nederlands](README.nl.md) · 🇳🇴 [Norsk](README.no.md) · 🇵🇱 [Polski](README.pl.md) · 🇵🇹 [Português](README.pt.md) · 🇷🇴 [Română](README.ro.md) · 🇸🇰 [Slovenčina](README.sk.md) · 🇸🇮 [Slovenščina](README.sl.md) · 🇫🇮 [Suomi](README.fi.md) · 🇸🇪 [Svenska](README.sv.md) · 🇧🇾 [Беларуская](README.be.md) · 🇧🇬 [Български](README.bg.md) · 🇷🇺 [Русский](README.ru.md) · 🇷🇸 [Српски](README.sr.md) · 🇺🇦 [Українська](README.uk.md) · 🇬🇷 [Ελληνικά](README.el.md)
 
-Ein datenschutzfreundliches Amateurfunk-QSO-Logbuch, das vollständig in Ihrem Browser läuft. Kein Konto, kein Server, kein Tracking, keine Analyse — Ihre Logbücher liegen ausschließlich im `localStorage` Ihres Browsers und verlassen Ihr Gerät nie.
+Ein datenschutzfreundlicher Amateurfunk-QSO-Logger, der vollständig im Browser läuft. Kein Konto, kein Server, kein Tracking, keine Analytik — deine Logbücher leben ausschließlich im `localStorage` deines Browsers und verlassen niemals dein Gerät.
 
-Von [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebsite: [qso.ham.lv](https://qso.ham.lv).
+Von [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebseite: [qso.ham.lv](https://qso.ham.lv).
 
 ![Local QSO Logger auf einem iPad](media/iPad.png)
 
 ## Inhalt
 
-- [In Ihrer Sprache lesen](#in-ihrer-sprache-lesen)
+- [In deiner Sprache lesen](#in-deiner-sprache-lesen)
 - [Funktionen](#funktionen)
 - [Erste Schritte](#erste-schritte)
-- [Als PWA auf dem Handy installieren](#als-pwa-auf-dem-handy-installieren)
+- [Als PWA auf dem Mobilgerät installieren](#als-pwa-auf-dem-mobilgerät-installieren)
   - [iOS (nur Safari)](#ios-nur-safari)
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Logbücher](#logbücher)
 - [QSOs](#qsos)
-- [ADIF-Import & -Export](#adif-import--export)
+- [ADIF-Import und -Export](#adif-import-und--export)
 - [Datenschutz und Daten](#datenschutz-und-daten)
 - [Oberflächensprache](#oberflächensprache)
 - [Themes](#themes)
 - [Technische Hinweise](#technische-hinweise)
-- [Credits](#credits)
+- [Danksagungen](#danksagungen)
 
 ## Funktionen
 
-- Mehrere Logbücher, jedes mit eigener QSO-Liste.
-- Logbuchaktionen: anlegen, umbenennen, löschen, ADIF-Import, ADIF-Export (`.adi`).
-- QSO-Felder: Rufzeichen, UTC-Datum, UTC-Zeit, Band, Betriebsart, RST gesendet, RST empfangen.
-- Bearbeiten und Löschen beliebiger QSOs (mit Bestätigung beim Löschen).
-- Sinnvolle Vorgaben: heutiges UTC-Datum/-Zeit vorausgefüllt, betriebsartabhängige RST-Vorgaben (59 für Sprachmodi, 599 für CW/Digital), sticky Band & Betriebsart über aufeinanderfolgende QSOs hinweg.
-- Live-Anzeige für doppelte Rufzeichen (informativ — Duplikate sind erlaubt).
-- Spalte mit der Landesflagge, abgeleitet aus dem Rufzeichenpräfix (deckt ≥99 % der häufigen Amateurfunkpräfixe ab, einschließlich portabler Rufzeichen wie `9A/M0NCG`).
-- Locale-abhängige Datumsanzeige in der QSO-Tabelle; ISO-Speicherung und ADIF-Ausgabe bleiben unverändert.
-- Tag-/Nacht-Theme (Tag ist Standard; Umschalter im Header).
+- Mehrere Logbücher; jedes mit eigener QSO-Liste.
+- Logbuch-Aktionen: Erstellen, Umbenennen, Löschen, Import aus ADIF, Export nach ADIF (`.adi`).
+- QSO-Formular in drei Blöcke gegliedert: **Stationsdaten** (Stationsrufzeichen, Operatorrufzeichen, eigenes Locator-Feld) bleiben über QSOs hinweg haften; **Betriebsart** (Ausbreitungsmodus, Satellit, Betriebsart, Sat-Mode, Band, RX-Band) mit Satellitenfeldern, die nur sichtbar sind, wenn der Ausbreitungsmodus *Satellit* ist; und **QSO-Daten** (kontaktiertes Rufzeichen, Locator der Gegenstation, UTC-Datum/-Uhrzeit beim Bearbeiten, Kommentar, RST gesendet, RST empfangen).
+- Vollständige ADIF-`MODE` → `SUBMODE`-Taxonomie im Betriebsart-Dropdown — wähle eine übergeordnete Betriebsart (`SSB`, `MFSK`, …) oder gehe direkt zu einer spezifischen Unterbetriebsart (`USB`, `FT4`, …); die App speichert beide Felder gemäß ADIF, und die Tabelle zeigt die spezifische Unterbetriebsart wenn vorhanden.
+- Vollständige ADIF-Ausbreitungsmodus-Aufzählung (SAT, RPT, EME, ES, MS, Aurora usw.) als Dropdown.
+- Vollständiger AMSAT-Satellitenkatalog (~110 Satelliten) und ein zweistufiges **Sat-Mode**-Dropdown: bevorzugte zweistellige Uplink/Downlink-Codes oben (LU, LV, SX, UU, UV, VA, VU, VV) und die älteren einstelligen Bezeichnungen (A/B/J/K/L/R/S/T/U/V/W/X) als *veraltet* gruppiert unten. Die Wahl eines Sat-Modes passt automatisch `BAND` (Uplink) und `RX band` (Downlink) an.
+- Bearbeitung und Löschung beliebiger QSOs (mit Bestätigung beim Löschen).
+- Sinnvolle Voreinstellungen: UTC-Datum/-Uhrzeit auf *jetzt* vorausgefüllt, betriebsartbewusste RST-Standards (59 für Sprachbetriebsarten, 599 für CW/Digi), klebende Stationsdaten + Band + Betriebsart + Ausbreitungsmodus über aufeinanderfolgende QSOs (nur die pro-Kontakt-Felder — Rufzeichen, Locator, Kommentar, RST — werden nach jedem *QSO loggen* geleert).
+- Live-Duplikat-Rufzeichen-Anzeige (informativ — Duplikate sind erlaubt).
+- Länderflaggen-Spalte aus dem Rufzeichenpräfix abgeleitet (deckt ≥99 % gängiger Amateurfunk-Präfixe ab, einschließlich Portabelbetrieb wie `9A/M0NCG`).
+- Lokalisierte Datumsanzeige in der QSO-Tabelle; ISO-Speicherung und ADIF-Ausgabe bleiben unverändert.
+- Oberfläche in **28 Sprachen** verfügbar (Englisch plus 22 lateinische, 5 kyrillische und Griechisch); Flaggen-Emoji-Selektor im Header.
+- Tag-/Nacht-Themes (Tag ist Standard; der Umschalter ist im Header).
 - Mobilfreundliches responsives Layout mit berührungsgerechten Schaltflächen.
-- Funktioniert vollständig offline — keinerlei Netzwerkanfragen.
-- Als PWA installierbar (Zum Startbildschirm hinzufügen / Installieren), wenn über HTTPS bereitgestellt.
-- Oberfläche in **28 Sprachen** verfügbar (Englisch plus 22 lateinschriftliche, 5 kyrillische und Griechisch); Auswahl mit Flaggenemojis im Header.
+- Funktioniert vollständig offline — keine Netzwerkanfragen zu irgendeinem Zeitpunkt.
+- Als PWA installierbar (Zum Startbildschirm hinzufügen / App installieren) bei Hosting über HTTPS.
 
 ## Erste Schritte
 
-Öffnen Sie einfach `index.html` in einem modernen Browser. Kein Build, kein Installer, kein Server.
+Öffne einfach `index.html` in einem modernen Browser. Kein Build-Schritt, keine Installation, kein Server.
 
-Zum Hosten legen Sie die statischen Dateien (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` und das Verzeichnis `i18n/` mit den 28 Übersetzungsdateien) auf einem beliebigen statischen Host ab (GitHub Pages, Netlify, eigener Webserver). Auch über `file://` funktioniert es — die Service-Worker-Registrierung wird beim Protokoll `file:` automatisch übersprungen, sodass das direkte Öffnen von `index.html` von der Festplatte sauber funktioniert.
+Wenn du es hosten möchtest, lege die statischen Dateien (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` und das Verzeichnis `i18n/` mit den 28 Übersetzungsdateien) auf einen beliebigen statischen Host (GitHub Pages, Netlify, eigener Webserver). Es funktioniert auch über `file://` — die Service-Worker-Registrierung wird auf dem `file:`-Protokoll automatisch übersprungen, sodass das direkte Öffnen von `index.html` von der Festplatte sauber funktioniert.
 
-Wenn die App über HTTPS bereitgestellt wird, lässt sie sich als PWA installieren (über das Menü *Installieren* / *Zum Startbildschirm hinzufügen* des Browsers) und funktioniert nach dem ersten Besuch dank eines cache-first Service Workers, der alle statischen Dateien (Oberfläche + alle Übersetzungen) vorab cached, vollständig offline.
+Bei Hosting über HTTPS wird die App als PWA installierbar (Menü *App installieren* / *Zum Startbildschirm hinzufügen* im Browser) und funktioniert nach dem ersten Besuch dank eines Cache-First-Service-Workers, der alle statischen Dateien (UI + alle Übersetzungen) vorauszwischenspeichert, offline.
 
-Beim ersten Besuch wird automatisch ein Standard-Logbuch angelegt, sodass Sie sofort mit dem Loggen beginnen können.
+Beim ersten Besuch wird automatisch ein Standard-Logbuch erstellt, sodass du sofort mit dem Loggen beginnen kannst.
 
-## Als PWA auf dem Handy installieren
+## Als PWA auf dem Mobilgerät installieren
 
-Wenn die App über HTTPS bereitgestellt wird (z. B. GitHub Pages), können Sie sie auf dem Startbildschirm Ihres Telefons installieren, sodass sie im Vollbild ohne Browser-Chrome läuft. Nach dem ersten Start cached der Service Worker alles, sodass folgende Starts vollständig offline funktionieren.
+Wenn die App über HTTPS gehostet wird (z. B. GitHub Pages), kannst du sie auf dem Startbildschirm deines Telefons installieren, wo sie vollbildschirmig ohne Browserkopfleiste läuft. Nach dem ersten Start speichert der Service Worker alles zwischen, sodass nachfolgende Starts vollständig offline funktionieren.
 
 ### iOS (nur Safari)
 
-Auf iOS kann nur Safari PWAs installieren — Drittanbieter-Browser nicht.
+Unter iOS können nur Safari PWAs installieren — Browser von Drittanbietern nicht.
 
-1. Öffnen Sie die Seite in **Safari**.
-2. Tippen Sie auf die Schaltfläche **Teilen**.
-3. Wählen Sie **Zum Home-Bildschirm**, dann **Hinzufügen**.
+1. Öffne die Seite in **Safari**.
+2. Tippe auf die Schaltfläche **Teilen**.
+3. Wähle **Zum Home-Bildschirm**, dann **Hinzufügen**.
 
-Walkthrough:
+Anleitung:
 
-![iOS-Installations-Walkthrough](media/iOS_add_to_home_screen.gif)
+![iOS-Installationsanleitung](media/iOS_add_to_home_screen.gif)
 
-Höher aufgelöste Quelle: [media/iOS_add_to_home_screen.mp4](media/iOS_add_to_home_screen.mp4).
+Quelle in höherer Qualität: [media/iOS_add_to_home_screen.mp4](media/iOS_add_to_home_screen.mp4).
 
 ### Android (Chrome / Edge / Firefox)
 
-1. Öffnen Sie die Seite in Ihrem Browser. Ein Hinweis *App installieren* erscheint möglicherweise automatisch.
-2. Andernfalls öffnen Sie das **⋮-Menü** → **App installieren** (oder **Zum Startbildschirm hinzufügen** in älteren Versionen).
+1. Öffne die Seite im Browser. Eine Aufforderung zum *App installieren* erscheint möglicherweise automatisch.
+2. Andernfalls öffne das **⋮-Menü** → **App installieren** (oder **Zum Startbildschirm hinzufügen** bei älteren Versionen).
 
-Walkthrough:
+Anleitung:
 
-![Android-Installations-Walkthrough](media/Android_add_to_home_screen.gif)
+![Android-Installationsanleitung](media/Android_add_to_home_screen.gif)
 
-Höher aufgelöste Quelle: [media/Android_add_to_home_screen.mp4](media/Android_add_to_home_screen.mp4).
+Quelle in höherer Qualität: [media/Android_add_to_home_screen.mp4](media/Android_add_to_home_screen.mp4).
 
 ## Logbücher
 
-- **Anlegen:** Geben Sie einen Namen in *Logbuchname* ein und senden Sie ab. Wenn Sie das Feld leer lassen, lautet der Standardname `Log YYYY-MM-DD HH:MM UTC`.
-- **Wechseln:** Klicken Sie in der Seitenleiste auf ein beliebiges Logbuch.
-- **Umbenennen:** Klicken Sie auf *Umbenennen* im Logbuch-Header. Mit Enter speichern, mit Escape abbrechen.
-- **Löschen:** Klicken Sie auf *Logbuch löschen*. Sie werden um Bestätigung gebeten. Wenn Sie das letzte Logbuch löschen, wird automatisch ein neues angelegt.
+- **Erstellen:** gib einen Namen im Feld *Log-Name* ein und bestätige. Wenn du den Namen leer lässt, wird `Log YYYY-MM-DD HH:MM UTC` als Standard verwendet.
+- **Wechseln:** klicke auf ein Logbuch in der Seitenleiste.
+- **Umbenennen:** klicke auf *Umbenennen* in der Logbuch-Kopfzeile. Enter zum Speichern, Escape zum Abbrechen.
+- **Löschen:** klicke auf *Log löschen*. Du wirst zur Bestätigung aufgefordert. Wenn du das letzte Logbuch löschst, wird automatisch ein neues erstellt.
 
 ## QSOs
 
-- Füllen Sie das Formular aus und drücken Sie **QSO eintragen**.
-- Das Rufzeichen wird beim Tippen automatisch in Großbuchstaben umgewandelt.
-- Datum und Zeit werden auf *jetzt* in UTC vorausgefüllt und nach jedem geloggten QSO zurückgesetzt; Sie können trotzdem beliebige Werte eingeben.
-- Band und Betriebsart bleiben über QSOs derselben Session erhalten, sodass Sie sie nicht für jeden Kontakt neu auswählen müssen.
-- RST gesendet / RST empfangen, falls leer gelassen, fallen auf **59** für Sprachmodi (SSB/FM/AM/DIGITALVOICE) und auf **599** für CW und Digitalmodi (CW/FT8/FT4/RTTY/PSK31/JT65) zurück.
-- Ein *Duplikat in diesem Log*-Chip erscheint unterhalb des Rufzeichenfelds, wenn das Rufzeichen im aktuellen Logbuch bereits existiert. Duplikate werden *nicht* blockiert.
-- **Ein QSO bearbeiten** mit der Schaltfläche *Bearbeiten* in der Zeile. Das Formular wechselt in den Modus *QSO aktualisieren*, die Zeile wird hervorgehoben, und eine Schaltfläche *Abbrechen* erscheint. Beim Wechseln des Logbuchs oder Löschen des Logs wird die Bearbeitung automatisch abgebrochen.
-- **Ein QSO löschen** mit der Schaltfläche *Löschen* in der Zeile (mit Bestätigung).
+- Fülle das Formular aus und drücke **QSO loggen**.
+- Das Formular ist in drei Blöcke gegliedert:
+  - **Stationsdaten** — *Stationsrufzeichen* (dein Senderufzeichen, ADIF `STATION_CALLSIGN`), *Operator* (das Rufzeichen des einzelnen Operators — unterscheidet sich vom *Stationsrufzeichen*, wenn ein Gastoperator am Mikrofon einer Klubstation sitzt; ADIF `OPERATOR`) und *Mein Locator* (ADIF `MY_GRIDSQUARE`). Diese bleiben sitzungsübergreifend über QSOs haften — einmal setzen und sie übertragen sich.
+  - **Betriebsart** — *Ausbreitungsmodus*, *Betriebsart*, *Band*, plus die Satelliten-Felder *Satellit* / *Sat-Mode* / *RX-Band* wenn der Ausbreitungsmodus *Satellit* ist. Band, Betriebsart und Ausbreitungsmodus haften wie Stationsdaten.
+  - **QSO-Daten** — pro-Kontakt-Felder: *Rufzeichen*, *Locator* (Maidenhead der Gegenstation), *Kommentar* (ADIF `COMMENT`), *RST gesendet*, *RST empfangen*. Beim Bearbeiten eines bestehenden QSOs erscheinen in diesem Block auch *Datum (UTC)* und *Uhrzeit (UTC)*. Diese Felder werden nach jedem *QSO loggen* geleert.
+- Alle Rufzeichen (kontaktiert, Station, Operator) werden beim Tippen automatisch großgeschrieben; beide Locator-Felder machen dasselbe.
+- Datum und Uhrzeit werden beim Absenden auf *jetzt* in UTC vorausgefüllt; beim Bearbeiten kannst du einen beliebigen Wert eingeben.
+- RST gesendet / RST empfangen, wenn leer gelassen, sind standardmäßig **59** für Sprachbetriebsarten (SSB/FM/DIGITALVOICE) und **599** für CW und digitale Betriebsarten (CW/FT8/FT4/RTTY/PSK31/JT65). Der Standard folgt der übergeordneten MODE, sodass die Wahl einer spezifischen Unterbetriebsart wie *USB* oder *FT4* noch den richtigen Standard ergibt.
+- Ein Chip *Duplikat in diesem Log* erscheint unter dem Rufzeichen-Feld, wenn das Rufzeichen bereits im aktuellen Logbuch vorhanden ist. Duplikate werden *nicht* blockiert.
+- **Ausbreitungsmodus** — optionales Dropdown der ADIF-Ausbreitungsmodi (SAT, RPT, EME, F2, Es, MS, LOS usw.). Für normale terrestrische HF-QSOs leer lassen.
+- **Satelliten-QSOs** — die Wahl des Ausbreitungsmodus *Satellit* zeigt drei Satellit-Felder: **Satellit** (Dropdown mit ~110 AMSAT-registrierten Satelliten), **Sat-Mode** (AMSAT-Buchstabenbezeichnungen, gruppiert als *moderne* zweistellige Uplink/Downlink-Codes oben und *veraltete* einstellige Codes unten) und **RX-Band** (Downlink-Band). Satellit, Sat-Mode und RX-Band sind Pflichtfelder — der Browser verweigert das Absenden ohne sie. Die Wahl eines **Sat-Modes** füllt automatisch das Haupt-**Band** mit dem Uplink-Band und **RX-Band** mit dem Downlink-Band (z. B. Mode J → 2m Uplink, 70cm Downlink). Das Zurückwechseln zu Satellit von einem anderen Ausbreitungsmodus setzt den Sat-Mode zurück, damit ein neuer gewählt wird. Nicht-Satelliten-QSOs tragen niemals Satelliten-Felder; das Umschalten eines bestehenden QSOs von Satellit zu einem anderen Ausbreitungsmodus entfernt sie sauber. **Locator** und **Mein Locator** sind allgemeine Felder (auch nützlich für VHF/UHF-Locator-Wettbewerbe) und bleiben für alle QSOs sichtbar.
+- **Ein QSO bearbeiten** mit der Schaltfläche *Bearbeiten* in der Zeile. Das Formular wechselt in den Modus *QSO aktualisieren*, die Zeile wird hervorgehoben, und eine Schaltfläche *Abbrechen* erscheint. Das Wechseln von Logbüchern oder das Löschen des Logs bricht die Bearbeitung automatisch ab.
+- **Ein QSO löschen** mit der Schaltfläche *Löschen* in der Zeile (fragt nach Bestätigung).
 
-## ADIF-Import & -Export
+## ADIF-Import und -Export
 
-- **Export**: Klicken Sie auf *.adi exportieren* im Logbuch-Header. Eine Datei wird heruntergeladen mit `ADIF_VER 3.1.4` und `PROGRAMID local-qso` im Header. Jeder Datensatz mappt `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `RST_SENT`, `RST_RCVD`.
-- **Import**: Klicken Sie auf *.adi-Datei importieren* unter dem Logbuch-anlegen-Formular und wählen Sie eine `.adi`/`.adif`-Datei. Es wird ein neues Logbuch erstellt, benannt `Importiert YYYY-MM-DD HH:MM UTC`. Der Import wird nie in ein bestehendes Logbuch zusammengeführt.
-- Die Feldlängenangabe wird als Zeichenanzahl interpretiert, was für ASCII-ADIF (alle Standard-QSO-Felder) funktioniert. Mehrbyte-Inhalte in unwesentlichen Textfeldern werden möglicherweise nicht korrekt geparst.
+- **Export**: klicke auf *Als .adi exportieren* in der Logbuch-Kopfzeile. Eine Datei wird heruntergeladen, die **ADIF 3.1.7** entspricht. Der Header deklariert `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` und `CREATED_TIMESTAMP` (UTC). Pro-QSO-Felder (wenn nicht leer): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — gefolgt von jedem beim Import erhaltenen ADIF-Zusatzfeld (siehe unten).
+- **Import**: klicke auf *ADI-Datei importieren* unter dem Logbuch-Erstellen-Formular und wähle eine `.adi` / `.adif`-Datei. Ein neues Logbuch wird daraus erstellt, benannt `Imported YYYY-MM-DD HH:MM UTC`. Import führt niemals mit einem bestehenden Logbuch zusammen.
+- **Verlustfreier Durchlauf**: beim Import wird jedes ADIF-Feld, das die App nicht in ihrer UI modelliert (z. B. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*`-Felder), im QSO gespeichert und beim nächsten Export unverändert wieder ausgegeben. Der Export einer Datei, die selbst importiert wurde, erhält damit alles.
+- Die Feldlänge wird als UTF-8-Byteanzahl behandelt, wie die Spezifikation es erfordert, sodass Mehrbytetext (z. B. akzentuierte Zeichen in `COMMENT`) korrekt geparst wird.
 
 ## Datenschutz und Daten
 
-- Alle Daten werden im `localStorage` des Browsers unter dem Schlüssel `local-qso:v1` gespeichert.
-- Es werden keinerlei Daten irgendwohin übertragen. Kein Backend, kein API-Aufruf, keine Telemetrie, keine Analyse.
-- Browser-Daten löschen, der Inkognito-/Privat-Modus oder ein anderer Browser/anderes Gerät bedeutet ein leeres Logbuch — verwenden Sie *.adi exportieren* für Backups.
+- Alle Daten werden im `localStorage` deines Browsers unter dem Schlüssel `local-qso:v1` gespeichert.
+- Es wird nichts irgendwohin übertragen. Es gibt kein Backend, keinen API-Aufruf, keine Telemetrie, keine Analytik.
+- Das Löschen der Browser-Seiten-Daten, die Verwendung des Privat-/Inkognito-Modus oder eines anderen Browsers/Geräts bedeutet ein neues leeres Logbuch — verwende *Als .adi exportieren* zur Sicherung.
 
 ## Oberflächensprache
 
-Ein Sprach-Auswahlmenü im Header deckt **28 Sprachen** ab. Wählen Sie eine, und die restliche Oberfläche wird sofort neu gerendert; Ihre Wahl wird zusammen mit Ihren Logs gespeichert und beim nächsten Besuch berücksichtigt. Englisch ist der Standard.
+Ein Sprachselektor im Header deckt **28 Sprachen** ab. Wähle eine aus, und der Rest der Oberfläche wird sofort neu gerendert; deine Wahl wird neben deinen Logs gespeichert und beim nächsten Besuch berücksichtigt. Englisch ist die Standardsprache.
 
-Verfügbare Sprachen (Flaggenemoji + Eigenbezeichnung; innerhalb jeder Schrift alphabetisch):
+Verfügbare Sprachen (Flaggen-Emoji + Eigenname; alphabetisch innerhalb jedes Schriftsystems geordnet):
 
 🇺🇸 English · 🇨🇿 Čeština · 🇩🇰 Dansk · 🇩🇪 Deutsch · 🇪🇪 Eesti · 🇪🇸 Español · 🇫🇷 Français · 🇮🇪 Gaeilge · 🇭🇷 Hrvatski · 🇮🇹 Italiano · 🇱🇻 Latviešu · 🇱🇹 Lietuvių · 🇭🇺 Magyar · 🇳🇱 Nederlands · 🇳🇴 Norsk · 🇵🇱 Polski · 🇵🇹 Português · 🇷🇴 Română · 🇸🇰 Slovenčina · 🇸🇮 Slovenščina · 🇫🇮 Suomi · 🇸🇪 Svenska · 🇧🇾 Беларуская · 🇧🇬 Български · 🇷🇺 Русский · 🇷🇸 Српски · 🇺🇦 Українська · 🇬🇷 Ελληνικά
 
-Universelle technische Bezeichnungen bleiben in ihrer kanonischen Form in allen Sprachen: Bandnamen (`20m`, `70cm`, …), ADIF-Modi-Codes (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` und ISO-Ländercodes.
+Universelle technische Bezeichnungen bleiben in allen Sprachen in ihrer kanonischen Form: Bandbezeichnungen (`20m`, `70cm`, …), ADIF-Betriebsartkürzel (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` und ISO-Ländercodes.
 
-Fehlt eine Zeichenfolge in Ihrer Sprache? Jede Sprache ist eine einzelne kleine Datei unter [`i18n/`](i18n/) — kopieren Sie `i18n/en.js`, übersetzen Sie die Werte, speichern Sie als `i18n/<code>.js`, dann fügen Sie ein `<script>`-Tag plus eine `<select>`-Option in `index.html` und den Code in `SUPPORTED_LANGS` in `app.js` hinzu.
+Fehlt ein String in deiner Sprache? Jede Sprache ist eine einzige kleine Datei unter [`i18n/`](i18n/) — kopiere `i18n/en.js`, übersetze die Werte, speichere als `i18n/<code>.js`, füge dann ein `<script>`-Tag plus eine `<select>`-Option in `index.html` und den Code in `SUPPORTED_LANGS` in `app.js` hinzu.
 
 ## Themes
 
-Der Theme-Umschalter im Header wechselt zwischen Tag (Standard) und Nacht. Die Einstellung wird zusammen mit Ihren Logs gespeichert und beim nächsten Besuch berücksichtigt. Native Datums-/Zeitauswählerfolgen dem Theme via `color-scheme`.
+Der Theme-Umschalter im Header wechselt zwischen Tag (Standard) und Nacht. Die Einstellung wird neben deinen Logs gespeichert und beim nächsten Besuch berücksichtigt. Native Datum-/Uhrzeit-Auswähler folgen dem Theme über `color-scheme`.
 
 ## Technische Hinweise
 
-- Single-Page-App, reines HTML + CSS + JavaScript. Keine Frameworks, kein Build, keine Abhängigkeiten.
+- Single-Page-App, reines HTML + CSS + JavaScript. Keine Frameworks, kein Build-Schritt, keine Abhängigkeiten.
 - Quelldateien:
   - `index.html` — Markup und Meta-Tags.
-  - `style.css` — Themes und Layout (Tag-/Nacht-Variablen, Mobile-Media-Queries).
-  - `app.js` — State, Persistenz, Rendering, ADIF-Parser/Serializer, Rufzeichenpräfix → Land-Lookup.
+  - `style.css` — Themes und Layout (Tag/Nacht-Variablen, Mobile-Media-Queries).
+  - `app.js` — Zustand, Persistenz, Rendering, ADIF-Parser/Serializer, Rufzeichenpräfix → Länder-Lookup.
   - `favicon.svg` — Inline-SVG-Favicon.
-  - `manifest.webmanifest` — Web App Manifest (Name, Theme-Farbe, Scope, Icon), damit die App auf Mobil und Desktop als PWA installierbar ist.
-  - `service-worker.js` — Cache-first Service Worker, der bei der Installation jede statische Datei cached, beim Aktivieren alte Caches löscht und die App nach dem ersten Besuch vollständig offline arbeiten lässt. Die Registrierung wird beim Protokoll `file://` automatisch übersprungen, sodass das direkte Öffnen von `index.html` von der Festplatte sauber bleibt.
-  - `i18n/<lang>.js` — eine Übersetzungsdatei pro unterstützter Sprache (insgesamt 28). Jede ist eine kleine IIFE, die `window.I18N[<lang>]` eine flache Schlüssel→Zeichenfolge-Map zuweist. `t()` und `applyLanguage()` in `app.js` übernehmen die Lookups (mit Englisch als Fallback) und durchlaufen das DOM, um jedes `[data-i18n*]`-Element zu aktualisieren.
-- Getestet mit aktuellen Chromium-, Firefox- und Safari-Browsern (Desktop + iOS).
+  - `manifest.webmanifest` — Web App Manifest (Name, Theme-Farbe, Scope, Icon), damit die App als PWA auf Mobilgeräten und dem Desktop installierbar ist.
+  - `service-worker.js` — Cache-First-Service-Worker, der alle statischen Dateien bei der Installation vorauszwischenspeichert, alte Caches bei der Aktivierung löscht und die App nach dem ersten Besuch vollständig offline hält. Die Registrierung wird auf dem `file://`-Protokoll automatisch übersprungen, sodass das direkte Öffnen von `index.html` von der Festplatte sauber bleibt.
+  - `i18n/<lang>.js` — eine Übersetzungsdatei pro unterstützter Sprache (28 insgesamt). Jede ist ein kleines IIFE, das `window.I18N[<lang>]` eine flache Schlüssel→Wert-Map zuweist. `t()` und `applyLanguage()` in `app.js` verarbeiten Lookups (mit englischem Fallback) und durchlaufen das DOM und aktualisieren jedes `[data-i18n*]`-Element.
+- Getestet auf aktuellem Chromium, Firefox und Safari (Desktop + iOS).
 
-## Credits
+## Danksagungen
 
 Erstellt von [YL3IM](https://www.qrz.com/db/YL3IM).
 
-Die Länderflaggen basieren auf Unicode-Regional-Indicator-Sequenzen. Sie werden auf macOS, iOS, Linux (mit flaggenfähiger Emoji-Schrift) und Android korrekt dargestellt. Windows enthält keine System-Flaggen-Schrift, sodass Flaggenemojis dort möglicherweise als Buchstabenpaare erscheinen.
+Dank an [A65BR](https://www.qrz.com/db/A65BR) Oleg für die unschätzbaren Hinweise, die den Satellitenteil wirklich nutzbar gemacht haben — die modernen zweistelligen Sat-Mode-Bezeichnungen, der AMSAT-Katalog und die automatische Uplink/Downlink-Anpassung gehen allesamt auf sein Feedback zurück.
+
+Länderflaggen beruhen auf Unicode-Regional-Indikator-Sequenzen. Sie werden auf macOS, iOS, Linux (mit einem flaggenfähigen Emoji-Font) und Android korrekt dargestellt. Windows enthält keinen System-Flaggen-Font, sodass Flaggen-Emoji dort als Buchstabenpaare erscheinen können.

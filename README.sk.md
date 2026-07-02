@@ -1,148 +1,159 @@
 # Local QSO Logger
 
-## Čítajte vo svojom jazyku
+## Čítaj vo svojom jazyku
 
 🇺🇸 [English](README.md) · 🇨🇿 [Čeština](README.cs.md) · 🇩🇰 [Dansk](README.da.md) · 🇩🇪 [Deutsch](README.de.md) · 🇪🇪 [Eesti](README.et.md) · 🇪🇸 [Español](README.es.md) · 🇫🇷 [Français](README.fr.md) · 🇮🇪 [Gaeilge](README.ga.md) · 🇭🇷 [Hrvatski](README.hr.md) · 🇮🇹 [Italiano](README.it.md) · 🇱🇻 [Latviešu](README.lv.md) · 🇱🇹 [Lietuvių](README.lt.md) · 🇭🇺 [Magyar](README.hu.md) · 🇳🇱 [Nederlands](README.nl.md) · 🇳🇴 [Norsk](README.no.md) · 🇵🇱 [Polski](README.pl.md) · 🇵🇹 [Português](README.pt.md) · 🇷🇴 [Română](README.ro.md) · 🇸🇰 Slovenčina · 🇸🇮 [Slovenščina](README.sl.md) · 🇫🇮 [Suomi](README.fi.md) · 🇸🇪 [Svenska](README.sv.md) · 🇧🇾 [Беларуская](README.be.md) · 🇧🇬 [Български](README.bg.md) · 🇷🇺 [Русский](README.ru.md) · 🇷🇸 [Српски](README.sr.md) · 🇺🇦 [Українська](README.uk.md) · 🇬🇷 [Ελληνικά](README.el.md)
 
-QSO denník pre rádioamatérov rešpektujúci súkromie, ktorý beží úplne vo vašom prehliadači. Bez účtu, bez servera, bez sledovania, bez analytiky — vaše denníky sú uložené iba v `localStorage` prehliadača a nikdy neopustia vaše zariadenie.
+Amatérsky rádiový denník QSO rešpektujúci súkromie, ktorý beží priamo vo vašom prehliadači. Žiadny účet, žiadny server, žiadne sledovanie, žiadna analytika — vaše denníky žijú iba v `localStorage` vášho prehliadača a nikdy neopustia vaše zariadenie.
 
-Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Webová stránka projektu: [qso.ham.lv](https://qso.ham.lv).
+Od [YL3IM](https://www.qrz.com/db/YL3IM). Webová stránka projektu: [qso.ham.lv](https://qso.ham.lv).
 
-![Local QSO Logger na iPade](media/iPad.png)
+![Local QSO Logger running on iPad](media/iPad.png)
 
 ## Obsah
 
-- [Čítajte vo svojom jazyku](#čítajte-vo-svojom-jazyku)
+- [Čítaj vo svojom jazyku](#čítaj-vo-svojom-jazyku)
 - [Funkcie](#funkcie)
 - [Začíname](#začíname)
 - [Inštalácia ako PWA na mobile](#inštalácia-ako-pwa-na-mobile)
   - [iOS (iba Safari)](#ios-iba-safari)
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Denníky](#denníky)
-- [QSO](#qso)
+- [QSO záznamy](#qso-záznamy)
 - [Import a export ADIF](#import-a-export-adif)
-- [Súkromie a údaje](#súkromie-a-údaje)
+- [Súkromie a dáta](#súkromie-a-dáta)
 - [Jazyk rozhrania](#jazyk-rozhrania)
-- [Motívy](#motívy)
+- [Témy](#témy)
 - [Technické poznámky](#technické-poznámky)
 - [Poďakovanie](#poďakovanie)
 
 ## Funkcie
 
-- Viaceré denníky, každý so svojím zoznamom QSO.
-- Akcie s denníkom: vytvoriť, premenovať, vymazať, importovať z ADIF, exportovať do ADIF (`.adi`).
-- Polia QSO: volacia značka, dátum UTC, čas UTC, pásmo, druh prevádzky, RST odoslaný, RST prijatý.
+- Viaceré denníky; každý s vlastným zoznamom QSO.
+- Akcie s denníkom: vytvorenie, premenovanie, vymazanie, import z ADIF, export do ADIF (`.adi`).
+- Formulár QSO rozdelený do troch blokov: **Údaje stanice** (volací znak stanice, volací znak operátora, vlastná sieť) zostáva nemenný naprieč QSO; **Prevádzkový režim** (šírenie, satelit, režim, satelitný režim, pásmo, RX pásmo) so satelitnými poľami zobrazenými len pri šírení *Satelit*; a **Údaje QSO** (volaný volací znak, sieť volaného, dátum/čas UTC pri editácii, komentár, RST odoslané, RST prijaté).
+- Plná taxonómia ADIF `MODE` → `SUBMODE` v rozbaľovacom zozname — zvoľte nadriadený režim (`SSB`, `MFSK`, …) alebo prejdite priamo na konkrétny podrezim (`USB`, `FT4`, …); aplikácia uchováva obe polia podľa ADIF a tabuľka zobrazuje konkrétny podrezim, ak existuje.
+- Kompletný výpočet propagačných režimov ADIF (SAT, RPT, EME, ES, MS, Aurora atď.) ako rozbaľovací zoznam.
+- Kompletný katalóg satelitov AMSAT (~110 zariadení) a dvojúrovňový rozbaľovací zoznam **Sat mode**: preferované dvojpísmenové kódy uplink/downlink hore (LU, LV, SX, UU, UV, VA, VU, VV) a zastarané jednopísmenové označenia (A/B/J/K/L/R/S/T/U/V/W/X) zoskupené ako *zastarané* nižšie. Výber satelitného režimu automaticky nastaví uplink `BAND` a downlink `RX band`.
 - Úprava a vymazanie ľubovoľného QSO (s potvrdením pri vymazaní).
-- Rozumné predvolené hodnoty: dnešný dátum/čas UTC predvyplnený, predvolené RST podľa druhu prevádzky (59 pre hlasové módy, 599 pre CW/digitálne), pásmo a druh prevádzky zostávajú medzi po sebe nasledujúcimi QSO.
-- Živý indikátor duplicitnej volacej značky (informačný — duplikáty sú povolené).
-- Stĺpec s vlajkou krajiny odvodený z predpony volacej značky (pokrýva ≥99 % bežných rádioamatérskych predpôn vrátane portable značiek ako `9A/M0NCG`).
-- Zobrazenie dátumu v tabuľke QSO podľa locale; ISO úložisko a ADIF výstup zostávajú nezmenené.
-- Denné/nočné motívy (denný predvolený; prepínač je v záhlaví).
-- Responzívne rozloženie vhodné pre mobil s dotykovo priateľskými tlačidlami.
-- Funguje úplne offline — žiadne sieťové požiadavky.
-- Inštalovateľné ako PWA (Pridať na plochu / Inštalovať aplikáciu) pri hostovaní cez HTTPS.
-- Rozhranie dostupné v **28 jazykoch** (angličtina plus 22 latinkových, 5 cyrilských a gréčtina); volič s vlajkami v záhlaví.
+- Rozumné predvolené hodnoty: dnešný dátum/čas UTC vopred vyplnený, predvolené RST závisí od režimu (59 pre hlasové, 599 pre CW/digitálne), trvalé Údaje stanice + pásmo + režim + propagačný režim naprieč po sebe idúcimi QSO (iba polia per-kontakt — volací znak, sieť, komentár, RST — sa vymažú po každom *Zaznamenať QSO*).
+- Živý indikátor duplicitného volacieho znaku (informatívny — duplikáty sú povolené).
+- Stĺpec vlajky krajiny odvodený z predpony volacieho znaku (pokrýva ≥99 % bežných amatérskych predpôn vrátane prenosných volaní ako `9A/M0NCG`).
+- Zobrazenie dátumu podľa lokálneho nastavenia v tabuľke QSO; ukladanie a výstup ADIF zostávajú v ISO.
+- Rozhranie dostupné v **28 jazykoch** (angličtina plus 22 latinkou, 5 cyrilikou a gréčtina); selektor s vlajkovými emotikonmi v záhlaví.
+- Denné / nočné témy (deň je predvolený; prepínač je v záhlaví).
+- Mobilné responzívne rozloženie s tlačidlami prispôsobenými pre dotyk.
+- Plne funkčná offline — žiadne sieťové požiadavky kedykoľvek.
+- Inštalovateľná ako PWA (Pridať na domovskú obrazovku / Inštalovať aplikáciu) pri hosťovaní cez HTTPS.
 
 ## Začíname
 
-Stačí otvoriť `index.html` v modernom prehliadači. Žiadny build, žiadna inštalácia, žiadny server.
+Stačí otvoriť `index.html` v modernom prehliadači. Žiadny krok zostavenia, žiadna inštalácia, žiadny server.
 
-Pre hostovanie umiestnite statické súbory (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` a adresár `i18n/` s 28 prekladovými súbormi) na ľubovoľný statický hosting (GitHub Pages, Netlify, vlastný webový server). Funguje aj cez `file://` — registrácia service workera je automaticky vynechaná pre protokol `file:`, takže priame otvorenie `index.html` z disku funguje čisto.
+Ak chcete hosťovať, stačí umiestniť statické súbory (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` a adresár `i18n/` s 28 prekladovými súbormi) na ľubovoľný statický hosting (GitHub Pages, Netlify, vlastný webový server). Funguje aj cez `file://` — registrácia service workera sa pri protokole `file:` preskočí automaticky, takže priame otvorenie `index.html` z disku funguje čisto.
 
-Pri poskytovaní cez HTTPS sa aplikácia stáva inštalovateľnou ako PWA (cez ponuku prehliadača *Inštalovať aplikáciu* / *Pridať na plochu*) a po prvom načítaní funguje offline vďaka cache-first service workerovi, ktorý prednahráva každý statický súbor (UI + všetky preklady).
+Pri hosťovaní cez HTTPS sa aplikácia stane inštalovateľnou ako PWA (ponuka *Inštalovať aplikáciu* / *Pridať na domovskú obrazovku*) a funguje offline po prvej návšteve vďaka service workeru zameranému na cache, ktorý predcachuje každý statický súbor (UI + všetky preklady).
 
-Pri prvej návšteve sa automaticky vytvorí predvolený denník, takže môžete ihneď začať zaznamenávať.
+Prvý predvolený denník sa vytvorí automaticky, takže môžete hneď začať zaznamenávať.
 
 ## Inštalácia ako PWA na mobile
 
-Keď je aplikácia poskytovaná cez HTTPS (napr. GitHub Pages), môžete ju nainštalovať na domovskú obrazovku telefónu, aby bežala na celej obrazovke bez prehliadačového rámu. Po prvom spustení service worker uloží všetko do vyrovnávacej pamäte, takže ďalšie spustenia fungujú úplne offline.
+Keď je aplikácia hosťovaná cez HTTPS (napr. GitHub Pages), môžete ju nainštalovať na domovskú obrazovku telefónu, kde beží na celú obrazovku bez ovládacích prvkov prehliadača. Po prvom spustení service worker cachuje všetko, takže ďalšie spustenia fungujú plne offline.
 
 ### iOS (iba Safari)
 
-Na iOS môže PWA inštalovať iba Safari — tretie prehliadače nie.
+V iOS môžu PWA inštalovať iba Safari — prehliadače tretích strán to nemôžu.
 
 1. Otvorte stránku v **Safari**.
-2. Ťuknite na tlačidlo **Zdieľať**.
-3. Vyberte **Pridať na plochu**, potom **Pridať**.
+2. Klepnite na tlačidlo **Zdieľať**.
+3. Zvoľte **Pridať na domovskú obrazovku**, potom **Pridať**.
 
 Návod:
 
-![Návod na inštaláciu iOS](media/iOS_add_to_home_screen.gif)
+![iOS install walkthrough](media/iOS_add_to_home_screen.gif)
 
 Zdroj vo vyššej kvalite: [media/iOS_add_to_home_screen.mp4](media/iOS_add_to_home_screen.mp4).
 
 ### Android (Chrome / Edge / Firefox)
 
-1. Otvorte stránku vo svojom prehliadači. Môže sa automaticky zobraziť výzva *Inštalovať aplikáciu*.
-2. Inak otvorte **⋮ menu** → **Inštalovať aplikáciu** (alebo **Pridať na plochu** v starších verziách).
+1. Otvorte stránku vo vašom prehliadači. Výzva *Inštalovať aplikáciu* sa môže zobraziť automaticky.
+2. Inak otvorte **ponuku ⋮** → **Inštalovať aplikáciu** (alebo **Pridať na domovskú obrazovku** na starších verziách).
 
 Návod:
 
-![Návod na inštaláciu Android](media/Android_add_to_home_screen.gif)
+![Android install walkthrough](media/Android_add_to_home_screen.gif)
 
 Zdroj vo vyššej kvalite: [media/Android_add_to_home_screen.mp4](media/Android_add_to_home_screen.mp4).
 
 ## Denníky
 
-- **Vytvoriť:** zadajte názov v poli *Názov denníka* a odošlite. Ak necháte názov prázdny, predvolený je `Log YYYY-MM-DD HH:MM UTC`.
+- **Vytvoriť:** zadajte názov do poľa *Názov denníka* a odošlite. Ak necháte názov prázdny, predvolí sa na `Log YYYY-MM-DD HH:MM UTC`.
 - **Prepnúť:** kliknite na ľubovoľný denník v bočnom paneli.
-- **Premenovať:** kliknite na *Premenovať* v záhlaví denníka. Enter uloží, Escape zruší.
-- **Vymazať:** kliknite na *Vymazať denník*. Budete vyzvaní na potvrdenie. Ak vymažete posledný denník, automaticky sa vytvorí nový.
+- **Premenovať:** kliknite na *Premenovať* v záhlaví denníka. Stlačte Enter na uloženie, Escape na zrušenie.
+- **Vymazať:** kliknite na *Vymazať denník*. Budete požiadaní o potvrdenie. Ak vymažete posledný denník, automaticky sa vytvorí nový.
 
-## QSO
+## QSO záznamy
 
-- Vyplňte formulár a stlačte **Zapísať QSO**.
-- Volacia značka sa pri písaní automaticky prevedie na veľké písmená.
-- Dátum a čas sa predvyplnia na *teraz* v UTC a obnovia po každom zapísanom QSO; stále môžete zadať akúkoľvek hodnotu.
-- Pásmo a druh prevádzky zostávajú medzi QSO v rovnakej relácii, takže ich nemusíte vyberať pre každý kontakt znova.
-- RST odoslaný / RST prijatý, ak sú ponechané prázdne, sa nastavia na **59** pre hlasové módy (SSB/FM/AM/DIGITALVOICE) a na **599** pre CW a digitálne módy (CW/FT8/FT4/RTTY/PSK31/JT65).
-- Pod poľom volacej značky sa zobrazí čip *Duplikát v tomto denníku*, ak volacia značka už v aktuálnom denníku existuje. Duplikáty *nie sú* blokované.
-- **Upraviť QSO** tlačidlom *Upraviť* v riadku. Formulár sa prepne do režimu *Aktualizovať QSO*, riadok sa zvýrazní a objaví sa tlačidlo *Zrušiť*. Prepnutie denníka alebo jeho vymazanie automaticky zruší úpravu.
-- **Vymazať QSO** tlačidlom *Vymazať* v riadku (požiada o potvrdenie).
+- Vyplňte formulár a stlačte **Zaznamenať QSO**.
+- Formulár je organizovaný do troch blokov:
+  - **Údaje stanice** — *Volací znak stanice* (váš vysielací volací znak, ADIF `STATION_CALLSIGN`), *Operátor* (volací znak individuálneho operátora — odlišný od *Volacieho znaku stanice*, keď je hosťujúci operátor pri mikrofóne klubovej stanice; ADIF `OPERATOR`) a *Moja sieť* (ADIF `MY_GRIDSQUARE`). Tieto zostávajú nemenné naprieč QSO v rámci rovnakej relácie — nastavte ich raz a prenesú sa.
+  - **Prevádzkový režim** — *Prop. režim*, *Režim*, *Pásmo* a satelitné polia *Satelit* / *Sat mode* / *RX pásmo* keď je propagačný režim *Satelit*. Pásmo, režim a propagačný režim sú trvalé ako Údaje stanice.
+  - **Údaje QSO** — polia per-kontakt: *Volací znak*, *Sieť* (Maidenheadova sieť druhej stanice), *Komentár* (ADIF `COMMENT`), *RST odoslané*, *RST prijaté*. Pri editácii existujúceho QSO sa v tomto bloku zobrazia aj *Dátum (UTC)* a *Čas (UTC)*. Tieto polia sa vymažú po každom *Zaznamenať QSO*.
+- Všetky volacie znaky (volaný, stanica, operátor) sa automaticky prevádzajú na veľké písmená počas písania; obe polia siete fungujú rovnako.
+- Dátum a čas sa pri odoslaní predvyplnia na *teraz* v UTC; pri editácii môžete zadať ľubovoľnú hodnotu.
+- RST odoslané / RST prijaté, ak sú prázdne, predvolia sa na **59** pre hlasové režimy (SSB/FM/DIGITALVOICE) a **599** pre CW a digitálne režimy (CW/FT8/FT4/RTTY/PSK31/JT65). Predvolená hodnota sa riadi nadriadeným MODE, takže výber konkrétneho podrezim ako *USB* alebo *FT4* stále dáva správnu predvolenú hodnotu.
+- Chip *Duplikát v tomto denníku* sa zobrazí pod poľom volacieho znaku, ak volací znak už existuje v aktuálnom denníku. Duplikáty *nie sú* blokované.
+- **Propagačný režim** — voliteľný rozbaľovací zoznam propagačných režimov ADIF (SAT, RPT, EME, F2, Es, MS, LOS atď.). Pre bežné KV pozemné QSO nechajte prázdne.
+- **Satelitné QSO** — výber propagačného režimu *Satelit* zobrazí tri satelitné polia: **Satelit** (rozbaľovací zoznam ~110 záberov registrovaných AMSAT), **Sat mode** (písmenkové označenia AMSAT, zoskupené ako *moderné* dvojpísmenové kódy uplink/downlink hore a *zastarané* jednopísmenové kódy nižšie) a **RX pásmo** (downlink pásmo). Satelit, Sat mode a RX pásmo sú povinné — prehliadač odmietne odoslať bez nich. Výber **Sat mode** automaticky vyplní hlavné **Pásmo** uplink pásmom a **RX pásmo** downlink pásmom (napr. režim J → 2m uplink, 70cm downlink). Prepnutie *späť* na satelit z iného propagačného režimu resetuje Sat mode, takže budete vyzvaní na výber nového. Nesatelitné QSO nikdy nenesú satelitné polia; prepnutie existujúceho QSO zo satelitu na iný prop-mode ich čisto odstráni. **Sieť** a **Moja sieť** sú všeobecné polia (užitočné aj pre VHF/UHF sieťové preteky) a zostávajú viditeľné pre každé QSO.
+- **Editovať QSO** tlačidlom *Upraviť* na riadku. Formulár prepne na režim *Aktualizovať QSO*, riadok sa zvýrazní a zobrazí sa tlačidlo *Zrušiť*. Prepnutie denníkov alebo vymazanie denníka zruší editáciu automaticky.
+- **Vymazať QSO** tlačidlom *Vymazať* na riadku (vyžaduje potvrdenie).
 
 ## Import a export ADIF
 
-- **Export**: kliknite na *Exportovať .adi* v záhlaví denníka. Stiahne sa súbor s `ADIF_VER 3.1.4` a `PROGRAMID local-qso` v hlavičke. Každý záznam mapuje `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `RST_SENT`, `RST_RCVD`.
-- **Import**: kliknite na *Importovať súbor .adi* pod formulárom na vytvorenie denníka a vyberte súbor `.adi`/`.adif`. Vytvorí sa nový denník s názvom `Importované YYYY-MM-DD HH:MM UTC`. Import sa nikdy nezlučuje do existujúceho denníka.
-- Dĺžka poľa sa interpretuje ako počet znakov, čo funguje pre ASCII ADIF (všetky štandardné polia QSO). Viacbajtový obsah v nepodstatných textových poliach môže parsovať čudne.
+- **Export**: kliknite na *Exportovať .adi* v záhlaví denníka. Stiahne sa súbor zodpovedajúci **ADIF 3.1.7**. Záhlavie deklaruje `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` a `CREATED_TIMESTAMP` (UTC). Emitované polia QSO (ak nie sú prázdne): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — nasledované každým ďalším poľom ADIF zachovaným pri importe (pozri nižšie).
+- **Import**: kliknite na *Importovať súbor .adi* pod formulárom na vytvorenie denníka a vyberte súbor `.adi` / `.adif`. Vytvorí sa nový denník, pomenovaný `Imported YYYY-MM-DD HH:MM UTC`. Import nikdy nezlučuje s existujúcim denníkom.
+- **Bezstratový round-trip**: pri importe sa zachová každé pole ADIF, ktoré aplikácia nemodeluje v UI (napr. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, polia `APP_*`) na QSO a pri ďalšom exporte sa re-emituje verbatim. Exportovaný súbor, ktorý bol sám importovaný, teda zachováva všetko.
+- Dĺžka poľa sa považuje za počet UTF-8 bajtov podľa špecifikácie, takže viacbajtový text (napr. akcentované volacie znaky v `COMMENT`) sa parsuje správne.
 
-## Súkromie a údaje
+## Súkromie a dáta
 
-- Všetky údaje sú uložené v `localStorage` prehliadača pod kľúčom `local-qso:v1`.
-- Nič sa nikam nepresúva. Žiadny backend, žiadne API volania, žiadna telemetria, žiadna analytika.
-- Vymazanie údajov stránky, použitie súkromného/inkognito režimu alebo iného prehliadača/zariadenia znamená prázdny denník — na zálohu použite *Exportovať .adi*.
+- Všetky dáta sú uložené v `localStorage` vášho prehliadača pod kľúčom `local-qso:v1`.
+- Nič sa nikam neodosiela. Žiadny backend, žiadne API volanie, žiadna telemetria, žiadna analytika.
+- Vymazanie dát stránky prehliadača, používanie súkromného/inkognito režimu alebo iného prehliadača/zariadenia znamená nový prázdny denník — používajte *Exportovať .adi* na zálohovanie.
 
 ## Jazyk rozhrania
 
-Volič jazyka v záhlaví pokrýva **28 jazykov**. Vyberte si jeden a zvyšok rozhrania sa okamžite prerenderuje; vaša voľba sa uloží spolu s vašimi denníkmi a bude rešpektovaná pri ďalšej návšteve. Predvolená je angličtina.
+Selektor jazyka v záhlaví pokrýva **28 jazykov**. Zvoľte jeden a zvyšok UI sa okamžite prekreslí; vaša voľba sa uloží spolu s dennými a rešpektuje sa pri ďalšej návšteve. Predvolená je angličtina.
 
-Dostupné jazyky (vlajka emoji + natívny názov; abecedne v rámci každého písma):
+Dostupné jazyky (vlajkový emotikon + rodný názov; zoradené abecedne v rámci každého písma):
 
 🇺🇸 English · 🇨🇿 Čeština · 🇩🇰 Dansk · 🇩🇪 Deutsch · 🇪🇪 Eesti · 🇪🇸 Español · 🇫🇷 Français · 🇮🇪 Gaeilge · 🇭🇷 Hrvatski · 🇮🇹 Italiano · 🇱🇻 Latviešu · 🇱🇹 Lietuvių · 🇭🇺 Magyar · 🇳🇱 Nederlands · 🇳🇴 Norsk · 🇵🇱 Polski · 🇵🇹 Português · 🇷🇴 Română · 🇸🇰 Slovenčina · 🇸🇮 Slovenščina · 🇫🇮 Suomi · 🇸🇪 Svenska · 🇧🇾 Беларуская · 🇧🇬 Български · 🇷🇺 Русский · 🇷🇸 Српски · 🇺🇦 Українська · 🇬🇷 Ελληνικά
 
-Univerzálne technické menovky zostávajú vo svojej kanonickej forme vo všetkých jazykoch: názvy pásiem (`20m`, `70cm`, …), kódy módov ADIF (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` a kódy krajín ISO.
+Univerzálne technické označenia zostávajú v kanonickej forme vo všetkých jazykoch: názvy pásiem (`20m`, `70cm`, …), kódy ADIF režimov (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` a ISO kódy krajín.
 
-Chýba reťazec vo vašom jazyku? Každý jazyk je jeden malý súbor v [`i18n/`](i18n/) — skopírujte `i18n/en.js`, preložte hodnoty, uložte ako `i18n/<kód>.js`, potom pridajte značku `<script>` plus voľbu `<select>` do `index.html` a kód do `SUPPORTED_LANGS` v `app.js`.
+Chýba vám reťazec vo vašom jazyku? Každý jazyk je jeden malý súbor v [`i18n/`](i18n/) — skopírujte `i18n/en.js`, preložte hodnoty, uložte ako `i18n/<code>.js`, potom pridajte značku `<script>` a možnosť `<select>` v `index.html` a kód do `SUPPORTED_LANGS` v `app.js`.
 
-## Motívy
+## Témy
 
-Prepínač motívov v záhlaví prepína medzi denným (predvolený) a nočným. Voľba sa uloží spolu s vašimi denníkmi a bude rešpektovaná pri ďalšej návšteve. Natívne voľby dátumu/času sledujú motív cez `color-scheme`.
+Prepínač témy v záhlaví prepína medzi dennou (predvolenou) a nočnou. Predvoľba sa uloží spolu s vašimi denníkmi a rešpektuje sa pri ďalšej návšteve. Natívne výbery dátumu/času sa riadia témou cez `color-scheme`.
 
 ## Technické poznámky
 
-- Jednostránková aplikácia, čisté HTML + CSS + JavaScript. Žiadne frameworky, žiadny build, žiadne závislosti.
+- Single-page aplikácia, čistý HTML + CSS + JavaScript. Žiadne frameworky, žiadny krok zostavenia, žiadne závislosti.
 - Zdrojové súbory:
-  - `index.html` — markup a meta tagy.
-  - `style.css` — motívy a rozloženie (premenné deň/noc, media queries pre mobil).
-  - `app.js` — stav, persistencia, renderovanie, ADIF parser/serializer, vyhľadávanie predpona volacej značky → krajina.
-  - `favicon.svg` — vložená SVG ikona.
-  - `manifest.webmanifest` — Web App Manifest (názov, farba motívu, scope, ikona), aby aplikácia bola inštalovateľná ako PWA na mobile a desktope.
-  - `service-worker.js` — cache-first service worker, ktorý pri inštalácii prednahráva každý statický súbor, pri aktivácii odstráni staré vyrovnávacie pamäte a po prvej návšteve udržiava aplikáciu plne offline. Registrácia je automaticky vynechaná pre protokol `file://`, takže priame otvorenie `index.html` z disku zostáva čisté.
-  - `i18n/<lang>.js` — jeden súbor prekladu na podporovaný jazyk (celkom 28). Každý je malý IIFE, ktorý priraďuje `window.I18N[<lang>]` plochú mapu kľúč→reťazec. `t()` a `applyLanguage()` v `app.js` obsluhujú vyhľadávania (s anglickou náhradou) a prechádzajú DOM, aktualizujúc každý prvok `[data-i18n*]`.
-- Testované na najnovších verziách Chromium, Firefox a Safari (desktop + iOS).
+  - `index.html` — značkovanie a meta značky.
+  - `style.css` — témy a rozloženie (denné/nočné premenné, mobilné mediálne dotazy).
+  - `app.js` — stav, perzistencia, vykresľovanie, ADIF parser/serializér, vyhľadávanie predpona volacieho znaku → krajina.
+  - `favicon.svg` — inline SVG favicon.
+  - `manifest.webmanifest` — Web App Manifest (názov, farba témy, rozsah, ikona), aby bola aplikácia inštalovateľná ako PWA na mobile a desktope.
+  - `service-worker.js` — cache-first service worker, ktorý predcachuje každý statický súbor pri inštalácii, vymaže staré cache pri aktivácii a udržuje aplikáciu plne offline po prvej návšteve. Registrácia sa pri protokole `file://` preskočí automaticky, takže priame otvorenie `index.html` z disku zostáva čisté.
+  - `i18n/<lang>.js` — jeden prekladový súbor pre každý podporovaný jazyk (28 celkom). Každý je malý IIFE, ktorý priradí `window.I18N[<lang>]` plochú mapu kľúč→reťazec. `t()` a `applyLanguage()` v `app.js` spracovávajú vyhľadávania (s anglickým fallback) a prechádzajú DOM aktualizujúc každý prvok `[data-i18n*]`.
+- Testované na aktuálnom Chromium, Firefox a Safari (desktop + iOS).
 
 ## Poďakovanie
 
 Vytvoril [YL3IM](https://www.qrz.com/db/YL3IM).
 
-Vlajky krajín sa opierajú o sekvencie regionálneho indikátora Unicode. Vykresľujú sa správne na macOS, iOS, Linuxe (s emoji fontom podporujúcim vlajky) a Androide. Windows neobsahuje systémový font vlajok, takže emoji vlajok sa tam môžu zobrazovať ako dvojice písmen.
+Poďakovanie [A65BR](https://www.qrz.com/db/A65BR) Olegovi za neoceniteľné tipy, vďaka ktorým je časť satelitného QSO skutočne použiteľná — moderné dvojpísmenové označenia Sat-mode, katalóg AMSAT a automatické nastavenie uplink/downlink majú pôvod v jeho spätnej väzbe.
+
+Vlajky krajín sa opierajú o sekvencie regionálnych indikátorov Unicode. Správne sa vykresľujú na macOS, iOS, Linux (s fontom emoji schopným vlajok) a Android. Windows neobsahuje systémový font vlajok, takže vlajkové emoji sa tam môžu zobraziť ako dvojice písmen.

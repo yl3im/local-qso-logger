@@ -6,7 +6,7 @@
 
 Privaatsust austav amatöörraadiosageduste QSO-logger, mis töötab täielikult sinu brauseris. Ei kontot, ei serverit, ei jälgimist, ei analüütikat — sinu logiraamatud elavad ainult sinu brauseri `localStorage`'is ega lahku kunagi sinu seadmest.
 
-Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Projekti veebisait: [qso.ham.lv](https://qso.ham.lv).
+Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Projekti veebisait: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger iPadil töötamas](media/iPad.png)
 

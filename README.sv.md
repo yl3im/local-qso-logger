@@ -6,7 +6,7 @@
 
 En integritetsrespekterande amatörradio-QSO-loggbok som körs helt i din webbläsare. Inget konto, ingen server, ingen spårning, ingen analys — dina loggböcker lever bara i webbläsarens `localStorage` och lämnar aldrig din enhet.
 
-Av [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebbplats: [qso.ham.lv](https://qso.ham.lv).
+Av [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebbplats: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger running on iPad](media/iPad.png)
 

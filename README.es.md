@@ -6,7 +6,7 @@
 
 Un registrador de QSO de radioafición que respeta la privacidad y funciona completamente en tu navegador. Sin cuenta, sin servidor, sin rastreo, sin analíticas — tus cuadernos de registro viven únicamente en el `localStorage` de tu navegador y nunca abandonan tu dispositivo.
 
-Por [YL3IM](https://www.qrz.com/db/YL3IM). Sitio web del proyecto: [qso.ham.lv](https://qso.ham.lv).
+Por [YL3IM](https://www.qrz.com/db/YL3IM). Sitio web del proyecto: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger ejecutándose en iPad](media/iPad.png)
 

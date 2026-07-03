@@ -6,7 +6,7 @@
 
 Privatumą gerbianti mėgėjiško radijo QSO žurnalo programa, veikianti visiškai jūsų naršyklėje. Jokios paskyros, jokio serverio, jokio sekimo, jokios analizės — jūsų žurnalai gyvena tik jūsų naršyklės `localStorage` ir niekada nepalieka jūsų įrenginio.
 
-Autorius: [YL3IM](https://www.qrz.com/db/YL3IM). Projekto svetainė: [qso.ham.lv](https://qso.ham.lv).
+Autorius: [YL3IM](https://www.qrz.com/db/YL3IM). Projekto svetainė: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger veikiantis iPad'e](media/iPad.png)
 

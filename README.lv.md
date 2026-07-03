@@ -6,7 +6,7 @@
 
 Privātumu respektējošs radioamatieru QSO reģistrētājs, kas darbojas pilnībā tavā pārlūkprogrammā. Nav konta, nav servera, nav izsekošanas, nav analītikas — tavi žurnāli dzīvo tikai tavas pārlūkprogrammas `localStorage` un nekad neatstāj tavu ierīci.
 
-Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.ham.lv](https://qso.ham.lv).
+Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger darbojās uz iPad](media/iPad.png)
 

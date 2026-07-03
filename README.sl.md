@@ -6,7 +6,7 @@
 
 Dnevnik QSO za radioamaterje, ki spoštuje zasebnost in deluje povsem v vašem brskalniku. Brez računa, brez strežnika, brez sledenja, brez analitike — vaši dnevniki živijo le v `localStorage` vašega brskalnika in nikoli ne zapustijo vaše naprave.
 
-Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.ham.lv](https://qso.ham.lv).
+Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger running on iPad](media/iPad.png)
 

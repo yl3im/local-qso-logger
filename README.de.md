@@ -6,7 +6,7 @@
 
 Ein datenschutzfreundlicher Amateurfunk-QSO-Logger, der vollständig im Browser läuft. Kein Konto, kein Server, kein Tracking, keine Analytik — deine Logbücher leben ausschließlich im `localStorage` deines Browsers und verlassen niemals dein Gerät.
 
-Von [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebseite: [qso.ham.lv](https://qso.ham.lv).
+Von [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebseite: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger auf einem iPad](media/iPad.png)
 

@@ -6,7 +6,7 @@
 
 Adatvédelmet tisztelő amatőrrádiós QSO-naplózó, amely teljesen a böngésződben fut. Nincs fiók, nincs szerver, nincs nyomon követés, nincs analitika — a naplóid csak a böngésződ `localStorage`-ában élnek, és soha nem hagyják el az eszközödet.
 
-Készítette: [YL3IM](https://www.qrz.com/db/YL3IM). A projekt webhelye: [qso.ham.lv](https://qso.ham.lv).
+Készítette: [YL3IM](https://www.qrz.com/db/YL3IM). A projekt webhelye: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger iPaden futva](media/iPad.png)
 

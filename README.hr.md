@@ -6,7 +6,7 @@
 
 Logger QSO za radioamatere koji poštuje privatnost i radi potpuno u vašem pregledniku. Bez računa, bez poslužitelja, bez praćenja, bez analitike — vaši dnevnici žive samo u `localStorage` vašeg preglednika i nikad ne napuštaju vaš uređaj.
 
-Od [YL3IM](https://www.qrz.com/db/YL3IM). Web stranica projekta: [qso.ham.lv](https://qso.ham.lv).
+Od [YL3IM](https://www.qrz.com/db/YL3IM). Web stranica projekta: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger na iPadu](media/iPad.png)
 

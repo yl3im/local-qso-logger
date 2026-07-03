@@ -6,7 +6,7 @@
 
 Logálaí QSO raidió amaitéarach a chosnaíonn do phríobháideacht agus a ritheann go hiomlán i do bhrabhsálaí. Gan cuntas, gan freastalaí, gan rianú, gan anailísíocht — maireann do leabhair loga sa `localStorage` amháin i do bhrabhsálaí agus ní fhágann siad do ghléas riamh.
 
-Le [YL3IM](https://www.qrz.com/db/YL3IM). Suíomh an tionscadail: [qso.ham.lv](https://qso.ham.lv).
+Le [YL3IM](https://www.qrz.com/db/YL3IM). Suíomh an tionscadail: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger ag rith ar iPad](media/iPad.png)
 

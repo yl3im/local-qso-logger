@@ -6,7 +6,7 @@
 
 Een privacyvriendelijke amateurradio-QSO-logger die volledig in je browser draait. Geen account, geen server, geen tracking, geen analyses — je logboeken leven alleen in de `localStorage` van je browser en verlaten nooit je apparaat.
 
-Door [YL3IM](https://www.qrz.com/db/YL3IM). Projectwebsite: [qso.ham.lv](https://qso.ham.lv).
+Door [YL3IM](https://www.qrz.com/db/YL3IM). Projectwebsite: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger op iPad](media/iPad.png)
 

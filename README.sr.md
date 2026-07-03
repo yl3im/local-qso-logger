@@ -6,7 +6,7 @@
 
 Дневник QSO за радиоаматере који поштује приватност и ради потпуно у вашем претраживачу. Без налога, без сервера, без праћења, без аналитике — ваши дневници живе само у `localStorage` претраживача и никада не напуштају ваш уређај.
 
-Аутор: [YL3IM](https://www.qrz.com/db/YL3IM). Веб-сајт пројекта: [qso.ham.lv](https://qso.ham.lv).
+Аутор: [YL3IM](https://www.qrz.com/db/YL3IM). Веб-сајт пројекта: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger running on iPad](media/iPad.png)
 

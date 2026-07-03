@@ -6,7 +6,7 @@
 
 Radioamatérský QSO logger respektující soukromí, který běží celý ve vašem prohlížeči. Žádný účet, žádný server, žádné sledování, žádná analytika — vaše zápisníky žijí pouze v `localStorage` vašeho prohlížeče a nikdy neopustí vaše zařízení.
 
-Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Webové stránky projektu: [qso.ham.lv](https://qso.ham.lv).
+Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Webové stránky projektu: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger běžící na iPadu](media/iPad.png)
 

@@ -6,7 +6,7 @@
 
 Amatérsky rádiový denník QSO rešpektujúci súkromie, ktorý beží priamo vo vašom prehliadači. Žiadny účet, žiadny server, žiadne sledovanie, žiadna analytika — vaše denníky žijú iba v `localStorage` vášho prehliadača a nikdy neopustia vaše zariadenie.
 
-Od [YL3IM](https://www.qrz.com/db/YL3IM). Webová stránka projektu: [qso.ham.lv](https://qso.ham.lv).
+Od [YL3IM](https://www.qrz.com/db/YL3IM). Webová stránka projektu: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger running on iPad](media/iPad.png)
 

@@ -6,7 +6,7 @@
 
 Un carnet de liaison radioamateur respectueux de la vie privée, qui fonctionne entièrement dans votre navigateur. Pas de compte, pas de serveur, pas de traçage, pas d'analytique — vos carnets de liaison ne vivent que dans le `localStorage` de votre navigateur et ne quittent jamais votre appareil.
 
-Par [YL3IM](https://www.qrz.com/db/YL3IM). Site du projet : [qso.ham.lv](https://qso.ham.lv).
+Par [YL3IM](https://www.qrz.com/db/YL3IM). Site du projet : [qso.lv](https://qso.lv).
 
 ![Local QSO Logger sur iPad](media/iPad.png)
 

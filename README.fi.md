@@ -6,7 +6,7 @@
 
 Yksityisyyttä kunnioittava radioamatöörinen QSO-lokikirja, joka toimii kokonaan selaimessasi. Ei tiliä, ei palvelinta, ei seurantaa, ei analytiikkaa — lokikirjasi asuvat vain selaimesi `localStorage`-muistissa eivätkä koskaan poistu laitteeltasi.
 
-Tekijä: [YL3IM](https://www.qrz.com/db/YL3IM). Projektin verkkosivusto: [qso.ham.lv](https://qso.ham.lv).
+Tekijä: [YL3IM](https://www.qrz.com/db/YL3IM). Projektin verkkosivusto: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger running on iPad](media/iPad.png)
 

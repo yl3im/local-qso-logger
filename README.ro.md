@@ -6,7 +6,7 @@
 
 Un logger QSO pentru radioamatori care respectă confidențialitatea și rulează complet în browserul tău. Fără cont, fără server, fără urmărire, fără analiză — jurnalele tale trăiesc doar în `localStorage` al browserului și nu părăsesc niciodată dispozitivul tău.
 
-De [YL3IM](https://www.qrz.com/db/YL3IM). Site-ul proiectului: [qso.ham.lv](https://qso.ham.lv).
+De [YL3IM](https://www.qrz.com/db/YL3IM). Site-ul proiectului: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger pe iPad](media/iPad.png)
 

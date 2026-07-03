@@ -6,7 +6,7 @@
 
 Журнал QSO для радыёаматараў, які паважае прыватнасць і цалкам працуе ў вашым браўзеры. Без уліковага запісу, без сервера, без адсочвання, без аналітыкі — вашы журналы захоўваюцца толькі ў `localStorage` браўзера і ніколі не пакідаюць вашу прыладу.
 
-Аўтар: [YL3IM](https://www.qrz.com/db/YL3IM). Вэб-сайт праекта: [qso.ham.lv](https://qso.ham.lv).
+Аўтар: [YL3IM](https://www.qrz.com/db/YL3IM). Вэб-сайт праекта: [qso.lv](https://qso.lv).
 
 ![Local QSO Logger running on iPad](media/iPad.png)
 

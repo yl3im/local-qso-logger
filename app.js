@@ -723,6 +723,10 @@
       satModeSel.appendChild(opt);
       satModeSel.value = q.satMode;
     }
+    // Fire the sat-mode change handler so BAND and BAND_RX get derived from
+    // the sat-mode entry — imported records often lack BAND_RX. Legacy codes
+    // not in the enum are ignored by the handler and BAND/BAND_RX stay as-is.
+    satModeSel.dispatchEvent(new Event("change"));
     $("qso-sat-name").value = q.satName || "";
     updateSatVisibility();
     $("qso-submit").textContent = t("qso.update");

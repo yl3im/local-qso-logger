@@ -635,6 +635,49 @@
     $("qso-band-rx").value = down;
   });
 
+  // ---------- My grid locator button ----------
+  // Convert WGS84 lat/lon to a 6-character Maidenhead grid (uppercase, since
+  // the input auto-uppercases user entry).
+  function latLonToGrid(lat, lon) {
+    const A = 65;
+    const adjLon = lon + 180;
+    const adjLat = lat + 90;
+    const fieldLon = Math.floor(adjLon / 20);
+    const fieldLat = Math.floor(adjLat / 10);
+    const sqLon = Math.floor((adjLon % 20) / 2);
+    const sqLat = Math.floor(adjLat % 10);
+    const subLon = Math.floor(((adjLon % 2) * 60) / 5);
+    const subLat = Math.floor(((adjLat % 1) * 60) / 2.5);
+    return (
+      String.fromCharCode(A + fieldLon) +
+      String.fromCharCode(A + fieldLat) +
+      String(sqLon) +
+      String(sqLat) +
+      String.fromCharCode(A + subLon) +
+      String.fromCharCode(A + subLat)
+    );
+  }
+
+  $("qso-my-gridsquare-locate").addEventListener("click", () => {
+    const btn = $("qso-my-gridsquare-locate");
+    if (!navigator.geolocation) {
+      alert(t("alert.geolocation_unsupported"));
+      return;
+    }
+    btn.disabled = true;
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        $("qso-my-gridsquare").value = latLonToGrid(pos.coords.latitude, pos.coords.longitude);
+        btn.disabled = false;
+      },
+      (err) => {
+        btn.disabled = false;
+        alert(t("alert.geolocation_failed", err.message || String(err.code)));
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+    );
+  });
+
   function fillModeSelect(sel, defaultVal) {
     sel.innerHTML = "";
     for (const [parent, subs] of Object.entries(MODE_GROUPS)) {

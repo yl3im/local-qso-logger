@@ -49,6 +49,8 @@
     "qso.gridsquare": "Grid",
     "qso.gridsquare.placeholder": "KO26BX",
     "qso.my_gridsquare": "My grid",
+    "qso.my_gridsquare.locate": "🌐",
+    "qso.my_gridsquare.locate.aria": "Fetch grid from browser location",
     "qso.comment": "Comment",
     "qso.comment.placeholder": "",
     "qso.rst_sent": "RST sent",
@@ -80,6 +82,8 @@
     "confirm.no_callsign": "(no callsign)",
     "alert.no_qsos_in_adif": "No QSO records found in this ADIF file.",
     "alert.import_failed": "Failed to import file: {0}",
+    "alert.geolocation_unsupported": "Geolocation is not supported by this browser.",
+    "alert.geolocation_failed": "Failed to get location: {0}",
 
     // Counts / generated names
     "count.qso_one": "{0} QSO",

@@ -119,7 +119,10 @@
             </label>
             <label class="field-my-gridsquare">
               <span data-i18n="qso.my_gridsquare">My grid</span>
-              <input type="text" id="qso-my-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
+              <div class="input-with-btn">
+                <input type="text" id="qso-my-gridsquare" data-i18n-placeholder="qso.gridsquare.placeholder" placeholder="KO26BX" autocapitalize="characters" autocomplete="off" />
+                <button type="button" id="qso-my-gridsquare-locate" class="locate-btn secondary" data-i18n="qso.my_gridsquare.locate" data-i18n-aria-label="qso.my_gridsquare.locate.aria" aria-label="Fetch grid from browser location">🌐</button>
+              </div>
             </label>
           </fieldset>
 

@@ -665,16 +665,54 @@
       return;
     }
     btn.disabled = true;
+
+    const CODES = { 1: "PERMISSION_DENIED", 2: "POSITION_UNAVAILABLE", 3: "TIMEOUT" };
+    const describe = (err) =>
+      (CODES[err && err.code] || "ERROR") +
+      (err && err.message ? ": " + err.message : "");
+    // Bypass i18n for the failure alert — we've seen stale service-worker
+    // caches leave `en.js` behind newer `app.js`, in which case `t()` returns
+    // the raw key and the operator gets no diagnostic info. Hardcoded English
+    // guarantees a useful message in every context.
+    const alertFail = (err) => {
+      console.error("Geolocation failed:", err);
+      alert("Failed to get location: " + describe(err));
+    };
+
+    const onSuccess = (pos) => {
+      $("qso-my-gridsquare").value = latLonToGrid(pos.coords.latitude, pos.coords.longitude);
+      btn.disabled = false;
+    };
+
+    // Installed PWAs frequently fail high-accuracy fixes: desktop PWAs have
+    // no GPS hardware, and iOS/Android standalone contexts often can't
+    // acquire a precise fix within a short window. A 6-character grid only
+    // needs ~5km precision (subsquare is 2.5' lat ≈ 4.6km), so falling back
+    // to low-accuracy positioning is fine and much more reliable.
+    const tryLowAccuracy = () => {
+      navigator.geolocation.getCurrentPosition(
+        onSuccess,
+        (err) => {
+          btn.disabled = false;
+          alertFail(err);
+        },
+        { enableHighAccuracy: false, timeout: 20000, maximumAge: 600000 }
+      );
+    };
+
     navigator.geolocation.getCurrentPosition(
-      (pos) => {
-        $("qso-my-gridsquare").value = latLonToGrid(pos.coords.latitude, pos.coords.longitude);
-        btn.disabled = false;
-      },
+      onSuccess,
       (err) => {
+        // POSITION_UNAVAILABLE / TIMEOUT — retry without high accuracy.
+        // PERMISSION_DENIED (1) is terminal; don't retry.
+        if (err && (err.code === 2 || err.code === 3)) {
+          tryLowAccuracy();
+          return;
+        }
         btn.disabled = false;
-        alert(t("alert.geolocation_failed", err.message || String(err.code)));
+        alert(t("alert.geolocation_failed", describe(err)));
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 }
+      { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
     );
   });
 

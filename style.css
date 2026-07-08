@@ -128,6 +128,7 @@ input, select {
   min-width: 0;
 }
 input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+input::placeholder { color: var(--muted); opacity: 0.20; }
 
 button {
   border: none;
@@ -213,7 +214,10 @@ button.danger:hover { background: var(--danger); color: #fff; }
 .field-band-rx { width: 100px; }
 .field-sat-mode { width: 160px; }
 .field-gridsquare { width: 100px; }
-.field-my-gridsquare { width: 100px; }
+.field-my-gridsquare { width: 140px; }
+.input-with-btn { display: flex; gap: 0.35rem; align-items: stretch; }
+.input-with-btn input { flex: 1 1 auto; min-width: 0; }
+.input-with-btn .locate-btn { flex: 0 0 auto; padding: 0 0.5rem; font-size: 1rem; line-height: 1; height: auto; }
 /* Comment lives on its own row inside the QSO data block. */
 .field-comment { flex: 1 1 100%; min-width: 200px; }
 

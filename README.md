@@ -39,6 +39,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.lv](https://qso.
 - Sensible defaults: today's UTC date/time pre-filled, mode-aware RST defaults (59 for voice modes, 599 for CW/digital), sticky Station data + band + mode + propagation mode across consecutive QSOs (only the per-contact fields — call, their grid, comment, RST — clear after each *Log QSO*).
 - Live duplicate-callsign indicator (informational — duplicates are allowed).
 - Country flag column derived from the callsign prefix (covers ≥99% of common amateur-radio prefixes, including portable calls like `9A/M0NCG`).
+- One-tap **My grid** auto-detect: a 🌐 button next to the field asks the browser for your current coordinates and fills in the 6-character Maidenhead locator (uses the browser's Geolocation API — requires user permission).
 - Locale-aware date display in the QSO table; ISO storage and ADIF output stay unchanged.
 - Interface available in **28 languages** (English plus 22 Latin-script, 5 Cyrillic-script, and Greek); flag-emoji-prefixed selector in the header.
 - Day / night themes (day is default; the toggle lives in the header).
@@ -96,7 +97,7 @@ Higher-quality source: [media/Android_add_to_home_screen.mp4](media/Android_add_
 
 - Fill in the form and press **Log QSO**.
 - The form is organized in three blocks:
-  - **Station data** — *Station callsign* (your transmit callsign, ADIF `STATION_CALLSIGN`), *Operator* (the individual operator's callsign — distinct from *Station callsign* when a guest operator is at the mic of a club station; ADIF `OPERATOR`), and *My grid* (ADIF `MY_GRIDSQUARE`). These stay sticky across QSOs in the same session — set them once and they carry over.
+  - **Station data** — *Station callsign* (your transmit callsign, ADIF `STATION_CALLSIGN`), *Operator* (the individual operator's callsign — distinct from *Station callsign* when a guest operator is at the mic of a club station; ADIF `OPERATOR`), and *My grid* (ADIF `MY_GRIDSQUARE`) with a 🌐 button that fills the grid from your browser's current location (Geolocation API — the browser will prompt for permission the first time). These stay sticky across QSOs in the same session — set them once and they carry over.
   - **Operation mode** — *Prop. mode*, *Mode*, *Band*, plus the satellite-only *Satellite* / *Sat mode* / *RX band* when propagation mode is *Satellite*. Band, mode, and propagation mode are sticky like Station data.
   - **QSO data** — per-contact fields: *Callsign*, *Grid* (the other station's Maidenhead), *Comment* (ADIF `COMMENT`), *RST sent*, *RST rcvd*. When editing an existing QSO, *Date (UTC)* and *Time (UTC)* also appear in this block. These fields clear after each *Log QSO*.
 - All callsigns (contacted, station, operator) auto-uppercase as you type; both grid-square fields uppercase the same way.

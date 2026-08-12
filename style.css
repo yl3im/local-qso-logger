@@ -225,6 +225,62 @@ button.danger:hover { background: var(--danger); color: #fff; }
 .qso-form .sat-only { display: none; }
 .qso-form.is-sat .sat-only { display: flex; }
 
+/* Contest-only pieces — shown only when the current log is a contest log
+   (toggled via .is-contest on #qso-form, mirroring the .is-sat pattern). */
+.qso-form .contest-only { display: none; }
+.qso-form.is-contest .contest-only { display: block; }
+/* Contest exchange fields are laid out inside the block via flex-wrap,
+   mirroring how sibling .qso-block children flow. */
+.contest-fields { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: end; }
+.contest-fields label { width: 150px; }
+
+/* .cbr export button + submission-info panel: contest logs only.
+   Kept hidden by the `hidden` attribute; toggled in renderDetail(). */
+.contest-badge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.55rem;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 700;
+  vertical-align: middle;
+}
+.contest-submission {
+  margin: 0.75rem 0;
+  padding: 0.5rem 0.85rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  background: var(--panel-2);
+}
+.contest-submission > summary {
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+.contest-submission-fields {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.75rem;
+  margin-top: 0.6rem;
+}
+.contest-submission-fields label { width: 200px; }
+.contest-submission-fields label.wide { width: 100%; }
+
+/* Non-blocking warning chip for contest window / band-mode / dup edge cases.
+   Reuses the visual language of .dup-indicator below. */
+.contest-warn {
+  align-self: flex-start;
+  padding: 0.1rem 0.5rem;
+  border-radius: 999px;
+  background: var(--warn-soft);
+  color: var(--warn);
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+
 .qso-table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
 .qso-table { width: auto; border-collapse: collapse; font-size: 0.85rem; }
 .qso-table td.flag { width: 1.6rem; font-size: 1.05rem; line-height: 1; text-align: center; padding-right: 0.25rem; }

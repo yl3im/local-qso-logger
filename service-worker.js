@@ -1,6 +1,6 @@
 // Cache-first service worker for Local QSO Logger.
 // Bump CACHE when shipping new asset versions to evict the old cache.
-const CACHE = "local-qso-v23";
+const CACHE = "local-qso-v24";
 const ASSETS = [
   "./",
   "./index.html",
@@ -36,6 +36,14 @@ const ASSETS = [
   "./i18n/sr.js",
   "./i18n/uk.js",
   "./i18n/el.js",
+  "./contests/cqww-ssb.js",
+  "./contests/cqww-cw.js",
+  "./contests/cqww-rtty.js",
+  "./contests/arrl-dx-ssb.js",
+  "./contests/arrl-dx-cw.js",
+  "./contests/iaru-hf.js",
+  "./contests/arrl-fd.js",
+  "./contests/iaru-r1-fd.js",
 ];
 
 self.addEventListener("install", (event) => {

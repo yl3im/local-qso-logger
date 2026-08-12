@@ -78,6 +78,12 @@
           <span data-i18n="logbook.name.label">Log name</span>
           <input type="text" id="log-name" data-i18n-placeholder="logbook.name.placeholder" placeholder="Field Day 2026 (auto if blank)" />
         </label>
+        <label>
+          <span data-i18n="logbook.contest">Contest</span>
+          <select id="log-contest">
+            <option value="" data-i18n="logbook.contest.none">— none (regular log) —</option>
+          </select>
+        </label>
         <button type="submit" class="primary" data-i18n="logbook.create">Create logbook</button>
       </form>
 
@@ -98,13 +104,23 @@
           <div class="detail-actions">
             <button id="rename-btn" class="secondary" type="button" data-i18n="detail.rename">Rename</button>
             <button id="export-btn" class="secondary" type="button" data-i18n="detail.export">Export .adi</button>
+            <button id="export-cbr-btn" class="secondary contest-only-btn" type="button" hidden data-i18n="contest.export_cabrillo">Export .cbr</button>
             <button id="delete-log-btn" class="danger" type="button" data-i18n="detail.delete">Delete log</button>
           </div>
           <div class="detail-title">
             <h2 id="detail-name"></h2>
+            <span id="contest-badge" class="contest-badge" hidden></span>
             <input id="rename-input" class="rename-input" type="text" hidden />
           </div>
         </div>
+
+        <!-- Submission-info panel: rendered for contest logs only, driven by
+             the contest config's cabrillo.headerFields list. Fields persist
+             on logbook.contestSubmission and are used by the .cbr export. -->
+        <details id="contest-submission" class="contest-submission" hidden>
+          <summary data-i18n="contest.submission.heading">Contest submission info (for .cbr)</summary>
+          <div id="contest-submission-fields" class="contest-submission-fields"></div>
+        </details>
 
         <form id="qso-form" class="qso-form" autocomplete="off">
           <fieldset class="qso-block">
@@ -187,6 +203,15 @@
             </label>
           </fieldset>
 
+          <!-- Contest exchange block: rendered dynamically from the active
+               contest's exchange schema when the current log is a contest log
+               (toggled via .is-contest on the form, mirroring .is-sat). -->
+          <fieldset class="qso-block contest-only">
+            <legend data-i18n="qso.block.contest">Contest exchange</legend>
+            <div id="qso-contest-fields" class="contest-fields"></div>
+            <span id="contest-warn" class="contest-warn" hidden></span>
+          </fieldset>
+
           <div class="qso-actions">
             <button id="qso-submit" type="submit" class="primary" data-i18n="qso.log">Log QSO</button>
             <button id="qso-cancel" class="secondary" type="button" hidden data-i18n="qso.cancel">Cancel</button>
@@ -245,6 +270,17 @@
   <script src="i18n/sr.js"></script>
   <script src="i18n/uk.js"></script>
   <script src="i18n/el.js"></script>
+  <!-- Contest catalog: each file is a tiny IIFE that assigns
+       window.CONTESTS[<id>] a config object. Loaded before app.js so the
+       registry is populated when the contest <select> is built. -->
+  <script src="contests/cqww-ssb.js"></script>
+  <script src="contests/cqww-cw.js"></script>
+  <script src="contests/cqww-rtty.js"></script>
+  <script src="contests/arrl-dx-ssb.js"></script>
+  <script src="contests/arrl-dx-cw.js"></script>
+  <script src="contests/iaru-hf.js"></script>
+  <script src="contests/arrl-fd.js"></script>
+  <script src="contests/iaru-r1-fd.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

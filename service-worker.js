@@ -1,6 +1,6 @@
 // Cache-first service worker for Local QSO Logger.
 // Bump CACHE when shipping new asset versions to evict the old cache.
-const CACHE = "local-qso-v24";
+const CACHE = "local-qso-v25";
 const ASSETS = [
   "./",
   "./index.html",
@@ -36,14 +36,31 @@ const ASSETS = [
   "./i18n/sr.js",
   "./i18n/uk.js",
   "./i18n/el.js",
-  "./contests/cqww-ssb.js",
-  "./contests/cqww-cw.js",
-  "./contests/cqww-rtty.js",
+  "./contests/arrl-10m-dx.js",
+  "./contests/arrl-10m-w.js",
+  "./contests/arrl-160m-dx.js",
+  "./contests/arrl-160m-w.js",
   "./contests/arrl-dx-ssb.js",
   "./contests/arrl-dx-cw.js",
-  "./contests/iaru-hf.js",
   "./contests/arrl-fd.js",
+  "./contests/arrl-rtty-ru-dx.js",
+  "./contests/arrl-rtty-ru-w.js",
+  "./contests/baltic.js",
+  "./contests/cq-160-cw.js",
+  "./contests/cq-160-ssb.js",
+  "./contests/cq-wpx-cw.js",
+  "./contests/cq-wpx-rtty.js",
+  "./contests/cq-wpx-ssb.js",
+  "./contests/cqww-cw.js",
+  "./contests/cqww-rtty.js",
+  "./contests/cqww-ssb.js",
+  "./contests/iaru-hf.js",
   "./contests/iaru-r1-fd.js",
+  "./contests/nrau-baltic-cw.js",
+  "./contests/nrau-baltic-ssb.js",
+  "./contests/sp-dx.js",
+  "./contests/wae-cw.js",
+  "./contests/wae-ssb.js",
 ];
 
 self.addEventListener("install", (event) => {

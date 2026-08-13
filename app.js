@@ -475,6 +475,7 @@
   const renameInput = $("rename-input");
   const qsoForm = $("qso-form");
   const qsoTbody = $("qso-tbody");
+  const qsoTheadRow = $("qso-thead-row");
   const qsoEmpty = $("qso-empty");
   const themeToggle = $("theme-toggle");
   const dupIndicator = $("dup-indicator");
@@ -1163,6 +1164,22 @@
     detailName.textContent = log.name;
     renderContestUi(log);
 
+    // Contest logs get one extra column per contest.exchange[] field, appended
+    // after the fixed RST R column. Rebuild the trailing [data-contest-col]
+    // cells every render so switching logs / contests cleans up correctly.
+    const contest = getContest(log.contestId);
+    if (qsoTheadRow) {
+      qsoTheadRow.querySelectorAll("[data-contest-col]").forEach((el) => el.remove());
+      if (contest) {
+        for (const f of contest.exchange) {
+          const th = document.createElement("th");
+          th.dataset.contestCol = "";
+          th.textContent = f.label;
+          qsoTheadRow.appendChild(th);
+        }
+      }
+    }
+
     qsoTbody.innerHTML = "";
     // Newest first.
     const rows = [...log.qsos].reverse();
@@ -1201,6 +1218,15 @@
       cells[7].textContent = q.propMode || "—";
       cells[8].textContent = q.rstSent || "—";
       cells[9].textContent = q.rstRcvd || "—";
+      if (contest) {
+        for (const f of contest.exchange) {
+          const td = document.createElement("td");
+          td.className = "mono";
+          td.dataset.contestCol = "";
+          td.textContent = (q.contestExchange && q.contestExchange[f.id]) || "—";
+          tr.appendChild(td);
+        }
+      }
       editBtn.addEventListener("click", () => startEdit(q));
       delBtn.addEventListener("click", () => {
         const who = q.call || t("confirm.no_callsign");

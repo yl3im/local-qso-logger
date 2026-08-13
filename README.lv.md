@@ -20,6 +20,7 @@ Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.l
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Žurnāli](#žurnāli)
 - [QSO](#qso)
+- [Sacensības](#sacensības)
 - [ADIF importēšana un eksportēšana](#adif-importēšana-un-eksportēšana)
 - [Privātums un dati](#privātums-un-dati)
 - [Interfeisa valoda](#interfeisa-valoda)
@@ -30,7 +31,8 @@ Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.l
 ## Funkcijas
 
 - Vairāki žurnāli; katrs ar savu QSO sarakstu.
-- Žurnāla darbības: izveidot, pārdēvēt, dzēst, importēt no ADIF, eksportēt ADIF (`.adi`).
+- **Sacensību žurnāli** ir izvēles — izvēlies no 68 iebūvēto sacensību kataloga, veidojot žurnālu. QSO veidlapa iegūst sacensībām raksturīgu bloku *Sacensību apmaiņa*, dublikātu noteikšana ievēro sacensību noteikumu, un *Eksportēt .cbr* rada Cabrillo v3 iesniegšanas failu blakus parastajam ADIF eksportam.
+- Žurnāla darbības: izveidot, pārdēvēt, dzēst, importēt no ADIF, eksportēt ADIF (`.adi`), plus *Eksportēt .cbr* (Cabrillo v3) sacensību žurnāliem.
 - QSO veidlapa sadalīta trīs blokos: **Stacijas dati** (stacijas izsaukuma signāls, operatora izsaukuma signāls, savs tīklojums), kas paliek saistīti starp QSO; **Darbības režīms** (izplatīšanas režīms, satelīts, režīms, satelīta režīms, josla, RX josla) ar satelīta laukiem, kas redzami tikai tad, kad izplatīšanas režīms ir *Satelīts*; un **QSO dati** (saziņas izsaukuma signāls, saziņas tīklojums, UTC datums/laiks rediģēšanas laikā, komentārs, RST sūtīts, RST saņemts).
 - Pilna ADIF `MODE` → `SUBMODE` taksonomija režīmu nolaižamajā sarakstā — izvēlies vecāku režīmu (`SSB`, `MFSK`, …) vai dodies tieši uz konkrētu apakšrežīmu (`USB`, `FT4`, …); lietotne saglabā abus laukus atbilstoši ADIF un tabula rāda konkrēto apakšrežīmu, ja tāds ir.
 - Pilns ADIF izplatīšanas režīmu uzskaitījums (SAT, RPT, EME, ES, MS, Aurora utt.) kā nolaižamais saraksts.
@@ -50,7 +52,7 @@ Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.l
 
 Vienkārši atver `index.html` modernā pārlūkprogrammā. Nav veidošanas soļa, nav instalācijas, nav servera.
 
-Ja vēlies to mitināt, novieto statiskos failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` un `i18n/` direktoriju ar 28 tulkojumu failiem) uz jebkura statiskā hosta (GitHub Pages, Netlify, savs tīmekļa serveris). Darbojas arī ar `file://` — pakalpojuma darbinieka reģistrācija automātiski tiek izlaista `file:` protokolā, tāpēc `index.html` atvēršana tieši no diska darbojas tīri.
+Ja vēlies to mitināt, novieto statiskos failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, `i18n/` direktoriju ar 28 tulkojumu failiem un `contests/` direktoriju ar 68 sacensību konfigurācijām) uz jebkura statiskā hosta (GitHub Pages, Netlify, savs tīmekļa serveris). Darbojas arī ar `file://` — pakalpojuma darbinieka reģistrācija automātiski tiek izlaista `file:` protokolā, tāpēc `index.html` atvēršana tieši no diska darbojas tīri.
 
 Mitinot ar HTTPS, lietotne kļūst instalējama kā PWA (pārlūkprogrammas izvēlne *Instalēt lietotni* / *Pievienot sākuma ekrānam*) un darbojas bezsaistē pēc pirmās apmeklēšanas, pateicoties kešatmiņai prioritizētam pakalpojuma darbiniekam, kas iepriekš kešo visus statiskos failus (UI + visi tulkojumi).
 
@@ -108,6 +110,42 @@ Augstākas kvalitātes avots: [media/Android_add_to_home_screen.mp4](media/Andro
 - **Rediģēt QSO** ar pogu *Rediģēt* rindā. Veidlapa pārslēdzas uz *Atjaunināt QSO* režīmu, rinda tiek izgaismota, un parādās poga *Atcelt*. Žurnālu pārslēgšana vai žurnāla dzēšana automātiski atceļ rediģēšanu.
 - **Dzēst QSO** ar pogu *Dzēst* rindā (prasa apstiprinājumu).
 
+## Sacensības
+
+Žurnāls var papildus būt **sacensību žurnāls** — izvēlies sacensību no *Sacensību* nolaižamā saraksta žurnāla izveides veidlapā. Tukšs saraksts = parasts žurnāls (noklusējums, esošā uzvedība nemainās).
+
+Sacensību žurnāli iegūst:
+
+- **Sacensību apmaiņas bloks** QSO veidlapā, kas tiek dinamiski atveidots pēc izvēlētās sacensības shēmas. Lauku tipi: `text`, `number` un `serial` (automātiski palielinošs, tikai lasāms). Lauki ar karogu *sticky* (tavs zona / apgabals / distrikts / jauda / vecums / …) tiek iepriekš aizpildīti no iepriekšējā QSO vērtības; katra QSO lauki (viņu zona, viņu sērijas numurs, …) tiek notīrīti pēc katra *Reģistrēt QSO*.
+- **Sacensību žetons** blakus žurnāla nosaukumam galvenē.
+- **Dublikātu noteikšana** ievēro sacensības `duplicateRule` (`per-band-mode`, `per-band`, `per-day` vai `off`). Indikators paliek informatīvs — nekad nebloķē iesniegšanu.
+- **Brīdinājuma žetons**, kad pašreizējais UTC iekrīt ārpus deklarētajiem sacensību datumiem (12 gadi jau ielādēti, 2026–2037) vai kad izvēlētā josla / režīms nav sacensības atļauto sarakstā. Nekad nebloķē.
+- **Iesniegšanas informācijas panelis** žurnāla galvenē: iebūvēta veidlapa Cabrillo galvenes laukiem, ko deklarē sacensība (kategorija, jauda, vārds, klubs, adrese, komentārs, …). Vērtības saglabājas žurnālā, nevis katrā QSO.
+- **Eksportēt .cbr poga** žurnāla galvenē, blakus *Eksportēt .adi*. Rada Cabrillo v3 failu: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` ir iepriekš aizpildīti no pirmā QSO stacijas datiem, pārējais no iesniegšanas informācijas paneļa, tad viena `QSO:` rinda katram kontaktam hronoloģiskā secībā, izmantojot sacensības `sentTemplate` / `rcvdTemplate` kolonnas.
+
+### Iebūvētais sacensību katalogs (68 konfigurācijas)
+
+Grupēts pa saimēm:
+
+- **CQ saime** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **ARRL saime** (9): ARRL DX SSB/CW (DX puse), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (katrs piegādāts *abās* DX un W/VE perspektīvās).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE un citas Eiropas** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltijas Sacensības, NRAU-Baltic SSB/CW, SP DX.
+- **Centrāl-/Austrumeiropas asimetriskās — abas perspektīvas** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Krievu klubu / RadioSport** (12): Russian DX (abas puses), Russian WW RTTY, Russian WW MultiMode, Jurija Gagarina International, Krievijas Federācijas kauss CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Baltkrievija + Itālija + Horvātija + Spānija + Ukrainas RTTY** (12): Belarus BFRR CW+SSB (abas puses), ARI DX (abas puses), Croatian 9A CW (abas puses), Spanish CNCW (abas puses), Ukrainian RTTY (abas puses).
+- **Globālas** (2): All Asian DX CW+SSB.
+
+Asimetriskas sacensības (kur mājas valsts un DX puse sūta atšķirīgu apmaiņu) tiek piegādātas **divās konfigurācijās** — viena mājas valsts perspektīvai (saistīts reģiona kods) un otra DX perspektīvai (saistīts sērijas numurs). Saņemtās puses lauks ir viens brīva teksta lauks, lai operators varētu ievadīt jebkuru formātu atkarībā no kontakta.
+
+Katra konfigurācija satur:
+
+- Sacensību apmaiņas vērtības, kas tiek atkārtoti izvadītas ADIF eksportā caur `APP_LQ_*` nosaukumu telpas laukiem; galvenes zīmogs `APP_LQ_CONTEST_ID` ļauj vēlākam atkārtotam importam atjaunot žurnālu kā to pašu sacensību ar visiem apmaiņas laukiem neskartiem.
+- 12 gadus sacensību datumu (2026–2037), lai *ārpus sacensību loga* žetons paliktu noderīgs desmit gadus bez pārpubliskošanas.
+- Cabrillo veidne, kas kartē katru apmaiņas lauku pareizajā `QSO:` rindas kolonnā.
+
+Jaunas sacensības pievienošana = pievieno failu `contests/<id>.js` (skat. [`contests/cqww-ssb.js`](contests/cqww-ssb.js) kā etalonu), pievieno `<script>` tagu [`index.html`](index.html) un ceļu masīvam `ASSETS` [`service-worker.js`](service-worker.js). Nav nepieciešamas izmaiņas `app.js` — renderer, iesniegšanas apstrādātājs, dublikātu detektors, ADIF apļa apmaiņa un Cabrillo emitētājs pieņem katru konfigurāciju kā tīrus datus.
+
 ## ADIF importēšana un eksportēšana
 
 - **Eksportēt**: noklikšķini *Eksportēt .adi* žurnāla galvenē. Tiek lejupielādēts fails atbilstoši **ADIF 3.1.7**. Galvene deklarē `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` un `CREATED_TIMESTAMP` (UTC). Lauki par QSO, kas tiek raidīti (ja nav tukši): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — kam seko katrs papildu ADIF lauks, kas saglabāts importēšanas laikā (sk. zemāk).
@@ -148,6 +186,7 @@ Tēmas pārslēgšana galvenē pārslēdzas starp dienu (noklusējums) un nakti.
   - `manifest.webmanifest` — Web App Manifest (nosaukums, tēmas krāsa, apjoms, ikona), lai lietotne būtu instalējama kā PWA mobilajā ierīcē un darbvirsmā.
   - `service-worker.js` — kešatmiņai prioritizēts pakalpojuma darbinieks, kas instalēšanas laikā iepriekš kešo visus statiskos failus, aktivizēšanas laikā dzēš veco kešatmiņu un pēc pirmās apmeklēšanas saglabā lietotni pilnīgi bezsaistē. Reģistrācija automātiski tiek izlaista `file://` protokolā, lai `index.html` atvēršana tieši no diska paliktu tīra.
   - `i18n/<lang>.js` — viens tulkojumu fails katrai atbalstītajai valodai (kopā 28). Katrs ir neliels IIFE, kas piešķir `window.I18N[<lang>]` plakanu atslēga→virkne kartēšanu. `t()` un `applyLanguage()` `app.js` apstrādā meklēšanas (ar angļu valodas rezervi) un iziet DOM atjauninot katru `[data-i18n*]` elementu.
+  - `contests/<id>.js` — viena sacensību konfigurācija katrai atbalstītajai sacensībai (kopā 68). Katrs ir neliels IIFE, kas piešķir `window.CONTESTS[<id>]` shēmai atbilstošu konfigurācijas objektu (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Ielādēts ar `<script>` tagiem `index.html` pirms `app.js`, lai reģistrs būtu aizpildīts, kad tiek uzbūvēts sacensību nolaižamais saraksts.
 - Pārbaudīts uz jaunākiem Chromium, Firefox un Safari (darbvirsma + iOS).
 
 ## Pateicības

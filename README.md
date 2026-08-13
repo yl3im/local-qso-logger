@@ -20,6 +20,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.lv](https://qso.
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Logbooks](#logbooks)
 - [QSOs](#qsos)
+- [Contests](#contests)
 - [ADIF import & export](#adif-import--export)
 - [Privacy and data](#privacy-and-data)
 - [Interface language](#interface-language)
@@ -30,7 +31,8 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.lv](https://qso.
 ## Features
 
 - Multiple logbooks; each with its own list of QSOs.
-- Logbook actions: create, rename, delete, import from ADIF, export to ADIF (`.adi`).
+- **Contest logs** are opt-in — pick from a catalog of 68 bundled contests when creating a logbook. The QSO form grows a contest-specific *Contest exchange* block, duplicate detection honours the contest's rule, and *Export .cbr* emits a Cabrillo v3 submission file alongside the usual ADIF export.
+- Logbook actions: create, rename, delete, import from ADIF, export to ADIF (`.adi`), plus *Export .cbr* (Cabrillo v3) for contest logbooks.
 - QSO form grouped into three blocks: **Station data** (station callsign, operator callsign, own grid) that stays sticky across QSOs; **Operation mode** (propagation mode, satellite, mode, sat mode, band, RX band) with satellite fields revealed only when propagation mode is *Satellite*; and **QSO data** (contacted callsign, contacted grid, UTC date/time when editing, comment, RST sent, RST rcvd).
 - Full ADIF `MODE` → `SUBMODE` taxonomy in the mode dropdown — pick a parent mode (`SSB`, `MFSK`, …) or drill straight down to a specific submode (`USB`, `FT4`, …); the app stores both fields per ADIF, and the table shows the specific submode when there is one.
 - Full ADIF propagation-mode enumeration (SAT, RPT, EME, ES, MS, Aurora, etc.) as a dropdown.
@@ -51,7 +53,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.lv](https://qso.
 
 Just open `index.html` in a modern browser. There's no build step, no install, no server.
 
-If you want to host it, drop the static files (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, and the `i18n/` directory with the 28 translation files) onto any static host (GitHub Pages, Netlify, your own web server). It will work over `file://` as well — the service-worker registration is skipped automatically on the `file:` protocol so opening `index.html` directly from disk still works cleanly.
+If you want to host it, drop the static files (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, the `i18n/` directory with the 28 translation files, and the `contests/` directory with the 68 contest configs) onto any static host (GitHub Pages, Netlify, your own web server). It will work over `file://` as well — the service-worker registration is skipped automatically on the `file:` protocol so opening `index.html` directly from disk still works cleanly.
 
 When served over HTTPS, the app becomes installable as a PWA (the browser's *Install app* / *Add to Home Screen* menu) and works offline after the first visit thanks to a cache-first service worker that precaches every static file (UI + all translations).
 
@@ -109,6 +111,42 @@ Higher-quality source: [media/Android_add_to_home_screen.mp4](media/Android_add_
 - **Edit a QSO** with the *Edit* button on the row. The form switches to *Update QSO* mode, the row is highlighted, and a *Cancel* button appears. Switching logbooks or deleting the log cancels the edit automatically.
 - **Delete a QSO** with the *Delete* button on the row (asks for confirmation).
 
+## Contests
+
+A logbook can optionally be a **contest log** — pick a contest from the *Contest* dropdown in the Create-logbook form. Empty dropdown = regular logbook (default, existing behaviour unchanged).
+
+Contest logs get:
+
+- **Contest-exchange block** in the QSO form, rendered dynamically from the selected contest's schema. Field types are `text`, `number`, and `serial` (auto-incrementing, read-only). Fields flagged *sticky* (your own zone / county / district / power / age / …) pre-fill from the previous QSO's value; per-QSO fields (their zone, their serial, …) clear after each *Log QSO*.
+- **Contest badge** next to the log name in the detail header.
+- **Duplicate detection** honours the contest's `duplicateRule` (`per-band-mode`, `per-band`, `per-day`, or `off`). The chip is still informational — never blocks submission.
+- **Warning chip** when the current UTC falls outside any of the contest's declared date windows (12 years pre-loaded, 2026–2037), or when the selected band / mode is not in the contest's legal set. Never blocks.
+- **Submission info panel** in the detail header: an inline form for the Cabrillo header fields the contest declares (category, power, name, club, address, soapbox, …). Values persist on the logbook, not per-QSO.
+- **Export .cbr** button in the detail header, alongside *Export .adi*. Emits a Cabrillo v3 file: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` pre-filled from the first QSO's station data, the rest from the Submission-info panel, then one `QSO:` line per contact in chronological order using the contest's `sentTemplate` / `rcvdTemplate` columns.
+
+### Bundled contest catalog (68 configs)
+
+Grouped by family:
+
+- **CQ family** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **ARRL family** (9): ARRL DX SSB/CW (DX side), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (each shipped as *both* DX and W/VE perspectives).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE & other European** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Central/Eastern European asymmetric — both perspectives** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Russian club / RadioSport** (12): Russian DX (both sides), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Belarus + Italian + Croatian + Spanish + Ukrainian RTTY** (12): Belarus BFRR CW+SSB (both sides), ARI DX (both sides), Croatian 9A CW (both sides), Spanish CNCW (both sides), Ukrainian RTTY (both sides).
+- **Global** (2): All Asian DX CW+SSB.
+
+Asymmetric contests (where the host country and the DX side send different exchanges) ship **two configs** — one for the host-country perspective (sticky region code) and one for the DX perspective (sticky serial). The received-side field is a single free-text catch-all so the operator can type either format depending on the contact.
+
+Every config carries:
+
+- Contest-exchange values re-emitted in ADIF export via `APP_LQ_*` namespace fields; the header stamp `APP_LQ_CONTEST_ID` lets a subsequent re-import rehydrate the logbook as the same contest with all fields intact.
+- 12 years of date windows (2026–2037) so the *out of contest window* chip stays useful for a decade without a re-ship.
+- A Cabrillo template mapping every exchange field to the correct `QSO:` line column.
+
+Adding a new contest = drop a `contests/<id>.js` file (see [`contests/cqww-ssb.js`](contests/cqww-ssb.js) for a reference), add a `<script>` tag in [`index.html`](index.html), and add the path to the `ASSETS` array in [`service-worker.js`](service-worker.js). No `app.js` change needed — the renderer, submit handler, duplicate detector, ADIF round-trip and Cabrillo emitter absorb every config as pure data.
+
 ## ADIF import & export
 
 - **Export**: click *Export .adi* in the logbook header. A file is downloaded conforming to **ADIF 3.1.7**. The header declares `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION`, and `CREATED_TIMESTAMP` (UTC). Per-QSO fields emitted (when non-empty): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — followed by every extra ADIF field that was preserved on import (see below).
@@ -149,6 +187,7 @@ The theme toggle in the header switches between day (default) and night. The pre
   - `manifest.webmanifest` — Web App Manifest (name, theme color, scope, icon) so the app is installable as a PWA on mobile and desktop.
   - `service-worker.js` — cache-first service worker that precaches every static file on install, evicts old caches on activate, and keeps the app working fully offline after the first visit. Registration is skipped automatically on the `file://` protocol so opening `index.html` directly from disk stays clean.
   - `i18n/<lang>.js` — one translation file per supported language (28 total). Each is a tiny IIFE that assigns `window.I18N[<lang>]` a flat key→string map. `t()` and `applyLanguage()` in `app.js` handle lookups (with English fallback) and walk the DOM updating every `[data-i18n*]` element.
+  - `contests/<id>.js` — one contest config per supported contest (68 total). Each is a tiny IIFE that assigns `window.CONTESTS[<id>]` a schema-conformant config object (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Loaded by `<script>` tags in `index.html` before `app.js` so the registry is populated when the Contest dropdown is built.
 - Tested on recent Chromium, Firefox, and Safari (desktop + iOS).
 
 ## Credits

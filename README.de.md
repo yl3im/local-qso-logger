@@ -20,7 +20,8 @@ Von [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebseite: [qso.lv](https://qso
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Logbücher](#logbücher)
 - [QSOs](#qsos)
-- [ADIF-Import und -Export](#adif-import-und--export)
+- [Contests](#contests)
+- [Import und Export](#import-und-export)
 - [Datenschutz und Daten](#datenschutz-und-daten)
 - [Oberflächensprache](#oberflächensprache)
 - [Themes](#themes)
@@ -30,15 +31,17 @@ Von [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebseite: [qso.lv](https://qso
 ## Funktionen
 
 - Mehrere Logbücher; jedes mit eigener QSO-Liste.
-- Logbuch-Aktionen: Erstellen, Umbenennen, Löschen, Import aus ADIF, Export nach ADIF (`.adi`).
+- **Contest-Logs** sind optional — wähle beim Erstellen eines Logbuchs aus einem Katalog von 68 mitgelieferten Contests aus. Das QSO-Formular erhält einen contest-spezifischen *Contest-Austausch*-Block, die Duplikaterkennung folgt der Regel des Contests und *Als .cbr exportieren* erzeugt eine Cabrillo-v3-Einreichungsdatei zusätzlich zum üblichen ADIF-Export.
+- Logbuch-Aktionen: Erstellen, Umbenennen, Löschen, Import einer Log-Datei (ADIF oder Cabrillo — Format wird automatisch erkannt), Export nach ADIF (`.adi`) sowie *Als .cbr exportieren* (Cabrillo v3) für Contest-Logbücher. Der erneute Import einer zuvor von der App exportierten `.cbr`-Datei stellt sie als dasselbe Contest-Logbuch wieder her.
 - QSO-Formular in drei Blöcke gegliedert: **Stationsdaten** (Stationsrufzeichen, Operatorrufzeichen, eigenes Locator-Feld) bleiben über QSOs hinweg haften; **Betriebsart** (Ausbreitungsmodus, Satellit, Betriebsart, Sat-Mode, Band, RX-Band) mit Satellitenfeldern, die nur sichtbar sind, wenn der Ausbreitungsmodus *Satellit* ist; und **QSO-Daten** (kontaktiertes Rufzeichen, Locator der Gegenstation, UTC-Datum/-Uhrzeit beim Bearbeiten, Kommentar, RST gesendet, RST empfangen).
 - Vollständige ADIF-`MODE` → `SUBMODE`-Taxonomie im Betriebsart-Dropdown — wähle eine übergeordnete Betriebsart (`SSB`, `MFSK`, …) oder gehe direkt zu einer spezifischen Unterbetriebsart (`USB`, `FT4`, …); die App speichert beide Felder gemäß ADIF, und die Tabelle zeigt die spezifische Unterbetriebsart wenn vorhanden.
 - Vollständige ADIF-Ausbreitungsmodus-Aufzählung (SAT, RPT, EME, ES, MS, Aurora usw.) als Dropdown.
 - Vollständiger AMSAT-Satellitenkatalog (~110 Satelliten) und ein zweistufiges **Sat-Mode**-Dropdown: bevorzugte zweistellige Uplink/Downlink-Codes oben (LU, LV, SX, UU, UV, VA, VU, VV) und die älteren einstelligen Bezeichnungen (A/B/J/K/L/R/S/T/U/V/W/X) als *veraltet* gruppiert unten. Die Wahl eines Sat-Modes passt automatisch `BAND` (Uplink) und `RX band` (Downlink) an.
 - Bearbeitung und Löschung beliebiger QSOs (mit Bestätigung beim Löschen).
-- Sinnvolle Voreinstellungen: UTC-Datum/-Uhrzeit auf *jetzt* vorausgefüllt, betriebsartbewusste RST-Standards (59 für Sprachbetriebsarten, 599 für CW/Digi), klebende Stationsdaten + Band + Betriebsart + Ausbreitungsmodus über aufeinanderfolgende QSOs (nur die pro-Kontakt-Felder — Rufzeichen, Locator, Kommentar, RST — werden nach jedem *QSO loggen* geleert).
+- Sinnvolle Voreinstellungen: UTC-Datum/-Uhrzeit auf *jetzt* vorausgefüllt, betriebsartbewusste RST-Standards (59 für Sprachbetriebsarten, 599 für CW/Digi), klebende Stationsdaten + Band + Betriebsart + Ausbreitungsmodus über aufeinanderfolgende QSOs (nur die pro-Kontakt-Felder — Rufzeichen, Locator der Gegenstation, Kommentar, RST — werden nach jedem *QSO loggen* geleert).
 - Live-Duplikat-Rufzeichen-Anzeige (informativ — Duplikate sind erlaubt).
 - Länderflaggen-Spalte aus dem Rufzeichenpräfix abgeleitet (deckt ≥99 % gängiger Amateurfunk-Präfixe ab, einschließlich Portabelbetrieb wie `9A/M0NCG`).
+- **Mein Locator** per Ein-Tipp automatisch erkennen: ein 🌐-Knopf neben dem Feld fragt den Browser nach deinen aktuellen Koordinaten und füllt den 6-stelligen Maidenhead-Locator ein (verwendet die Geolocation-API des Browsers — erfordert die Zustimmung des Nutzers).
 - Lokalisierte Datumsanzeige in der QSO-Tabelle; ISO-Speicherung und ADIF-Ausgabe bleiben unverändert.
 - Oberfläche in **28 Sprachen** verfügbar (Englisch plus 22 lateinische, 5 kyrillische und Griechisch); Flaggen-Emoji-Selektor im Header.
 - Tag-/Nacht-Themes (Tag ist Standard; der Umschalter ist im Header).
@@ -50,7 +53,7 @@ Von [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebseite: [qso.lv](https://qso
 
 Öffne einfach `index.html` in einem modernen Browser. Kein Build-Schritt, keine Installation, kein Server.
 
-Wenn du es hosten möchtest, lege die statischen Dateien (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` und das Verzeichnis `i18n/` mit den 28 Übersetzungsdateien) auf einen beliebigen statischen Host (GitHub Pages, Netlify, eigener Webserver). Es funktioniert auch über `file://` — die Service-Worker-Registrierung wird auf dem `file:`-Protokoll automatisch übersprungen, sodass das direkte Öffnen von `index.html` von der Festplatte sauber funktioniert.
+Wenn du es hosten möchtest, lege die statischen Dateien (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, das einzelne `i18n.js`-Bundle, das alle 28 Sprachwörterbücher enthält, und das einzelne `contests.js`-Bundle, das alle 68 Contest-Konfigurationen enthält) auf einen beliebigen statischen Host (GitHub Pages, Netlify, eigener Webserver). Es funktioniert auch über `file://` — die Service-Worker-Registrierung wird auf dem `file:`-Protokoll automatisch übersprungen, sodass das direkte Öffnen von `index.html` von der Festplatte sauber funktioniert.
 
 Bei Hosting über HTTPS wird die App als PWA installierbar (Menü *App installieren* / *Zum Startbildschirm hinzufügen* im Browser) und funktioniert nach dem ersten Besuch dank eines Cache-First-Service-Workers, der alle statischen Dateien (UI + alle Übersetzungen) vorauszwischenspeichert, offline.
 
@@ -96,7 +99,7 @@ Quelle in höherer Qualität: [media/Android_add_to_home_screen.mp4](media/Andro
 
 - Fülle das Formular aus und drücke **QSO loggen**.
 - Das Formular ist in drei Blöcke gegliedert:
-  - **Stationsdaten** — *Stationsrufzeichen* (dein Senderufzeichen, ADIF `STATION_CALLSIGN`), *Operator* (das Rufzeichen des einzelnen Operators — unterscheidet sich vom *Stationsrufzeichen*, wenn ein Gastoperator am Mikrofon einer Klubstation sitzt; ADIF `OPERATOR`) und *Mein Locator* (ADIF `MY_GRIDSQUARE`). Diese bleiben sitzungsübergreifend über QSOs haften — einmal setzen und sie übertragen sich.
+  - **Stationsdaten** — *Stationsrufzeichen* (dein Senderufzeichen, ADIF `STATION_CALLSIGN`), *Operator* (das Rufzeichen des einzelnen Operators — unterscheidet sich vom *Stationsrufzeichen*, wenn ein Gastoperator am Mikrofon einer Klubstation sitzt; ADIF `OPERATOR`) und *Mein Locator* (ADIF `MY_GRIDSQUARE`) mit einem 🌐-Knopf, der den Locator aus dem aktuellen Standort deines Browsers einträgt (Geolocation-API — der Browser fragt beim ersten Mal nach der Erlaubnis). Diese bleiben sitzungsübergreifend über QSOs haften — einmal setzen und sie übertragen sich.
   - **Betriebsart** — *Ausbreitungsmodus*, *Betriebsart*, *Band*, plus die Satelliten-Felder *Satellit* / *Sat-Mode* / *RX-Band* wenn der Ausbreitungsmodus *Satellit* ist. Band, Betriebsart und Ausbreitungsmodus haften wie Stationsdaten.
   - **QSO-Daten** — pro-Kontakt-Felder: *Rufzeichen*, *Locator* (Maidenhead der Gegenstation), *Kommentar* (ADIF `COMMENT`), *RST gesendet*, *RST empfangen*. Beim Bearbeiten eines bestehenden QSOs erscheinen in diesem Block auch *Datum (UTC)* und *Uhrzeit (UTC)*. Diese Felder werden nach jedem *QSO loggen* geleert.
 - Alle Rufzeichen (kontaktiert, Station, Operator) werden beim Tippen automatisch großgeschrieben; beide Locator-Felder machen dasselbe.
@@ -108,12 +111,50 @@ Quelle in höherer Qualität: [media/Android_add_to_home_screen.mp4](media/Andro
 - **Ein QSO bearbeiten** mit der Schaltfläche *Bearbeiten* in der Zeile. Das Formular wechselt in den Modus *QSO aktualisieren*, die Zeile wird hervorgehoben, und eine Schaltfläche *Abbrechen* erscheint. Das Wechseln von Logbüchern oder das Löschen des Logs bricht die Bearbeitung automatisch ab.
 - **Ein QSO löschen** mit der Schaltfläche *Löschen* in der Zeile (fragt nach Bestätigung).
 
-## ADIF-Import und -Export
+## Contests
 
-- **Export**: klicke auf *Als .adi exportieren* in der Logbuch-Kopfzeile. Eine Datei wird heruntergeladen, die **ADIF 3.1.7** entspricht. Der Header deklariert `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` und `CREATED_TIMESTAMP` (UTC). Pro-QSO-Felder (wenn nicht leer): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — gefolgt von jedem beim Import erhaltenen ADIF-Zusatzfeld (siehe unten).
-- **Import**: klicke auf *ADI-Datei importieren* unter dem Logbuch-Erstellen-Formular und wähle eine `.adi` / `.adif`-Datei. Ein neues Logbuch wird daraus erstellt, benannt `Imported YYYY-MM-DD HH:MM UTC`. Import führt niemals mit einem bestehenden Logbuch zusammen.
-- **Verlustfreier Durchlauf**: beim Import wird jedes ADIF-Feld, das die App nicht in ihrer UI modelliert (z. B. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*`-Felder), im QSO gespeichert und beim nächsten Export unverändert wieder ausgegeben. Der Export einer Datei, die selbst importiert wurde, erhält damit alles.
-- Die Feldlänge wird als UTF-8-Byteanzahl behandelt, wie die Spezifikation es erfordert, sodass Mehrbytetext (z. B. akzentuierte Zeichen in `COMMENT`) korrekt geparst wird.
+Ein Logbuch kann optional ein **Contest-Log** sein — wähle einen Contest aus dem *Contest*-Dropdown im Formular zum Erstellen eines Logbuchs. Leeres Dropdown = reguläres Logbuch (Standard, bisheriges Verhalten unverändert).
+
+Contest-Logs bekommen:
+
+- **Contest-Austausch-Block** im QSO-Formular, der dynamisch aus dem Schema des gewählten Contests aufgebaut wird. Feldtypen sind `text`, `number` und `serial` (automatisch hochzählend, schreibgeschützt). Mit *sticky* markierte Felder (deine eigene Zone / dein Bezirk / Distrikt / Leistung / Alter / …) werden aus dem Wert des vorherigen QSOs vorausgefüllt; pro-QSO-Felder (Zone der Gegenstation, deren Seriennummer, …) werden nach jedem *QSO loggen* geleert.
+- **Contest-Badge** neben dem Log-Namen in der Detail-Kopfzeile.
+- **Duplikaterkennung** folgt der `duplicateRule` des Contests (`per-band-mode`, `per-band`, `per-day` oder `off`). Der Chip ist weiterhin nur informativ — er blockiert die Übermittlung niemals.
+- **Warnungs-Chip**, wenn die aktuelle UTC außerhalb aller vom Contest deklarierten Zeitfenster liegt (12 Jahre vorgeladen, 2026–2037), oder wenn das gewählte Band / die gewählte Betriebsart nicht in der zulässigen Menge des Contests enthalten ist. Blockiert nie.
+- **Einreichungs-Info-Panel** in der Detail-Kopfzeile: ein Inline-Formular für die Cabrillo-Header-Felder, die der Contest deklariert (Kategorie, Leistung, Name, Klub, Adresse, Soapbox, …). Werte werden im Logbuch gespeichert, nicht pro QSO.
+- **Als .cbr exportieren**-Knopf in der Detail-Kopfzeile neben *Als .adi exportieren*. Erzeugt eine Cabrillo-v3-Datei: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` werden aus den Stationsdaten des ersten QSOs vorausgefüllt, der Rest aus dem Einreichungs-Info-Panel, dann eine `QSO:`-Zeile pro Kontakt in chronologischer Reihenfolge unter Verwendung der `sentTemplate` / `rcvdTemplate`-Spalten des Contests.
+- **Cabrillo-Re-Import** über den Standard-Knopf *Log-Datei importieren* — eine `.cbr`-Datei, die zuvor von der App exportiert wurde (oder von jedem anderen Logger, der Standard-Cabrillo v3 ausgibt), wird als frisches Contest-Logbuch des richtigen Typs zurückgespielt. Der `CONTEST:`-Header wird gegen den mitgelieferten Katalog abgeglichen; wenn mehrere Konfigurationen dasselbe Tag teilen (z. B. `ARRL-10` passt sowohl auf `arrl-10m-dx` als auch auf `arrl-10m-w`), disambiguiert die App durch Abgleich des Modus-Buchstabens der QSO-Zeile und der Spaltenzahl gegen die Vorlage jedes Kandidaten und bevorzugt dann die `-dx`-Variante. Header-Felder (Kategorie, Name, Klub, Soapbox, …) füllen das Einreichungs-Info-Panel wieder auf; QSO-Austauschwerte füllen `q.contestExchange` gemäß der Vorlage des Contests wieder auf.
+
+### Mitgelieferter Contest-Katalog (68 Konfigurationen)
+
+Nach Familie gruppiert:
+
+- **CQ-Familie** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **ARRL-Familie** (9): ARRL DX SSB/CW (DX-Seite), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (jeweils sowohl aus DX- als auch aus W/VE-Perspektive geliefert).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE & weitere europäische** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Mittel-/Osteuropäisch asymmetrisch — beide Perspektiven** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Russischer Klub / RadioSport** (12): Russian DX (beide Seiten), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Weißrussland + Italien + Kroatien + Spanien + Ukrainian RTTY** (12): Belarus BFRR CW+SSB (beide Seiten), ARI DX (beide Seiten), Croatian 9A CW (beide Seiten), Spanish CNCW (beide Seiten), Ukrainian RTTY (beide Seiten).
+- **Global** (2): All Asian DX CW+SSB.
+
+Asymmetrische Contests (bei denen das Gastgeberland und die DX-Seite unterschiedliche Austauschdaten senden) werden mit **zwei Konfigurationen** geliefert — eine für die Perspektive des Gastgeberlandes (klebender Regionalcode) und eine für die DX-Perspektive (klebende Seriennummer). Das empfangene Feld ist ein einziger frei ausfüllbarer Sammelbegriff, sodass der Operator je nach Kontakt jedes Format eingeben kann.
+
+Jede Konfiguration bringt mit:
+
+- Contest-Austauschwerte werden im ADIF-Export über den `APP_LQ_*`-Namensraum wieder ausgegeben; die Header-Marke `APP_LQ_CONTEST_ID` erlaubt einem späteren Re-Import, das Logbuch als denselben Contest mit allen Feldern intakt wiederherzustellen.
+- 12 Jahre Zeitfenster (2026–2037), damit der *außerhalb des Contest-Fensters*-Chip ein Jahrzehnt lang ohne erneute Auslieferung nützlich bleibt.
+- Eine Cabrillo-Vorlage, die jedes Austauschfeld auf die korrekte Spalte der `QSO:`-Zeile abbildet.
+
+Einen neuen Contest hinzufügen = ein neuer IIFE-Block wird an der alphabetischen Position in [`contests.js`](contests.js) eingefügt (jeder vorhandene Contest ist durch einen `// ==== <id> ====`-Kopfkommentar begrenzt, sodass leicht zu finden ist, wo eingefügt werden soll). Keine Änderung an `index.html`, keine Änderung an `service-worker.js`, keine Änderung an `app.js` nötig — der Renderer, der Submit-Handler, die Duplikaterkennung, der ADIF-Round-Trip und der Cabrillo-Emitter verarbeiten jede Konfiguration als reine Daten.
+
+## Import und Export
+
+- **Import** einer beliebigen Log-Datei — klicke auf *Log-Datei importieren* unter dem Formular zum Erstellen eines Logbuchs und wähle eine `.adi` / `.adif` (ADIF)- oder `.cbr` / `.cab` (Cabrillo v3)-Datei aus. Das Format wird aus der ersten Zeile der Datei automatisch erkannt (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → eine „EDI wird noch nicht unterstützt"-Warnung). Es wird immer ein neues Logbuch erstellt — der Import führt niemals in ein bestehendes zusammen. ADIF-Importe werden als reguläre Logs eingelesen, es sei denn, der Header trägt ein `APP_LQ_CONTEST_ID`, das von unserem eigenen Contest-Export geschrieben wurde (in diesem Fall wird das Log als Contest-Log dieses Contests wiederhergestellt). Cabrillo-Importe werden immer als Contest-Logs eingelesen — siehe Abschnitt *Contests* für die Zuordnung des `CONTEST:`-Tags zum mitgelieferten Katalog.
+- **ADIF-Export**: klicke auf *Als .adi exportieren* in der Logbuch-Kopfzeile. Eine Datei wird heruntergeladen, die **ADIF 3.1.7** entspricht. Der Header deklariert `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` und `CREATED_TIMESTAMP` (UTC). Pro-QSO-Felder (wenn nicht leer): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — gefolgt von jedem beim Import erhaltenen ADIF-Zusatzfeld (siehe unten).
+- **Cabrillo-Export** wird oben im Abschnitt *Contests* dokumentiert — er steht nur für Contest-Logbücher zur Verfügung (der Knopf *Als .cbr exportieren* erscheint in der Logbuch-Kopfzeile, wenn das Log einen Contest hat).
+- **Verlustfreier Durchlauf**: beim ADIF-Import wird jedes Feld, das die App nicht in ihrer UI modelliert (z. B. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*`-Felder), im QSO gespeichert und beim nächsten ADIF-Export unverändert wieder ausgegeben. Der Export einer Datei, die selbst importiert wurde, erhält damit alles.
+- Die Feldlänge wird in ADIF als UTF-8-Byteanzahl behandelt, wie die Spezifikation es erfordert, sodass Mehrbytetext (z. B. akzentuierte Zeichen in `COMMENT`) korrekt geparst wird.
 
 ## Datenschutz und Daten
 
@@ -131,7 +172,7 @@ Verfügbare Sprachen (Flaggen-Emoji + Eigenname; alphabetisch innerhalb jedes Sc
 
 Universelle technische Bezeichnungen bleiben in allen Sprachen in ihrer kanonischen Form: Bandbezeichnungen (`20m`, `70cm`, …), ADIF-Betriebsartkürzel (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` und ISO-Ländercodes.
 
-Fehlt ein String in deiner Sprache? Jede Sprache ist eine einzige kleine Datei unter [`i18n/`](i18n/) — kopiere `i18n/en.js`, übersetze die Werte, speichere als `i18n/<code>.js`, füge dann ein `<script>`-Tag plus eine `<select>`-Option in `index.html` und den Code in `SUPPORTED_LANGS` in `app.js` hinzu.
+Fehlt ein String in deiner Sprache? Jedes Sprachwörterbuch lebt in einem einzigen [`i18n.js`](i18n.js)-Bundle, das durch `// ==== <lang> ====`-Kopfkommentare in 28 Abschnitte unterteilt ist. Grep nach dem Kopf deiner Sprache, um zu ihrem Abschnitt zu springen, und füge dann den Schlüssel hinzu / bearbeite ihn. Eine ganz neue Sprache hinzufügen = ein neuer IIFE-Block wird an der alphabetischen Position in `i18n.js` eingefügt, der Sprachcode wird zu `SUPPORTED_LANGS` in `app.js` hinzugefügt und eine `<select>`-Option wird in `index.html` ergänzt.
 
 ## Themes
 
@@ -147,7 +188,8 @@ Der Theme-Umschalter im Header wechselt zwischen Tag (Standard) und Nacht. Die E
   - `favicon.svg` — Inline-SVG-Favicon.
   - `manifest.webmanifest` — Web App Manifest (Name, Theme-Farbe, Scope, Icon), damit die App als PWA auf Mobilgeräten und dem Desktop installierbar ist.
   - `service-worker.js` — Cache-First-Service-Worker, der alle statischen Dateien bei der Installation vorauszwischenspeichert, alte Caches bei der Aktivierung löscht und die App nach dem ersten Besuch vollständig offline hält. Die Registrierung wird auf dem `file://`-Protokoll automatisch übersprungen, sodass das direkte Öffnen von `index.html` von der Festplatte sauber bleibt.
-  - `i18n/<lang>.js` — eine Übersetzungsdatei pro unterstützter Sprache (28 insgesamt). Jede ist ein kleines IIFE, das `window.I18N[<lang>]` eine flache Schlüssel→Wert-Map zuweist. `t()` und `applyLanguage()` in `app.js` verarbeiten Lookups (mit englischem Fallback) und durchlaufen das DOM und aktualisieren jedes `[data-i18n*]`-Element.
+  - `i18n.js` — ein einziges handgepflegtes Bundle, das alle 28 Sprachwörterbücher enthält. Jede Sprache ist ein eigenständiges IIFE, das `window.I18N[<lang>]` eine flache Schlüssel→Wert-Map zuweist. Blöcke sind durch `// ==== <lang> ====`-Kopfkommentare begrenzt — grep nach einem, um zu dieser Sprache zu springen. Als eine Datei gebündelt statt als 28 einzelne Dateien, weil Übersetzungsdateien sehr repetitiv sind (dieselben Schlüsselnamen, dieselbe Platzhalter-Syntax) und gzip die gesamte Menge weit besser komprimiert als 28 separate Streams — spart ~23 KB beim ersten Laden und reduziert 27 HTTP-Anfragen. `t()` und `applyLanguage()` in `app.js` verarbeiten Lookups (mit englischem Fallback) und durchlaufen das DOM und aktualisieren jedes `[data-i18n*]`-Element.
+  - `contests.js` — ein einziges handgepflegtes Bundle, das alle 68 Contest-Konfigurationen enthält. Jeder Contest ist ein eigenständiges IIFE, das `window.CONTESTS[<id>]` ein schemakonformes Konfigurationsobjekt zuweist (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Blöcke sind durch `// ==== <id> ====`-Kopfkommentare begrenzt — grep nach einem, um zu diesem Contest zu springen. Als eine Datei gebündelt statt als 68 einzelne Dateien, weil Contest-Konfigurationen sehr repetitiv sind (dasselbe Schema, dasselbe `APP_LQ_*`-Präfix, dieselben Cabrillo-Header-Feldnamen) und gzip die gesamte Menge weit besser komprimiert als 68 separate Streams — spart ~42 KB beim ersten Laden und reduziert 67 HTTP-Anfragen. Wird von einem einzigen `<script>`-Tag in `index.html` vor `app.js` geladen, sodass die Registry beim Aufbau des Contest-Dropdowns bereits gefüllt ist.
 - Getestet auf aktuellem Chromium, Firefox und Safari (Desktop + iOS).
 
 ## Danksagungen

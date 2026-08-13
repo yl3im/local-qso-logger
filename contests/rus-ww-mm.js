@@ -1,14 +1,15 @@
-/* CQ Worldwide DX Contest, CW.
- * https://cqww.com/rules.htm
- * Exchange: RST + CQ Zone (2 digits, 01-40).
+/* Russian WW MultiMode Contest.
+ * https://ruwwmm.srr.ru/en/rules/
+ * Exchange: RST + serial (mixed modes — CW, SSB, digital). Held last full
+ * weekend of November.
  */
 (function () {
   window.CONTESTS = window.CONTESTS || {};
-  window.CONTESTS["cqww-cw"] = {
-    id: "cqww-cw",
-    name: "CQ Worldwide DX Contest, CW",
-    shortName: "CQ WW CW",
-    url: "https://cqww.com/rules.htm",
+  window.CONTESTS["rus-ww-mm"] = {
+    id: "rus-ww-mm",
+    name: "Russian WW MultiMode Contest",
+    shortName: "RUS WW MM",
+    url: "https://ruwwmm.srr.ru/en/rules/",
     windows: [
       { start: "2026-11-28T00:00:00Z", end: "2026-11-29T23:59:59Z" },
       { start: "2027-11-27T00:00:00Z", end: "2027-11-28T23:59:59Z" },
@@ -24,29 +25,27 @@
       { start: "2037-11-28T00:00:00Z", end: "2037-11-29T23:59:59Z" },
     ],
     bands: ["160m", "80m", "40m", "20m", "15m", "10m"],
-    modes: ["CW"],
+    modes: ["CW", "SSB", "RTTY", "PSK", "FT8", "FT4"],
     exchange: [
       {
-        id: "sent_zone", type: "text", label: "My CQ Zone",
-        placeholder: "15", required: true, sticky: true, maxLength: 2,
-        adifField: "APP_LQ_SENT_ZONE",
+        id: "sent_serial", type: "serial", label: "My serial",
+        placeholder: "001", required: true, maxLength: 4,
+        adifField: "APP_LQ_SENT_SERIAL",
       },
       {
-        id: "rcvd_zone", type: "text", label: "Their CQ Zone",
-        placeholder: "15", required: true, maxLength: 2,
-        adifField: "APP_LQ_RCVD_ZONE",
+        id: "rcvd_serial", type: "number", label: "Their serial",
+        placeholder: "001", required: true, maxLength: 4,
+        adifField: "APP_LQ_RCVD_SERIAL",
       },
     ],
     duplicateRule: "per-band-mode",
     cabrillo: {
-      contest: "CQ-WW-CW",
-      sentTemplate: ["rst_sent", "sent_zone"],
-      rcvdTemplate: ["rst_rcvd", "rcvd_zone"],
+      contest: "RUS-WW-MM",
+      sentTemplate: ["rst_sent", "sent_serial"],
+      rcvdTemplate: ["rst_rcvd", "rcvd_serial"],
       headerFields: [
-        "CATEGORY-OPERATOR", "CATEGORY-ASSISTED", "CATEGORY-BAND",
-        "CATEGORY-POWER",    "CATEGORY-MODE",     "CATEGORY-TRANSMITTER",
-        "CATEGORY-OVERLAY",  "CLUB",              "NAME",
-        "ADDRESS",           "EMAIL",             "SOAPBOX",
+        "CATEGORY-OPERATOR", "CATEGORY-POWER", "CATEGORY-MODE",
+        "CATEGORY-BAND", "CLUB", "NAME", "ADDRESS", "EMAIL", "SOAPBOX",
       ],
     },
   };

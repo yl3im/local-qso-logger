@@ -87,8 +87,8 @@
         <button type="submit" class="primary" data-i18n="logbook.create">Create logbook</button>
       </form>
 
-      <button id="import-btn" class="secondary import-btn" type="button" data-i18n="logbook.import">Import .adi file</button>
-      <input id="import-input" type="file" accept=".adi,.adif,text/plain" hidden />
+      <button id="import-btn" class="secondary import-btn" type="button" data-i18n="logbook.import">Import log file</button>
+      <input id="import-input" type="file" accept=".adi,.adif,.cbr,.cab,.log,text/plain" hidden />
 
       <ul id="log-list" class="log-list"></ul>
     </section>
@@ -242,105 +242,16 @@
     </section>
   </main>
 
-  <script src="i18n/en.js"></script>
-  <script src="i18n/cs.js"></script>
-  <script src="i18n/da.js"></script>
-  <script src="i18n/de.js"></script>
-  <script src="i18n/et.js"></script>
-  <script src="i18n/es.js"></script>
-  <script src="i18n/fr.js"></script>
-  <script src="i18n/ga.js"></script>
-  <script src="i18n/hr.js"></script>
-  <script src="i18n/it.js"></script>
-  <script src="i18n/lv.js"></script>
-  <script src="i18n/lt.js"></script>
-  <script src="i18n/hu.js"></script>
-  <script src="i18n/nl.js"></script>
-  <script src="i18n/no.js"></script>
-  <script src="i18n/pl.js"></script>
-  <script src="i18n/pt.js"></script>
-  <script src="i18n/ro.js"></script>
-  <script src="i18n/sk.js"></script>
-  <script src="i18n/sl.js"></script>
-  <script src="i18n/fi.js"></script>
-  <script src="i18n/sv.js"></script>
-  <script src="i18n/be.js"></script>
-  <script src="i18n/bg.js"></script>
-  <script src="i18n/ru.js"></script>
-  <script src="i18n/sr.js"></script>
-  <script src="i18n/uk.js"></script>
-  <script src="i18n/el.js"></script>
-  <!-- Contest catalog: each file is a tiny IIFE that assigns
-       window.CONTESTS[<id>] a config object. Loaded before app.js so the
-       registry is populated when the contest <select> is built. -->
-  <script src="contests/9a-cw-9a.js"></script>
-  <script src="contests/9a-cw-dx.js"></script>
-  <script src="contests/all-asia-cw.js"></script>
-  <script src="contests/all-asia-ssb.js"></script>
-  <script src="contests/ari-dx-dx.js"></script>
-  <script src="contests/ari-dx-i.js"></script>
-  <script src="contests/arrl-10m-dx.js"></script>
-  <script src="contests/arrl-10m-w.js"></script>
-  <script src="contests/arrl-160m-dx.js"></script>
-  <script src="contests/arrl-160m-w.js"></script>
-  <script src="contests/arrl-dx-cw.js"></script>
-  <script src="contests/arrl-dx-ssb.js"></script>
-  <script src="contests/arrl-fd.js"></script>
-  <script src="contests/arrl-rtty-ru-dx.js"></script>
-  <script src="contests/arrl-rtty-ru-w.js"></script>
-  <script src="contests/asrucamp.js"></script>
-  <script src="contests/baltic.js"></script>
-  <script src="contests/bfrr-cw-dx.js"></script>
-  <script src="contests/bfrr-cw-ew.js"></script>
-  <script src="contests/bfrr-ssb-dx.js"></script>
-  <script src="contests/bfrr-ssb-ew.js"></script>
-  <script src="contests/cnc-cw-dx.js"></script>
-  <script src="contests/cnc-cw-ea.js"></script>
-  <script src="contests/cq-160-cw.js"></script>
-  <script src="contests/cq-160-ssb.js"></script>
-  <script src="contests/cq-m.js"></script>
-  <script src="contests/cq-wpx-cw.js"></script>
-  <script src="contests/cq-wpx-rtty.js"></script>
-  <script src="contests/cq-wpx-ssb.js"></script>
-  <script src="contests/cqww-cw.js"></script>
-  <script src="contests/cqww-rtty.js"></script>
-  <script src="contests/cqww-ssb.js"></script>
-  <script src="contests/dzcup.js"></script>
-  <script src="contests/eu-hf-championship.js"></script>
-  <script src="contests/gagarin.js"></script>
-  <script src="contests/ha-dx-dx.js"></script>
-  <script src="contests/ha-dx-ha.js"></script>
-  <script src="contests/iaru-hf.js"></script>
-  <script src="contests/iaru-r1-fd.js"></script>
-  <script src="contests/lz-dx.js"></script>
-  <script src="contests/nrau-baltic-cw.js"></script>
-  <script src="contests/nrau-baltic-ssb.js"></script>
-  <script src="contests/okom-dx-cw-dx.js"></script>
-  <script src="contests/okom-dx-cw-ok.js"></script>
-  <script src="contests/okom-dx-ssb-dx.js"></script>
-  <script src="contests/okom-dx-ssb-ok.js"></script>
-  <script src="contests/raem.js"></script>
-  <script src="contests/rdac.js"></script>
-  <script src="contests/ref-cw-dx.js"></script>
-  <script src="contests/ref-cw-f.js"></script>
-  <script src="contests/ref-ssb-dx.js"></script>
-  <script src="contests/ref-ssb-f.js"></script>
-  <script src="contests/rfc-cw.js"></script>
-  <script src="contests/rfc-ssb.js"></script>
-  <script src="contests/rrtc.js"></script>
-  <script src="contests/rus-ww-mm.js"></script>
-  <script src="contests/russian-dx-dx.js"></script>
-  <script src="contests/russian-dx-ru.js"></script>
-  <script src="contests/russian-ww-rtty.js"></script>
-  <script src="contests/sp-dx.js"></script>
-  <script src="contests/ur-dx-dx.js"></script>
-  <script src="contests/ur-dx-ur.js"></script>
-  <script src="contests/ur-rtty-dx.js"></script>
-  <script src="contests/ur-rtty-ur.js"></script>
-  <script src="contests/wae-cw.js"></script>
-  <script src="contests/wae-ssb.js"></script>
-  <script src="contests/yo-dx-hf-dx.js"></script>
-  <script src="contests/yo-dx-hf-yo.js"></script>
+  <!-- i18n catalog: a single bundle carrying all 28 language dictionaries
+       (see i18n.js for individual sections, delimited by "==== <lang> ===="
+       header comments). Loaded before app.js so window.I18N is populated
+       when applyLanguage() runs. -->
+  <script src="i18n.js"></script>
+  <!-- Contest catalog: a single bundle carrying all 68 contest configs
+       (see contests.js for individual sections, delimited by "==== <id> ===="
+       header comments). Loaded before app.js so window.CONTESTS is populated
+       when the Contest dropdown is built. -->
+  <script src="contests.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

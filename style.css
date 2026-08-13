@@ -103,7 +103,11 @@ body {
   gap: 1rem;
   flex-wrap: wrap;
 }
-.detail-actions { display: flex; gap: 0.5rem; }
+/* flex-wrap lets long translated labels (Eksportēt .adi / Экспортировать .adi
+   / Delete log) reflow onto a second row instead of overflowing horizontally
+   or being clipped. The mobile media query below tightens this into a 2x2
+   grid; on desktop the buttons stay on one row as long as they fit. */
+.detail-actions { display: flex; gap: 0.5rem; flex-wrap: wrap; }
 
 .stack { display: flex; flex-direction: column; gap: 0.6rem; }
 
@@ -355,7 +359,11 @@ button.danger:hover { background: var(--danger); color: #fff; }
      *height* floor + vertical grow, producing a huge blank gap. Reset. */
   .detail-title { flex: 0 0 auto; min-width: 0; }
   .detail-actions { width: 100%; }
-  .detail-actions button { flex: 1; }
+  /* `flex-basis: calc(50% - 0.25rem)` accounts for the 0.5rem gap, giving
+     two buttons per row exactly. With flex-wrap on the base rule, four
+     buttons render as a 2x2 grid; three (non-contest log — no Export .cbr)
+     render 2 + 1 with the last button growing to fill the second row. */
+  .detail-actions button { flex: 1 1 calc(50% - 0.25rem); min-width: 0; }
   button { min-height: 40px; }
   /* Stack the QSO form on phones:
      labels default to full-row, Band+Mode share a row, RST sent + RST rcvd

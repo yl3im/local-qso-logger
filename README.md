@@ -21,7 +21,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.lv](https://qso.
 - [Logbooks](#logbooks)
 - [QSOs](#qsos)
 - [Contests](#contests)
-- [ADIF import & export](#adif-import--export)
+- [Import & export](#import--export)
 - [Privacy and data](#privacy-and-data)
 - [Interface language](#interface-language)
 - [Themes](#themes)
@@ -32,7 +32,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.lv](https://qso.
 
 - Multiple logbooks; each with its own list of QSOs.
 - **Contest logs** are opt-in — pick from a catalog of 68 bundled contests when creating a logbook. The QSO form grows a contest-specific *Contest exchange* block, duplicate detection honours the contest's rule, and *Export .cbr* emits a Cabrillo v3 submission file alongside the usual ADIF export.
-- Logbook actions: create, rename, delete, import from ADIF, export to ADIF (`.adi`), plus *Export .cbr* (Cabrillo v3) for contest logbooks.
+- Logbook actions: create, rename, delete, import a log file (ADIF or Cabrillo — format auto-detected), export to ADIF (`.adi`), plus *Export .cbr* (Cabrillo v3) for contest logbooks. Re-importing a `.cbr` file that was previously exported by the app rehydrates it as the same contest logbook.
 - QSO form grouped into three blocks: **Station data** (station callsign, operator callsign, own grid) that stays sticky across QSOs; **Operation mode** (propagation mode, satellite, mode, sat mode, band, RX band) with satellite fields revealed only when propagation mode is *Satellite*; and **QSO data** (contacted callsign, contacted grid, UTC date/time when editing, comment, RST sent, RST rcvd).
 - Full ADIF `MODE` → `SUBMODE` taxonomy in the mode dropdown — pick a parent mode (`SSB`, `MFSK`, …) or drill straight down to a specific submode (`USB`, `FT4`, …); the app stores both fields per ADIF, and the table shows the specific submode when there is one.
 - Full ADIF propagation-mode enumeration (SAT, RPT, EME, ES, MS, Aurora, etc.) as a dropdown.
@@ -53,7 +53,7 @@ By [YL3IM](https://www.qrz.com/db/YL3IM). Project website: [qso.lv](https://qso.
 
 Just open `index.html` in a modern browser. There's no build step, no install, no server.
 
-If you want to host it, drop the static files (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, the `i18n/` directory with the 28 translation files, and the `contests/` directory with the 68 contest configs) onto any static host (GitHub Pages, Netlify, your own web server). It will work over `file://` as well — the service-worker registration is skipped automatically on the `file:` protocol so opening `index.html` directly from disk still works cleanly.
+If you want to host it, drop the static files (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, the single `i18n.js` bundle carrying all 28 language dictionaries, and the single `contests.js` bundle carrying all 68 contest configs) onto any static host (GitHub Pages, Netlify, your own web server). It will work over `file://` as well — the service-worker registration is skipped automatically on the `file:` protocol so opening `index.html` directly from disk still works cleanly.
 
 When served over HTTPS, the app becomes installable as a PWA (the browser's *Install app* / *Add to Home Screen* menu) and works offline after the first visit thanks to a cache-first service worker that precaches every static file (UI + all translations).
 
@@ -123,6 +123,7 @@ Contest logs get:
 - **Warning chip** when the current UTC falls outside any of the contest's declared date windows (12 years pre-loaded, 2026–2037), or when the selected band / mode is not in the contest's legal set. Never blocks.
 - **Submission info panel** in the detail header: an inline form for the Cabrillo header fields the contest declares (category, power, name, club, address, soapbox, …). Values persist on the logbook, not per-QSO.
 - **Export .cbr** button in the detail header, alongside *Export .adi*. Emits a Cabrillo v3 file: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` pre-filled from the first QSO's station data, the rest from the Submission-info panel, then one `QSO:` line per contact in chronological order using the contest's `sentTemplate` / `rcvdTemplate` columns.
+- **Cabrillo re-import** via the standard *Import log file* button — a `.cbr` file previously exported by the app (or by any other logger that emits standard Cabrillo v3) round-trips back into a fresh contest logbook of the correct type. The `CONTEST:` header is matched against the bundled catalog; when multiple configs share the same tag (e.g. `ARRL-10` matches both `arrl-10m-dx` and `arrl-10m-w`), the app disambiguates by matching the QSO-line mode letter and column count against each candidate's template, then prefers the `-dx` variant. Header fields (category, name, club, soapbox, …) rehydrate the Submission-info panel; QSO exchange values rehydrate `q.contestExchange` per the contest's template.
 
 ### Bundled contest catalog (68 configs)
 
@@ -145,14 +146,15 @@ Every config carries:
 - 12 years of date windows (2026–2037) so the *out of contest window* chip stays useful for a decade without a re-ship.
 - A Cabrillo template mapping every exchange field to the correct `QSO:` line column.
 
-Adding a new contest = drop a `contests/<id>.js` file (see [`contests/cqww-ssb.js`](contests/cqww-ssb.js) for a reference), add a `<script>` tag in [`index.html`](index.html), and add the path to the `ASSETS` array in [`service-worker.js`](service-worker.js). No `app.js` change needed — the renderer, submit handler, duplicate detector, ADIF round-trip and Cabrillo emitter absorb every config as pure data.
+Adding a new contest = paste a new IIFE block into [`contests.js`](contests.js) at the alphabetical position (each existing contest is delimited by a `// ==== <id> ====` header comment, so it's easy to find where to insert). No `index.html` change, no `service-worker.js` change, no `app.js` change needed — the renderer, submit handler, duplicate detector, ADIF round-trip and Cabrillo emitter absorb every config as pure data.
 
-## ADIF import & export
+## Import & export
 
-- **Export**: click *Export .adi* in the logbook header. A file is downloaded conforming to **ADIF 3.1.7**. The header declares `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION`, and `CREATED_TIMESTAMP` (UTC). Per-QSO fields emitted (when non-empty): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — followed by every extra ADIF field that was preserved on import (see below).
-- **Import**: click *Import .adi file* under the Create-logbook form and pick a `.adi` / `.adif` file. A new logbook is created from it, named `Imported YYYY-MM-DD HH:MM UTC`. Importing never merges into an existing logbook.
-- **Lossless round-trip**: on import, any ADIF field the app doesn't model in its UI (e.g. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` fields) is preserved on the QSO and re-emitted verbatim on the next export. So exporting a file that was itself imported preserves everything.
-- Field-length is treated as a UTF-8 byte count as the spec requires, so multi-byte text (e.g. accented callsigns in `COMMENT`) parses correctly.
+- **Import** any log file — click *Import log file* under the Create-logbook form and pick a `.adi` / `.adif` (ADIF) or `.cbr` / `.cab` (Cabrillo v3) file. The format is auto-detected from the file's first line (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → an "EDI not yet supported" alert). A new logbook is always created — importing never merges into an existing one. ADIF imports come in as regular logs unless the header carries an `APP_LQ_CONTEST_ID` written by our own contest export (in which case the log rehydrates as a contest log of that contest). Cabrillo imports always come in as contest logs — see the *Contests* section for how the `CONTEST:` tag is matched against the bundled catalog.
+- **ADIF export**: click *Export .adi* in the logbook header. A file is downloaded conforming to **ADIF 3.1.7**. The header declares `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION`, and `CREATED_TIMESTAMP` (UTC). Per-QSO fields emitted (when non-empty): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — followed by every extra ADIF field that was preserved on import (see below).
+- **Cabrillo export** is documented in the *Contests* section above — it's available only for contest logbooks (the *Export .cbr* button appears in the logbook header when the log has a contest).
+- **Lossless round-trip**: on ADIF import, any field the app doesn't model in its UI (e.g. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` fields) is preserved on the QSO and re-emitted verbatim on the next ADIF export. So exporting a file that was itself imported preserves everything.
+- Field-length in ADIF is treated as a UTF-8 byte count as the spec requires, so multi-byte text (e.g. accented callsigns in `COMMENT`) parses correctly.
 
 ## Privacy and data
 
@@ -170,7 +172,7 @@ Available languages (flag emoji + native name; ordered alphabetically within eac
 
 Universal technical labels stay in their canonical form across all languages: band names (`20m`, `70cm`, …), ADIF mode codes (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC`, and ISO country codes.
 
-Missing a string in your language? Each language is a single small file under [`i18n/`](i18n/) — copy `i18n/en.js`, translate the values, save as `i18n/<code>.js`, then add a `<script>` tag plus a `<select>` option in `index.html` and the code in `SUPPORTED_LANGS` in `app.js`.
+Missing a string in your language? Every language dictionary lives in a single [`i18n.js`](i18n.js) bundle, split into 28 sections by `// ==== <lang> ====` header comments. Grep for the header of your language to jump to its section, then add/edit the key. Adding a whole new language = paste a new IIFE block into `i18n.js` at the alphabetical position, add the language code to `SUPPORTED_LANGS` in `app.js`, and add a `<select>` option in `index.html`.
 
 ## Themes
 
@@ -186,8 +188,8 @@ The theme toggle in the header switches between day (default) and night. The pre
   - `favicon.svg` — inline SVG favicon.
   - `manifest.webmanifest` — Web App Manifest (name, theme color, scope, icon) so the app is installable as a PWA on mobile and desktop.
   - `service-worker.js` — cache-first service worker that precaches every static file on install, evicts old caches on activate, and keeps the app working fully offline after the first visit. Registration is skipped automatically on the `file://` protocol so opening `index.html` directly from disk stays clean.
-  - `i18n/<lang>.js` — one translation file per supported language (28 total). Each is a tiny IIFE that assigns `window.I18N[<lang>]` a flat key→string map. `t()` and `applyLanguage()` in `app.js` handle lookups (with English fallback) and walk the DOM updating every `[data-i18n*]` element.
-  - `contests/<id>.js` — one contest config per supported contest (68 total). Each is a tiny IIFE that assigns `window.CONTESTS[<id>]` a schema-conformant config object (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Loaded by `<script>` tags in `index.html` before `app.js` so the registry is populated when the Contest dropdown is built.
+  - `i18n.js` — a single hand-maintained bundle carrying all 28 language dictionaries. Each language is a self-contained IIFE that assigns `window.I18N[<lang>]` a flat key→string map. Blocks are delimited by `// ==== <lang> ====` header comments — grep for one to jump to that language. Bundled into one file rather than 28 individual files because translation files are highly repetitive (same key names, same placeholder syntax) and gzip compresses the whole set far better than 28 separate streams — saves ~23 KB on first-load transfer and cuts 27 HTTP requests. `t()` and `applyLanguage()` in `app.js` handle lookups (with English fallback) and walk the DOM updating every `[data-i18n*]` element.
+  - `contests.js` — a single hand-maintained bundle carrying all 68 contest configs. Each contest is a self-contained IIFE that assigns `window.CONTESTS[<id>]` a schema-conformant config object (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Blocks are delimited by `// ==== <id> ====` header comments — grep for one to jump to that contest. Bundled into one file rather than 68 individual files because contest configs are highly repetitive (same schema, same `APP_LQ_*` prefix, same Cabrillo header field names) and gzip compresses the whole set far better than 68 separate streams — saves ~42 KB on first-load transfer and cuts 67 HTTP requests. Loaded by a single `<script>` tag in `index.html` before `app.js` so the registry is populated when the Contest dropdown is built.
 - Tested on recent Chromium, Firefox, and Safari (desktop + iOS).
 
 ## Credits

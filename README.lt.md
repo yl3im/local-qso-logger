@@ -20,7 +20,8 @@ Autorius: [YL3IM](https://www.qrz.com/db/YL3IM). Projekto svetainė: [qso.lv](ht
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Žurnalai](#žurnalai)
 - [QSO](#qso)
-- [ADIF importas ir eksportas](#adif-importas-ir-eksportas)
+- [Varžybos](#varžybos)
+- [Importas ir eksportas](#importas-ir-eksportas)
 - [Privatumas ir duomenys](#privatumas-ir-duomenys)
 - [Sąsajos kalba](#sąsajos-kalba)
 - [Temos](#temos)
@@ -30,7 +31,8 @@ Autorius: [YL3IM](https://www.qrz.com/db/YL3IM). Projekto svetainė: [qso.lv](ht
 ## Funkcijos
 
 - Keli žurnalai; kiekvienas su savo QSO sąrašu.
-- Žurnalo veiksmai: sukurti, pervadinti, ištrinti, importuoti iš ADIF, eksportuoti į ADIF (`.adi`).
+- **Varžybų žurnalai** yra pasirenkami — pasirinkite iš 68 įmontuotų varžybų katalogo kuriant žurnalą. QSO forma įgauna varžyboms būdingą *Varžybų mainų* bloką, dublikatų aptikimas laikosi varžybų taisyklės, o *Eksportuoti .cbr* sukuria Cabrillo v3 pateikimo failą kartu su įprastu ADIF eksportu.
+- Žurnalo veiksmai: sukurti, pervadinti, ištrinti, importuoti žurnalo failą (ADIF arba Cabrillo — formatas nustatomas automatiškai), eksportuoti į ADIF (`.adi`), plius *Eksportuoti .cbr* (Cabrillo v3) varžybų žurnalams. Pakartotinis anksčiau programos eksportuoto `.cbr` failo importavimas jį atkuria kaip tą pačią varžybų žurnalą.
 - QSO forma suskirstyta į tris blokus: **Stoties duomenys** (stoties šaukinys, operatoriaus šaukinys, savasis tinklelis), kurie išlieka prisikabinę tarp QSO; **Darbo režimas** (sklidimo režimas, palydovas, režimas, palydovo režimas, dažnių juosta, RX juosta) su palydovo laukais, kurie matomi tik tada, kai sklidimo režimas yra *Palydovas*; ir **QSO duomenys** (kontaktuoto šaukinys, kontaktuoto tinklelis, UTC data/laikas redaguojant, komentaras, RST siųstas, RST gautas).
 - Pilna ADIF `MODE` → `SUBMODE` taksonomija režimų išskleidžiamajame sąraše — pasirinkite pirminį režimą (`SSB`, `MFSK`, …) arba eikite tiesiai iki konkretaus papildomo režimo (`USB`, `FT4`, …); programa saugo abu laukus pagal ADIF ir lentelė rodo konkretų papildomą režimą, kai jis yra.
 - Pilnas ADIF sklidimo režimų sąrašas (SAT, RPT, EME, ES, MS, Aurora ir t. t.) kaip išskleidžiamasis sąrašas.
@@ -50,7 +52,7 @@ Autorius: [YL3IM](https://www.qrz.com/db/YL3IM). Projekto svetainė: [qso.lv](ht
 
 Tiesiog atidarykite `index.html` modernioje naršyklėje. Jokio kūrimo žingsnio, jokio diegimo, jokio serverio.
 
-Jei norite talpinti, nukopijuokite statinius failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` ir `i18n/` katalogą su 28 vertimų failais) į bet kurį statinį talpintoją (GitHub Pages, Netlify, savą interneto serverį). Veikia ir per `file://` — aptarnavimo darbuotojo registracija automatiškai praleidžiama `file:` protokole, todėl `index.html` atidarymas tiesiogiai iš disko veikia švariai.
+Jei norite talpinti, nukopijuokite statinius failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, vieną `i18n.js` failą, apjungiantį visas 28 kalbų žodynus, ir vieną `contests.js` failą, apjungiantį visas 68 varžybų konfigūracijas) į bet kurį statinį talpintoją (GitHub Pages, Netlify, savą interneto serverį). Veikia ir per `file://` — aptarnavimo darbuotojo registracija automatiškai praleidžiama `file:` protokole, todėl `index.html` atidarymas tiesiogiai iš disko veikia švariai.
 
 Talpinant per HTTPS, programa tampa įdiegiama kaip PWA (naršyklės meniu *Įdiegti programą* / *Pridėti į pradžios ekraną*) ir veikia neprisijungus po pirmojo apsilankymo dėl talpyklos prioriteto aptarnavimo darbuotojo, kuris iš anksto saugo visus statinius failus (UI + visi vertimai).
 
@@ -108,12 +110,50 @@ Aukštesnės kokybės šaltinis: [media/Android_add_to_home_screen.mp4](media/An
 - **Redaguoti QSO** mygtuku *Redaguoti* eilutėje. Forma persijungia į *Atnaujinti QSO* režimą, eilutė paryškinama ir pasirodo mygtukas *Atšaukti*. Perjungus žurnalus arba ištrynus žurnalą, redagavimas automatiškai atšaukiamas.
 - **Ištrinti QSO** mygtuku *Ištrinti* eilutėje (prašoma patvirtinimo).
 
-## ADIF importas ir eksportas
+## Varžybos
 
-- **Eksportuoti**: spustelėkite *Eksportuoti .adi* žurnalo antraštėje. Atsisiunčiamas failas atitinkantis **ADIF 3.1.7**. Antraštė deklaruoja `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` ir `CREATED_TIMESTAMP` (UTC). Kiekvieno QSO laukai (jei nėra tušti): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — po kurių eina kiekvienas papildomas ADIF laukas, išsaugotas importuojant (žr. žemiau).
-- **Importuoti**: spustelėkite *Importuoti .adi failą* po žurnalo kūrimo forma ir pasirinkite `.adi` / `.adif` failą. Iš jo sukuriamas naujas žurnalas, pavadintas `Imported YYYY-MM-DD HH:MM UTC`. Importavimas niekada nesujungia su esamu žurnalu.
-- **Be nuostolių veikimo ciklas**: importuojant kiekvienas ADIF laukas, kurio programa nemodelina savo sąsajoje (pvz., `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` laukai), išsaugomas QSO ir pažodžiui vėl išvedamas kito eksporto metu. Taigi eksportuojant failą, kuris pats buvo importuotas, viskas išsaugoma.
-- Lauko ilgis traktuojamas kaip UTF-8 baitų skaičius, kaip reikalauja specifikacija, todėl daugiabaitis tekstas (pvz., akcentuotus ženklus `COMMENT`) analizuojamas teisingai.
+Žurnalas gali papildomai būti **varžybų žurnalu** — pasirinkite varžybas iš *Varžybų* išskleidžiamojo sąrašo žurnalo kūrimo formoje. Tuščias sąrašas = įprastas žurnalas (numatytasis, esamas elgesys nepakinta).
+
+Varžybų žurnalai gauna:
+
+- **Varžybų mainų bloką** QSO formoje, kuris dinamiškai atvaizduojamas pagal pasirinktų varžybų schemą. Laukų tipai: `text`, `number` ir `serial` (automatiškai didėjantis, tik skaitomas). Laukai su žyme *sticky* (jūsų zona / apygarda / distriktas / galia / amžius / …) iš anksto užpildomi iš ankstesnio QSO reikšmės; kiekvieno QSO laukai (jų zona, jų serijos numeris, …) išvalomi po kiekvieno *Įrašyti QSO*.
+- **Varžybų žetoną** šalia žurnalo pavadinimo antraštėje.
+- **Dublikatų aptikimą**, kuris laikosi varžybų `duplicateRule` (`per-band-mode`, `per-band`, `per-day` arba `off`). Indikatorius lieka informacinis — niekada neblokuoja pateikimo.
+- **Įspėjimo žetoną**, kai dabartinis UTC yra už deklaruotų varžybų datų (12 metų iš anksto įkelti, 2026–2037) arba kai pasirinkta juosta / režimas nėra varžybų leistinų sąrašuose. Niekada neblokuoja.
+- **Pateikimo informacijos skydelį** žurnalo antraštėje: įmontuota forma Cabrillo antraštės laukams, kuriuos deklaruoja varžybos (kategorija, galia, vardas, klubas, adresas, komentaras, …). Reikšmės išlieka žurnale, ne kiekviename QSO.
+- **Eksportuoti .cbr mygtuką** žurnalo antraštėje, šalia *Eksportuoti .adi*. Sukuria Cabrillo v3 failą: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` iš anksto užpildyti iš pirmojo QSO stoties duomenų, likusi dalis iš pateikimo informacijos skydelio, tada po vieną `QSO:` eilutę kiekvienam kontaktui chronologine tvarka, naudojant varžybų `sentTemplate` / `rcvdTemplate` stulpelius.
+- **Cabrillo pakartotinį importavimą** per standartinį *Importuoti žurnalo failą* mygtuką — `.cbr` failas, kurį anksčiau eksportavo programa (arba bet kuris kitas žurnalo įrenginys, kuris išveda standartinį Cabrillo v3), grįžta į naują tinkamo tipo varžybų žurnalą. `CONTEST:` antraštė sulyginama su įmontuotu katalogu; kai kelios konfigūracijos dalijasi ta pačia žyme (pvz., `ARRL-10` atitinka ir `arrl-10m-dx`, ir `arrl-10m-w`), programa išsprendžia dviprasmybę pagal QSO eilutės režimo raidę ir stulpelių skaičių, o tada teikia pirmenybę `-dx` variantui. Antraštės laukai (kategorija, vardas, klubas, komentarai ir kt.) atkuria pateikimo informacijos skydelį; QSO mainų reikšmės atkuria `q.contestExchange` pagal varžybų šabloną.
+
+### Įmontuotas varžybų katalogas (68 konfigūracijos)
+
+Sugrupuota pagal šeimas:
+
+- **CQ šeima** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **ARRL šeima** (9): ARRL DX SSB/CW (DX pusė), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (kiekvienas pristatomas *abiem* DX ir W/VE perspektyvomis).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE ir kitos Europos** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Centrinės/Rytų Europos asimetrinės — abi perspektyvos** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Rusų klubinės / RadioSport** (12): Russian DX (abi pusės), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Rusijos Federacijos taurė CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Baltarusija + Italija + Kroatija + Ispanija + Ukrainos RTTY** (12): Belarus BFRR CW+SSB (abi pusės), ARI DX (abi pusės), Croatian 9A CW (abi pusės), Spanish CNCW (abi pusės), Ukrainian RTTY (abi pusės).
+- **Pasaulinės** (2): All Asian DX CW+SSB.
+
+Asimetriškos varžybos (kai priimančioji šalis ir DX pusė siunčia skirtingus mainus) pristatomos **dviem konfigūracijomis** — viena priimančiosios šalies perspektyvai (fiksuotas regiono kodas) ir kita DX perspektyvai (fiksuotas serijos numeris). Priimtos pusės laukas yra vienas laisvo teksto laukas, kad operatorius galėtų įvesti bet kurį formatą, priklausomai nuo kontakto.
+
+Kiekvienoje konfigūracijoje yra:
+
+- Varžybų mainų reikšmės, kurios pakartotinai išvedamos ADIF eksporte per `APP_LQ_*` vardų erdvės laukus; antraštės antspaudas `APP_LQ_CONTEST_ID` leidžia vėlesniam pakartotiniam importui atkurti žurnalą kaip tas pačias varžybas su visais mainų laukais nepakitusiais.
+- 12 metų varžybų datos (2026–2037), kad žetonas *už varžybų lango* liktų naudingas dešimtmečiui be pakartotinio išleidimo.
+- Cabrillo šablonas, kuris kartografuoja kiekvieną mainų lauką į teisingą `QSO:` eilutės stulpelį.
+
+Naujų varžybų pridėjimas = įklijuokite naują IIFE bloką į [`contests.js`](contests.js) abėcėlinėje pozicijoje (kiekvieną esamą varžybą atskiria antraštės komentaras `// ==== <id> ====`, todėl lengva rasti, kur įterpti). Nereikia keisti `index.html`, `service-worker.js` ar `app.js` — renderer, pateikimo tvarkytojas, dublikatų detektorius, ADIF apyvartinio importo ir Cabrillo emiteris priima kiekvieną konfigūraciją kaip grynus duomenis.
+
+## Importas ir eksportas
+
+- **Importuokite** bet kurį žurnalo failą — spustelėkite *Importuoti žurnalo failą* po žurnalo kūrimo forma ir pasirinkite `.adi` / `.adif` (ADIF) arba `.cbr` / `.cab` (Cabrillo v3) failą. Formatas nustatomas automatiškai pagal pirmą failo eilutę (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → pranešimas «EDI dar nepalaikomas»). Visada sukuriamas naujas žurnalas — importavimas niekada nesujungia su esamu. ADIF importas sukuria įprastą žurnalą, nebent antraštėje yra `APP_LQ_CONTEST_ID`, kurį įrašė mūsų pačių varžybų eksportas (tokiu atveju žurnalas atkuriamas kaip šių varžybų žurnalas). Cabrillo importas visada sukuria varžybų žurnalą — žr. skyrių *Varžybos* apie tai, kaip `CONTEST:` žymė sulyginama su įmontuotu katalogu.
+- **ADIF eksportas**: spustelėkite *Eksportuoti .adi* žurnalo antraštėje. Atsisiunčiamas failas atitinkantis **ADIF 3.1.7**. Antraštė deklaruoja `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` ir `CREATED_TIMESTAMP` (UTC). Kiekvieno QSO laukai (jei nėra tušti): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — po kurių eina kiekvienas papildomas ADIF laukas, išsaugotas importuojant (žr. žemiau).
+- **Cabrillo eksportas** aprašytas aukščiau skyriuje *Varžybos* — jis prieinamas tik varžybų žurnalams (mygtukas *Eksportuoti .cbr* pasirodo žurnalo antraštėje, kai žurnalui priskirtos varžybos).
+- **Be nuostolių veikimo ciklas**: ADIF importuojant kiekvienas laukas, kurio programa nemodelina savo sąsajoje (pvz., `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` laukai), išsaugomas QSO ir pažodžiui vėl išvedamas kito ADIF eksporto metu. Taigi eksportuojant failą, kuris pats buvo importuotas, viskas išsaugoma.
+- Lauko ilgis ADIF traktuojamas kaip UTF-8 baitų skaičius, kaip reikalauja specifikacija, todėl daugiabaitis tekstas (pvz., akcentuotus ženklus `COMMENT`) analizuojamas teisingai.
 
 ## Privatumas ir duomenys
 
@@ -131,7 +171,7 @@ Galimos kalbos (vėliavėlių emoji + vietinis pavadinimas; abėcėlės tvarka k
 
 Universalios techninės etiketės visomis kalbomis lieka savo kanoninėje formoje: juostų pavadinimai (`20m`, `70cm`, …), ADIF režimų kodai (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` ir ISO šalių kodai.
 
-Trūksta eilutės jūsų kalba? Kiekviena kalba yra vienas mažas failas [`i18n/`](i18n/) — nukopijuokite `i18n/en.js`, išverskite reikšmes, išsaugokite kaip `i18n/<code>.js`, tada pridėkite `<script>` žymę ir `<select>` parinktį `index.html` ir kodą `SUPPORTED_LANGS` `app.js`.
+Trūksta eilutės jūsų kalba? Visi kalbų žodynai yra viename [`i18n.js`](i18n.js) faile, padalintame į 28 sekcijas su `// ==== <lang> ====` antraštės komentarais. Ieškokite savo kalbos antraštės, kad pereitumėte į jos sekciją, tada pridėkite/redaguokite raktą. Visiškai naujos kalbos pridėjimas = įklijuokite naują IIFE bloką į `i18n.js` abėcėlinėje pozicijoje, pridėkite kalbos kodą į `SUPPORTED_LANGS` `app.js` ir `<select>` parinktį `index.html`.
 
 ## Temos
 
@@ -147,7 +187,8 @@ Temos perjungiklis antraštėje perjungia tarp dienos (numatytoji) ir nakties. P
   - `favicon.svg` — įterptinė SVG favikona.
   - `manifest.webmanifest` — Web App Manifest (pavadinimas, temos spalva, apimtis, piktograma), kad programa būtų įdiegiama kaip PWA mobiliajame ir staliniame.
   - `service-worker.js` — talpyklos prioriteto aptarnavimo darbuotojas, kuris įdiegiant iš anksto saugo visus statinius failus, aktyvuojant ištrina senas talpyklas ir po pirmojo apsilankymo palaiko programą visiškai neprisijungus. Registracija automatiškai praleidžiama `file://` protokole, kad `index.html` atidarymas tiesiogiai iš disko liktų švaresnis.
-  - `i18n/<lang>.js` — vienas vertimų failas kiekvienai palaikomai kalbai (iš viso 28). Kiekvienas yra mažas IIFE, kuris priskiria `window.I18N[<lang>]` plokščią raktas→eilutė atvaizdavimą. `t()` ir `applyLanguage()` `app.js` tvarko paieškas (su anglų kalbos atsargine) ir eina per DOM atnaujindami kiekvieną `[data-i18n*]` elementą.
+  - `i18n.js` — vienas rankiniu būdu palaikomas failas su visais 28 kalbų žodynais. Kiekviena kalba yra savarankiškas IIFE, priskiriantis `window.I18N[<lang>]` plokščią raktas→eilutė atvaizdavimą. Blokai atskirti antraštės komentarais `// ==== <lang> ====` — grep pagal vieną nuveda į reikiamą kalbą. Sujungta į vieną failą vietoj 28 atskirų, nes vertimų failai yra labai pasikartojantys (tie patys raktų vardai, vietaženklių sintaksė), o gzip suspaudžia visą rinkinį daug geriau nei 28 atskirus srautus — sutaupo ~23 KB pirmojo pakrovimo metu ir pašalina 27 HTTP užklausas. `t()` ir `applyLanguage()` `app.js` tvarko paieškas (su anglų kalbos atsargine) ir eina per DOM atnaujindami kiekvieną `[data-i18n*]` elementą.
+  - `contests.js` — vienas rankiniu būdu palaikomas failas su visomis 68 varžybų konfigūracijomis. Kiekviena varžyba yra savarankiškas IIFE, priskiriantis `window.CONTESTS[<id>]` schemai atitinkantį konfigūracijos objektą (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Blokai atskirti antraštės komentarais `// ==== <id> ====` — grep pagal vieną nuveda į reikiamą varžybą. Sujungta į vieną failą vietoj 68 atskirų, nes varžybų konfigūracijos yra labai pasikartojančios (ta pati schema, `APP_LQ_*` prefiksas, Cabrillo antraštės laukų pavadinimai), o gzip suspaudžia visą rinkinį daug geriau nei 68 atskirus srautus — sutaupo ~42 KB pirmojo pakrovimo metu ir pašalina 67 HTTP užklausas. Įkeliamas viena `<script>` žyme `index.html` prieš `app.js`, kad registras būtų užpildytas, kai statomas varžybų išskleidžiamasis sąrašas.
 - Išbandyta naujose Chromium, Firefox ir Safari versijose (staliniai + iOS).
 
 ## Padėkos

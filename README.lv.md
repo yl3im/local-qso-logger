@@ -21,7 +21,7 @@ Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.l
 - [Žurnāli](#žurnāli)
 - [QSO](#qso)
 - [Sacensības](#sacensības)
-- [ADIF importēšana un eksportēšana](#adif-importēšana-un-eksportēšana)
+- [Importēšana un eksportēšana](#importēšana-un-eksportēšana)
 - [Privātums un dati](#privātums-un-dati)
 - [Interfeisa valoda](#interfeisa-valoda)
 - [Tēmas](#tēmas)
@@ -32,7 +32,7 @@ Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.l
 
 - Vairāki žurnāli; katrs ar savu QSO sarakstu.
 - **Sacensību žurnāli** ir izvēles — izvēlies no 68 iebūvēto sacensību kataloga, veidojot žurnālu. QSO veidlapa iegūst sacensībām raksturīgu bloku *Sacensību apmaiņa*, dublikātu noteikšana ievēro sacensību noteikumu, un *Eksportēt .cbr* rada Cabrillo v3 iesniegšanas failu blakus parastajam ADIF eksportam.
-- Žurnāla darbības: izveidot, pārdēvēt, dzēst, importēt no ADIF, eksportēt ADIF (`.adi`), plus *Eksportēt .cbr* (Cabrillo v3) sacensību žurnāliem.
+- Žurnāla darbības: izveidot, pārdēvēt, dzēst, importēt žurnāla failu (ADIF vai Cabrillo — formāts nosakāms automātiski), eksportēt ADIF (`.adi`), plus *Eksportēt .cbr* (Cabrillo v3) sacensību žurnāliem. Atkārtoti importējot `.cbr` failu, ko iepriekš eksportēja lietotne, tas atjaunojas kā tā pati sacensību žurnāls.
 - QSO veidlapa sadalīta trīs blokos: **Stacijas dati** (stacijas izsaukuma signāls, operatora izsaukuma signāls, savs tīklojums), kas paliek saistīti starp QSO; **Darbības režīms** (izplatīšanas režīms, satelīts, režīms, satelīta režīms, josla, RX josla) ar satelīta laukiem, kas redzami tikai tad, kad izplatīšanas režīms ir *Satelīts*; un **QSO dati** (saziņas izsaukuma signāls, saziņas tīklojums, UTC datums/laiks rediģēšanas laikā, komentārs, RST sūtīts, RST saņemts).
 - Pilna ADIF `MODE` → `SUBMODE` taksonomija režīmu nolaižamajā sarakstā — izvēlies vecāku režīmu (`SSB`, `MFSK`, …) vai dodies tieši uz konkrētu apakšrežīmu (`USB`, `FT4`, …); lietotne saglabā abus laukus atbilstoši ADIF un tabula rāda konkrēto apakšrežīmu, ja tāds ir.
 - Pilns ADIF izplatīšanas režīmu uzskaitījums (SAT, RPT, EME, ES, MS, Aurora utt.) kā nolaižamais saraksts.
@@ -52,7 +52,7 @@ Autors: [YL3IM](https://www.qrz.com/db/YL3IM). Projekta tīmekļa vietne: [qso.l
 
 Vienkārši atver `index.html` modernā pārlūkprogrammā. Nav veidošanas soļa, nav instalācijas, nav servera.
 
-Ja vēlies to mitināt, novieto statiskos failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, `i18n/` direktoriju ar 28 tulkojumu failiem un `contests/` direktoriju ar 68 sacensību konfigurācijām) uz jebkura statiskā hosta (GitHub Pages, Netlify, savs tīmekļa serveris). Darbojas arī ar `file://` — pakalpojuma darbinieka reģistrācija automātiski tiek izlaista `file:` protokolā, tāpēc `index.html` atvēršana tieši no diska darbojas tīri.
+Ja vēlies to mitināt, novieto statiskos failus (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, vienu `i18n.js` failu, kas satur visas 28 valodu vārdnīcas, un vienu `contests.js` failu, kas satur visas 68 sacensību konfigurācijas) uz jebkura statiskā hosta (GitHub Pages, Netlify, savs tīmekļa serveris). Darbojas arī ar `file://` — pakalpojuma darbinieka reģistrācija automātiski tiek izlaista `file:` protokolā, tāpēc `index.html` atvēršana tieši no diska darbojas tīri.
 
 Mitinot ar HTTPS, lietotne kļūst instalējama kā PWA (pārlūkprogrammas izvēlne *Instalēt lietotni* / *Pievienot sākuma ekrānam*) un darbojas bezsaistē pēc pirmās apmeklēšanas, pateicoties kešatmiņai prioritizētam pakalpojuma darbiniekam, kas iepriekš kešo visus statiskos failus (UI + visi tulkojumi).
 
@@ -122,6 +122,7 @@ Sacensību žurnāli iegūst:
 - **Brīdinājuma žetons**, kad pašreizējais UTC iekrīt ārpus deklarētajiem sacensību datumiem (12 gadi jau ielādēti, 2026–2037) vai kad izvēlētā josla / režīms nav sacensības atļauto sarakstā. Nekad nebloķē.
 - **Iesniegšanas informācijas panelis** žurnāla galvenē: iebūvēta veidlapa Cabrillo galvenes laukiem, ko deklarē sacensība (kategorija, jauda, vārds, klubs, adrese, komentārs, …). Vērtības saglabājas žurnālā, nevis katrā QSO.
 - **Eksportēt .cbr poga** žurnāla galvenē, blakus *Eksportēt .adi*. Rada Cabrillo v3 failu: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` ir iepriekš aizpildīti no pirmā QSO stacijas datiem, pārējais no iesniegšanas informācijas paneļa, tad viena `QSO:` rinda katram kontaktam hronoloģiskā secībā, izmantojot sacensības `sentTemplate` / `rcvdTemplate` kolonnas.
+- **Cabrillo atkārtota importēšana** caur standarta pogu *Importēt žurnāla failu* — `.cbr` fails, ko iepriekš eksportēja lietotne (vai jebkurš cits reģistrētājs, kas rada standarta Cabrillo v3), atgriežas jaunā pareiza tipa sacensību žurnālā. `CONTEST:` galvene tiek salīdzināta ar iebūvēto katalogu; kad vairākas konfigurācijas dala vienu un to pašu iezīmi (piemēram, `ARRL-10` atbilst gan `arrl-10m-dx`, gan `arrl-10m-w`), lietotne atrisina neskaidrību, salīdzinot QSO rindas režīma burtu un kolonnu skaitu ar katra kandidāta veidni, tad dod priekšroku `-dx` variantam. Galvenes lauki (kategorija, vārds, klubs, komentāri utt.) atjauno iesniegšanas informācijas paneli; QSO apmaiņas vērtības atjauno `q.contestExchange` saskaņā ar sacensības veidni.
 
 ### Iebūvētais sacensību katalogs (68 konfigurācijas)
 
@@ -144,14 +145,15 @@ Katra konfigurācija satur:
 - 12 gadus sacensību datumu (2026–2037), lai *ārpus sacensību loga* žetons paliktu noderīgs desmit gadus bez pārpubliskošanas.
 - Cabrillo veidne, kas kartē katru apmaiņas lauku pareizajā `QSO:` rindas kolonnā.
 
-Jaunas sacensības pievienošana = pievieno failu `contests/<id>.js` (skat. [`contests/cqww-ssb.js`](contests/cqww-ssb.js) kā etalonu), pievieno `<script>` tagu [`index.html`](index.html) un ceļu masīvam `ASSETS` [`service-worker.js`](service-worker.js). Nav nepieciešamas izmaiņas `app.js` — renderer, iesniegšanas apstrādātājs, dublikātu detektors, ADIF apļa apmaiņa un Cabrillo emitētājs pieņem katru konfigurāciju kā tīrus datus.
+Jaunas sacensības pievienošana = ielīmē jaunu IIFE bloku [`contests.js`](contests.js) alfabētiskā pozīcijā (katras esošas sacensības atdala virsraksta komentārs `// ==== <id> ====`, tāpēc viegli atrast, kur ievietot). Nav nepieciešamas izmaiņas `index.html`, `service-worker.js` vai `app.js` — renderer, iesniegšanas apstrādātājs, dublikātu detektors, ADIF apļa apmaiņa un Cabrillo emitētājs pieņem katru konfigurāciju kā tīrus datus.
 
-## ADIF importēšana un eksportēšana
+## Importēšana un eksportēšana
 
-- **Eksportēt**: noklikšķini *Eksportēt .adi* žurnāla galvenē. Tiek lejupielādēts fails atbilstoši **ADIF 3.1.7**. Galvene deklarē `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` un `CREATED_TIMESTAMP` (UTC). Lauki par QSO, kas tiek raidīti (ja nav tukši): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — kam seko katrs papildu ADIF lauks, kas saglabāts importēšanas laikā (sk. zemāk).
-- **Importēt**: noklikšķini *Importēt .adi failu* zem žurnāla izveidošanas veidlapas un izvēlies `.adi` / `.adif` failu. No tā tiek izveidots jauns žurnāls ar nosaukumu `Imported YYYY-MM-DD HH:MM UTC`. Importēšana nekad nesaplūst ar esošu žurnālu.
-- **Bezraidumu aprites cikls**: importēšanas laikā jebkurš ADIF lauks, ko lietotne nemodelē savā interfeisā (piemēram, `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` lauki), tiek saglabāts QSO un burtiski atkārtoti raidīts nākamajā eksportēšanas reizē. Tādējādi faila eksportēšana, kas pats tika importēts, saglabā visu.
-- Lauka garums tiek uzskatīts par UTF-8 baitu skaitu, kā prasa specifikācija, tāpēc daudzbaitu teksts (piemēram, uzsvērtās rakstzīmes `COMMENT`) tiek parsēts pareizi.
+- **Importē** jebkuru žurnāla failu — noklikšķini *Importēt žurnāla failu* zem žurnāla izveidošanas veidlapas un izvēlies `.adi` / `.adif` (ADIF) vai `.cbr` / `.cab` (Cabrillo v3) failu. Formāts tiek noteikts automātiski pēc faila pirmās rindas (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → paziņojums «EDI vēl netiek atbalstīts»). Vienmēr tiek izveidots jauns žurnāls — importēšana nekad nesaplūst ar esošu. ADIF importēšana veido parastu žurnālu, ja vien galvenē nav `APP_LQ_CONTEST_ID`, ko rakstīja mūsu pašu sacensību eksports (tādā gadījumā žurnāls atjaunojas kā šīs sacensības sacensību žurnāls). Cabrillo importēšana vienmēr rada sacensību žurnālu — sk. sadaļu *Sacensības* par to, kā `CONTEST:` iezīme tiek salīdzināta ar iebūvēto katalogu.
+- **ADIF eksportēšana**: noklikšķini *Eksportēt .adi* žurnāla galvenē. Tiek lejupielādēts fails atbilstoši **ADIF 3.1.7**. Galvene deklarē `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` un `CREATED_TIMESTAMP` (UTC). Lauki par QSO, kas tiek raidīti (ja nav tukši): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — kam seko katrs papildu ADIF lauks, kas saglabāts importēšanas laikā (sk. zemāk).
+- **Cabrillo eksportēšana** ir aprakstīta iepriekš sadaļā *Sacensības* — tā pieejama tikai sacensību žurnāliem (poga *Eksportēt .cbr* parādās žurnāla galvenē, kad žurnālam ir sacensība).
+- **Bezraidumu aprites cikls**: ADIF importēšanas laikā jebkurš lauks, ko lietotne nemodelē savā interfeisā (piemēram, `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` lauki), tiek saglabāts QSO un burtiski atkārtoti raidīts nākamajā ADIF eksportēšanas reizē. Tādējādi faila eksportēšana, kas pats tika importēts, saglabā visu.
+- Lauka garums ADIF tiek uzskatīts par UTF-8 baitu skaitu, kā prasa specifikācija, tāpēc daudzbaitu teksts (piemēram, uzsvērtās rakstzīmes `COMMENT`) tiek parsēts pareizi.
 
 ## Privātums un dati
 
@@ -169,7 +171,7 @@ Pieejamās valodas (karodziņu emoji + vietējais nosaukums; alfabētiskā secī
 
 Universālās tehniskās etiķetes paliek savā kanoniskajā formā visās valodās: joslu nosaukumi (`20m`, `70cm`, …), ADIF režīmu kodi (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` un ISO valstu kodi.
 
-Trūkst virknes tavā valodā? Katra valoda ir viens neliels fails [`i18n/`](i18n/) — kopē `i18n/en.js`, tulko vērtības, saglabā kā `i18n/<code>.js`, tad pievieno `<script>` atzīmi un `<select>` opciju `index.html` un kodu `SUPPORTED_LANGS` `app.js`.
+Trūkst virknes tavā valodā? Visas valodu vārdnīcas atrodas vienā [`i18n.js`](i18n.js) failā, sadalītas 28 sekcijās ar `// ==== <lang> ====` virsraksta komentāriem. Meklē savas valodas virsrakstu, lai pārietu uz tās sekciju, tad pievieno/rediģē atslēgu. Pilnīgi jaunas valodas pievienošana = ielīmē jaunu IIFE bloku `i18n.js` alfabētiskā pozīcijā, pievieno valodas kodu `SUPPORTED_LANGS` `app.js` un `<select>` opciju `index.html`.
 
 ## Tēmas
 
@@ -185,8 +187,8 @@ Tēmas pārslēgšana galvenē pārslēdzas starp dienu (noklusējums) un nakti.
   - `favicon.svg` — iekļauta SVG favikona.
   - `manifest.webmanifest` — Web App Manifest (nosaukums, tēmas krāsa, apjoms, ikona), lai lietotne būtu instalējama kā PWA mobilajā ierīcē un darbvirsmā.
   - `service-worker.js` — kešatmiņai prioritizēts pakalpojuma darbinieks, kas instalēšanas laikā iepriekš kešo visus statiskos failus, aktivizēšanas laikā dzēš veco kešatmiņu un pēc pirmās apmeklēšanas saglabā lietotni pilnīgi bezsaistē. Reģistrācija automātiski tiek izlaista `file://` protokolā, lai `index.html` atvēršana tieši no diska paliktu tīra.
-  - `i18n/<lang>.js` — viens tulkojumu fails katrai atbalstītajai valodai (kopā 28). Katrs ir neliels IIFE, kas piešķir `window.I18N[<lang>]` plakanu atslēga→virkne kartēšanu. `t()` un `applyLanguage()` `app.js` apstrādā meklēšanas (ar angļu valodas rezervi) un iziet DOM atjauninot katru `[data-i18n*]` elementu.
-  - `contests/<id>.js` — viena sacensību konfigurācija katrai atbalstītajai sacensībai (kopā 68). Katrs ir neliels IIFE, kas piešķir `window.CONTESTS[<id>]` shēmai atbilstošu konfigurācijas objektu (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Ielādēts ar `<script>` tagiem `index.html` pirms `app.js`, lai reģistrs būtu aizpildīts, kad tiek uzbūvēts sacensību nolaižamais saraksts.
+  - `i18n.js` — viens ar roku uzturēts fails ar visām 28 valodu vārdnīcām. Katra valoda ir pašpietiekams IIFE, kas piešķir `window.I18N[<lang>]` plakanu atslēga→virkne kartēšanu. Bloki atdalīti ar virsraksta komentāriem `// ==== <lang> ====` — grep pēc viena aizved uz vajadzīgo valodu. Apvienots vienā failā 28 atsevišķu vietā, jo tulkojumu faili ir ļoti atkārtojoši (vieni un tie paši atslēgu nosaukumi, vietturu sintakse), un gzip saspiež visu komplektu daudz labāk nekā 28 atsevišķas plūsmas — ietaupa ~23 KB pirmajā ielādē un noņem 27 HTTP pieprasījumus. `t()` un `applyLanguage()` `app.js` apstrādā meklēšanas (ar angļu valodas rezervi) un iziet DOM atjauninot katru `[data-i18n*]` elementu.
+  - `contests.js` — viens ar roku uzturēts fails ar visām 68 sacensību konfigurācijām. Katras sacensības ir pašpietiekams IIFE, kas piešķir `window.CONTESTS[<id>]` shēmai atbilstošu konfigurācijas objektu (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Bloki atdalīti ar virsraksta komentāriem `// ==== <id> ====` — grep pēc viena aizved uz vajadzīgo sacensību. Apvienots vienā failā 68 atsevišķu vietā, jo sacensību konfigurācijas ir ļoti atkārtojošās (viena shēma, `APP_LQ_*` prefikss, Cabrillo galvenes lauku nosaukumi), un gzip saspiež visu komplektu daudz labāk nekā 68 atsevišķas plūsmas — ietaupa ~42 KB pirmajā ielādē un noņem 67 HTTP pieprasījumus. Ielādēts ar vienu `<script>` tagu `index.html` pirms `app.js`, lai reģistrs būtu aizpildīts, kad tiek uzbūvēts sacensību nolaižamais saraksts.
 - Pārbaudīts uz jaunākiem Chromium, Firefox un Safari (darbvirsma + iOS).
 
 ## Pateicības

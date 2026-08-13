@@ -255,9 +255,11 @@
   const rstDefaultFor = (value) => VOICE_PARENTS.has(modeParent(value)) ? "59" : "599";
 
   // ---------- Contest catalog ----------
-  // Contest configs live in contests/<id>.js and populate window.CONTESTS via
-  // small IIFEs (same pattern as i18n/<lang>.js). A regular logbook has no
-  // contestId — the whole block below is inert for it.
+  // All 68 contest configs live in the single contests.js bundle at repo
+  // root, each as a self-contained IIFE that assigns window.CONTESTS[<id>].
+  // Delimiter comments `// ==== <id> ====` separate them for grep-ability.
+  // A regular logbook has no contestId — the whole block below is inert
+  // for it.
   //
   // Each config declares:
   //   id, name, shortName, url
@@ -489,7 +491,7 @@
 
   // Populate the create-log contest <select> from the CONTESTS registry.
   // Sorted by shortName. Called once on init; contest catalog is static per
-  // session (loaded from bundled contests/*.js before app.js runs).
+  // session (loaded from bundled contests.js before app.js runs).
   function fillContestSelect() {
     // Keep the first "none" option in place (declared in the HTML with i18n).
     while (logContestSelect.options.length > 1) logContestSelect.remove(1);
@@ -1580,6 +1582,244 @@
     URL.revokeObjectURL(url);
   }
 
+  // ---------- Cabrillo v3 import ----------
+  // Reverse of the Cabrillo emit pipeline above. Creates a new contest
+  // logbook from a `.cbr` file — never merges into an existing log (matches
+  // the ADIF import policy).
+
+  // Cabrillo `mo` code → ordered list of ADIF MODE candidates. First entry
+  // present in the contest's `modes[]` wins; if none match, the first
+  // candidate is used as a best-effort fallback.
+  const CABRILLO_MODE_REVERSE = {
+    PH: ["SSB", "FM", "AM", "DIGITALVOICE"],
+    CW: ["CW"],
+    RY: ["RTTY"],
+    DG: ["RTTY", "PSK31", "FT8", "FT4", "MFSK"],
+  };
+
+  // freq is Cabrillo's kHz value. We only recorded one representative kHz
+  // per band on export (see CABRILLO_BAND_KHZ), so pick the band whose
+  // midpoint is nearest — good enough for round-trip since the operator
+  // typed nothing more specific than the band anyway.
+  function freqKhzToBand(khz) {
+    const n = parseInt(khz, 10);
+    if (!Number.isFinite(n) || n <= 0) return "";
+    let best = "";
+    let bestDelta = Infinity;
+    for (const [band, mid] of Object.entries(CABRILLO_BAND_KHZ)) {
+      const d = Math.abs(mid - n);
+      if (d < bestDelta) { bestDelta = d; best = band; }
+    }
+    return best;
+  }
+
+  // Given a Cabrillo CONTEST: tag and a sample QSO's raw column-count,
+  // return the id of the best-matching contest config. When multiple
+  // configs share the same tag we disambiguate by:
+  //   1. mode (CW / SSB / RTTY) — many host+DX pairs share a tag but
+  //      differ by mode (e.g. okom-dx-cw-* vs okom-dx-ssb-*).
+  //   2. sentLen + rcvdLen matching the token count on the sample QSO.
+  //   3. Prefer the id ending in `-dx` (matches the operator's primary use
+  //      as a Latvia-based DX station).
+  //   4. Alphabetical first among survivors.
+  function cabrilloContestMatch(cabTag, sampleModeAppCode, sampleTokenCount) {
+    const tag = String(cabTag || "").toUpperCase();
+    if (!tag) return null;
+    let candidates = Object.values(CONTESTS).filter((c) =>
+      c.cabrillo && String(c.cabrillo.contest || "").toUpperCase() === tag);
+    if (candidates.length === 0) return null;
+    if (candidates.length > 1 && sampleModeAppCode) {
+      const byMode = candidates.filter((c) =>
+        Array.isArray(c.modes) && c.modes.some((m) =>
+          m.toUpperCase() === sampleModeAppCode.toUpperCase()));
+      if (byMode.length) candidates = byMode;
+    }
+    if (candidates.length > 1 && typeof sampleTokenCount === "number") {
+      // sampleTokenCount = total tokens on the QSO line after the "QSO:" tag.
+      // Column layout: 4 fixed (freq/mode/date/time) + 1 mycall + sentLen
+      //                + 1 theircall + rcvdLen  =  6 + sentLen + rcvdLen
+      const target = sampleTokenCount - 6;
+      const byLen = candidates.filter((c) => {
+        const s = (c.cabrillo.sentTemplate || []).length;
+        const r = (c.cabrillo.rcvdTemplate || []).length;
+        return (s + r) === target;
+      });
+      if (byLen.length) candidates = byLen;
+    }
+    if (candidates.length > 1) {
+      const dxFirst = candidates.filter((c) => /-dx$/i.test(c.id));
+      if (dxFirst.length) candidates = dxFirst;
+    }
+    candidates.sort((a, b) => a.id.localeCompare(b.id));
+    return candidates[0].id;
+  }
+
+  // Parse a `.cbr` text file into { header, qsoLines }. `header` is a
+  // flat map of KEY→value; multi-line ADDRESS / SOAPBOX get joined with
+  // '\n'. `qsoLines` is one whitespace-split token array per QSO: line,
+  // preserving column order (with the leading "QSO:" tag stripped).
+  function parseCabrillo(text) {
+    const header = {};
+    const multiLineKeys = new Set(["ADDRESS", "SOAPBOX"]);
+    const qsoLines = [];
+    for (const rawLine of String(text).split(/\r?\n/)) {
+      const line = rawLine.trim();
+      if (!line) continue;
+      if (/^QSO:\s/i.test(line)) {
+        // Split on any run of whitespace; keep every token including "QSO:".
+        qsoLines.push(line.split(/\s+/));
+        continue;
+      }
+      if (/^X-QSO:\s/i.test(line)) continue;   // "X-QSO" = excluded QSO
+      if (/^END-OF-LOG:/i.test(line)) break;
+      const m = line.match(/^([A-Z][A-Z0-9-]*):\s?(.*)$/);
+      if (!m) continue;
+      const key = m[1].toUpperCase();
+      const val = m[2].trim();
+      if (multiLineKeys.has(key) && header[key]) {
+        header[key] = header[key] + "\n" + val;
+      } else {
+        header[key] = val;
+      }
+    }
+    return { header, qsoLines };
+  }
+
+  function importCabrillo(text) {
+    const { header, qsoLines } = parseCabrillo(text);
+    if (!qsoLines.length) {
+      alert(t("alert.no_qsos_in_cbr"));
+      return;
+    }
+    // Resolve the contest before parsing QSO columns — we need sentLen/
+    // rcvdLen from its Cabrillo template. Sample the first QSO line for
+    // mode + column count to break ties among candidates.
+    const cabTag = header.CONTEST || "";
+    const first = qsoLines[0];  // ["QSO:", freq, mode, date, time, ...]
+    const firstMoLetter = (first[2] || "").toUpperCase();
+    const firstAppModes = CABRILLO_MODE_REVERSE[firstMoLetter] || [];
+    const firstAppMode = firstAppModes[0] || firstMoLetter;
+    const contestId = cabrilloContestMatch(cabTag, firstAppMode, first.length - 1);
+    if (!contestId) {
+      alert(t("alert.contest_not_recognized", cabTag || "(empty)"));
+      return;
+    }
+    const contest = getContest(contestId);
+    const sentTpl = (contest.cabrillo.sentTemplate || []);
+    const rcvdTpl = (contest.cabrillo.rcvdTemplate || []);
+    const sentLen = sentTpl.length;
+    const rcvdLen = rcvdTpl.length;
+
+    const stationCall = (header.CALLSIGN || "").toUpperCase();
+    const myGrid = header["GRID-LOCATOR"] || "";
+    const op = (header.OPERATORS || "").toUpperCase();
+    const submission = {};
+    const submissionKeys = (contest.cabrillo.headerFields || []);
+    for (const k of submissionKeys) {
+      if (header[k]) submission[k] = header[k];
+    }
+
+    const { date, time } = nowUtcParts();
+    const qsos = [];
+    let malformed = 0;
+
+    for (const tokens of qsoLines) {
+      // Layout: "QSO:" freq mode date time mycall [sentLen] theircall [rcvdLen]
+      // Total expected tokens = 6 + sentLen + rcvdLen.
+      const expected = 6 + sentLen + rcvdLen;
+      if (tokens.length < expected) { malformed++; continue; }
+      const freq = tokens[1];
+      const moLetter = (tokens[2] || "").toUpperCase();
+      const rawDate = tokens[3] || "";
+      const rawTime = tokens[4] || "";
+      const myCall = (tokens[5] || "").toUpperCase();
+      const sentCols = tokens.slice(6, 6 + sentLen);
+      const theirCall = (tokens[6 + sentLen] || "").toUpperCase();
+      const rcvdCols = tokens.slice(7 + sentLen, 7 + sentLen + rcvdLen);
+
+      // Cabrillo dates are YYYY-MM-DD (dashes); times are HHMM (4 digits).
+      const isoDate = /^\d{4}-\d{2}-\d{2}$/.test(rawDate) ? rawDate : "";
+      const isoTime = /^\d{4}$/.test(rawTime)
+        ? `${rawTime.slice(0, 2)}:${rawTime.slice(2, 4)}:00`
+        : (rawTime || "");
+
+      // Pick an app MODE for this QSO from the Cabrillo mo letter, preferring
+      // one the contest actually declares.
+      const candidates = CABRILLO_MODE_REVERSE[moLetter] || [moLetter];
+      let mode = candidates.find((m) =>
+        Array.isArray(contest.modes) && contest.modes.includes(m));
+      if (!mode) mode = candidates[0] || "";
+
+      // rst_sent / rst_rcvd are special — they live on q.rstSent / q.rstRcvd,
+      // everything else in the sent/rcvd templates goes into q.contestExchange.
+      const contestExchange = {};
+      let rstSent = "";
+      let rstRcvd = "";
+      sentTpl.forEach((key, i) => {
+        const v = sentCols[i] || "";
+        if (key === "rst_sent") rstSent = v;
+        else if (v) contestExchange[key] = v;
+      });
+      rcvdTpl.forEach((key, i) => {
+        const v = rcvdCols[i] || "";
+        if (key === "rst_rcvd") rstRcvd = v;
+        else if (v) contestExchange[key] = v;
+      });
+
+      const qso = {
+        id: uid(),
+        call: theirCall,
+        date: isoDate,
+        time: isoTime,
+        band: freqKhzToBand(freq),
+        mode,
+        propMode: "",
+        rstSent,
+        rstRcvd,
+      };
+      if (myCall) qso.stationCall = myCall;
+      if (op && op !== myCall) qso.operator = op;
+      if (myGrid) qso.myGridSquare = myGrid;
+      if (Object.keys(contestExchange).length) qso.contestExchange = contestExchange;
+      qsos.push(qso);
+    }
+
+    if (!qsos.length) {
+      alert(t("alert.cbr_malformed_qso", cabTag));
+      return;
+    }
+
+    const log = {
+      id: uid(),
+      name: `${contest.shortName || contest.name} (${t("log.imported_prefix").toLowerCase()} ${date})`,
+      contestId,
+      qsos,
+    };
+    if (Object.keys(submission).length) log.contestSubmission = submission;
+    if (malformed > 0) console.warn(`Cabrillo import: skipped ${malformed} malformed QSO line(s)`);
+    state.logs.push(log);
+    state.selectedId = log.id;
+    render();
+    $("qso-call").focus();
+  }
+
+  // Sniff the first non-empty chunk of a file and route to the right
+  // parser. ADIF starts with `<...>` tags; Cabrillo starts with the
+  // START-OF-LOG: header; EDI (REG1TEST) starts with `[REG1TEST;1]`.
+  function detectAndImport(text) {
+    const probe = String(text || "").slice(0, 500);
+    if (/\bSTART-OF-LOG:/i.test(probe)) {
+      importCabrillo(text);
+      return;
+    }
+    if (/\[REG1TEST;1\]/i.test(probe)) {
+      alert(t("alert.edi_unsupported"));
+      return;
+    }
+    // Default: ADIF. Existing importAdif handles both flavours.
+    importAdif(text);
+  }
+
   // ---------- Event handlers ----------
   logForm.addEventListener("submit", (e) => {
     e.preventDefault();
@@ -1757,7 +1997,7 @@
     if (!file) return;
     try {
       const text = await file.text();
-      importAdif(text);
+      detectAndImport(text);
     } catch (err) {
       alert(t("alert.import_failed", err && err.message ? err.message : err));
     } finally {

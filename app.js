@@ -254,6 +254,43 @@
   const modeParent = (value) => SUBMODE_TO_PARENT[value] || value;
   const rstDefaultFor = (value) => VOICE_PARENTS.has(modeParent(value)) ? "59" : "599";
 
+  // ---------- Contest catalog ----------
+  // Contest configs live in contests/<id>.js and populate window.CONTESTS via
+  // small IIFEs (same pattern as i18n/<lang>.js). A regular logbook has no
+  // contestId — the whole block below is inert for it.
+  //
+  // Each config declares:
+  //   id, name, shortName, url
+  //   windows[]           - optional {start,end} ISO ranges for the warn chip
+  //   bands[], modes[]    - contest-legal values (used only for the warn chip)
+  //   exchange[]          - {id,type,label,placeholder?,default?,required?,
+  //                          sticky?,maxLength?,adifField} for each field
+  //   duplicateRule       - "per-band-mode"|"per-band"|"per-day"|"off"
+  //   cabrillo            - {contest, sentTemplate[], rcvdTemplate[],
+  //                          headerFields[]} for .cbr export
+  const CONTESTS = (window.CONTESTS = window.CONTESTS || {});
+  const getContest = (id) => (id ? CONTESTS[id] || null : null);
+  const contestList = () =>
+    Object.values(CONTESTS).sort((a, b) =>
+      (a.shortName || a.name).localeCompare(b.shortName || b.name));
+
+  // Cabrillo mode codes derived from ADIF MODE parent.
+  const CABRILLO_MODE = {
+    SSB: "PH", FM: "PH", AM: "PH", DIGITALVOICE: "PH",
+    CW: "CW",
+    RTTY: "RY",
+    // Everything else (FT8/FT4/PSK31/JT65/MFSK/…) is Cabrillo "DG" for digital.
+  };
+  // Representative TX-band frequency in kHz for Cabrillo (we don't record dial
+  // freq). Values are the SSB/general-purpose midpoint of the amateur band.
+  const CABRILLO_BAND_KHZ = {
+    "160m":  1830, "80m":  3750, "60m":  5357, "40m":  7100, "30m": 10120,
+    "20m": 14200, "17m": 18120, "15m": 21300, "12m": 24940, "10m": 28400,
+    "6m":   50100, "4m":  70200, "2m": 144200, "1.25m": 222100, "70cm": 432200,
+    "33cm": 902000, "23cm": 1296000, "13cm": 2320000, "9cm": 3400000,
+    "6cm":  5760000, "3cm": 10368000,
+  };
+
   // Callsign prefix → ISO 3166-1 alpha-2 country. Longest match wins (2-letter checked before 1-letter).
   const CALL_PREFIX = {
     // Germany
@@ -440,6 +477,30 @@
   const themeToggle = $("theme-toggle");
   const dupIndicator = $("dup-indicator");
   const langSelect = $("lang-select");
+  // Contest-related refs. Some are only rendered/populated when the selected
+  // log is a contest log; the create-log <select> is populated once on init.
+  const logContestSelect  = $("log-contest");
+  const contestBadge      = $("contest-badge");
+  const exportCbrBtn      = $("export-cbr-btn");
+  const contestFieldsRoot = $("qso-contest-fields");
+  const contestWarn       = $("contest-warn");
+  const contestSubmission = $("contest-submission");
+  const contestSubmissionFields = $("contest-submission-fields");
+
+  // Populate the create-log contest <select> from the CONTESTS registry.
+  // Sorted by shortName. Called once on init; contest catalog is static per
+  // session (loaded from bundled contests/*.js before app.js runs).
+  function fillContestSelect() {
+    // Keep the first "none" option in place (declared in the HTML with i18n).
+    while (logContestSelect.options.length > 1) logContestSelect.remove(1);
+    for (const c of contestList()) {
+      const opt = document.createElement("option");
+      opt.value = c.id;
+      opt.textContent = c.shortName || c.name;
+      logContestSelect.appendChild(opt);
+    }
+  }
+  fillContestSelect();
 
   // ---------- i18n ----------
   // Returns the translation for `key` in the active language, falling back to
@@ -566,7 +627,16 @@
     // Reselecting SAT clears the SAT_MODE dropdown so the operator picks
     // one again — which fires the change handler and re-adjusts BAND/BAND_RX.
     if ($("qso-prop-mode").value === "SAT") $("qso-sat-mode").value = "";
+    refreshContestWarnings();
   });
+
+  // Re-run the contest band/mode warning whenever the operator changes band
+  // or mode. Cheap — no-op when the selected log isn't a contest log.
+  function refreshContestWarnings() {
+    const log = selectedLog();
+    const contest = log && getContest(log.contestId);
+    if (contest) updateContestWarnings(log, contest);
+  }
 
   // BAND_RX: same options as BAND, but with a leading empty option because
   // most QSOs (non-split, non-satellite) don't need a receive band.
@@ -750,7 +820,22 @@
   function updateDupIndicator() {
     const log = selectedLog();
     const raw = $("qso-call").value.trim().toUpperCase();
-    const isDup = !!log && !editingId && raw.length > 0 && log.qsos.some((q) => q.call === raw);
+    if (!log || editingId || !raw.length) { dupIndicator.hidden = true; return; }
+    // Contest logs honour the config's duplicateRule; regular logs use the
+    // historic "same callsign anywhere in this log" rule.
+    const contest = getContest(log.contestId);
+    const rule = contest ? (contest.duplicateRule || "any") : "any";
+    if (rule === "off") { dupIndicator.hidden = true; return; }
+    const band = $("qso-band").value;
+    const mode = modeParent($("qso-mode").value);
+    const nowDate = nowUtcParts().date;
+    const isDup = log.qsos.some((q) => {
+      if (q.call !== raw) return false;
+      if (rule === "per-band-mode") return q.band === band && modeParent(q.mode) === mode;
+      if (rule === "per-band") return q.band === band;
+      if (rule === "per-day") return q.date === nowDate;
+      return true; // "any"
+    });
     dupIndicator.hidden = !isDup;
   }
   function bindUppercase(el) {
@@ -769,6 +854,17 @@
   bindUppercase($("qso-gridsquare"));
   bindUppercase($("qso-my-gridsquare"));
   $("qso-call").addEventListener("input", updateDupIndicator);
+  // Contest logs care which band/mode the current QSO uses — update the
+  // duplicate chip (rule may be per-band-mode) and the contest warning chip
+  // (band/mode may be outside the contest's declared legal set).
+  $("qso-band").addEventListener("change", () => {
+    updateDupIndicator();
+    refreshContestWarnings();
+  });
+  $("qso-mode").addEventListener("change", () => {
+    updateDupIndicator();
+    refreshContestWarnings();
+  });
 
   // ---------- Edit QSO ----------
   function startEdit(q) {
@@ -810,6 +906,18 @@
     satModeSel.dispatchEvent(new Event("change"));
     $("qso-sat-name").value = q.satName || "";
     updateSatVisibility();
+    // Contest exchange — pre-fill each input from q.contestExchange (empty
+    // for fields the operator never filled in). The inputs are freshly
+    // rebuilt by renderContestUi() on each detail render, so we look them
+    // up by their generated id here.
+    const editLog = selectedLog();
+    const editContest = editLog && getContest(editLog.contestId);
+    if (editContest) {
+      for (const f of editContest.exchange) {
+        const el = $(`qso-contest-${f.id}`);
+        if (el) el.value = (q.contestExchange && q.contestExchange[f.id]) || "";
+      }
+    }
     $("qso-submit").textContent = t("qso.update");
     $("qso-cancel").hidden = false;
     render();
@@ -872,6 +980,145 @@
     else if (e.key === "Escape") { e.preventDefault(); cancelRename(); renameInput.blur(); }
   });
 
+  // ---------- Contest UI ----------
+  // Toggles `.is-contest` on the QSO form and builds contest-specific pieces
+  // (exchange inputs, submission panel, badge, .cbr button). For regular logs
+  // this collapses to the fast no-op path — no contest DOM is populated.
+  function renderContestUi(log) {
+    const contest = log && getContest(log.contestId);
+    const isContest = !!contest;
+    qsoForm.classList.toggle("is-contest", isContest);
+    contestBadge.hidden = !isContest;
+    contestBadge.textContent = isContest ? (contest.shortName || contest.name) : "";
+    contestSubmission.hidden = !isContest;
+    exportCbrBtn.hidden = !isContest;
+    if (!isContest) {
+      contestFieldsRoot.innerHTML = "";
+      contestSubmissionFields.innerHTML = "";
+      contestWarn.hidden = true;
+      return;
+    }
+    renderContestExchangeFields(log, contest);
+    renderContestSubmissionPanel(log, contest);
+    updateContestWarnings(log, contest);
+  }
+
+  // Build one <label><span/><input/></label> per exchange field. Fields with
+  // type "serial" are auto-filled with the next serial and marked readonly.
+  // Fields with `sticky: true` prefill from the most recent QSO's value for
+  // that field. When editing an existing QSO, startEdit() overwrites all
+  // exchange inputs from q.contestExchange.
+  function renderContestExchangeFields(log, contest) {
+    contestFieldsRoot.innerHTML = "";
+    const lastQso = log.qsos[log.qsos.length - 1];
+    const lastExchange = (lastQso && lastQso.contestExchange) || {};
+    const nextSerial = computeNextSerial(log, contest);
+    for (const f of contest.exchange) {
+      const label = document.createElement("label");
+      label.className = "field-contest";
+      label.dataset.contestField = f.id;
+      const span = document.createElement("span");
+      span.textContent = f.label;
+      label.appendChild(span);
+      const input = document.createElement("input");
+      input.type = "text";
+      if (f.type === "number" || f.type === "serial") input.inputMode = "numeric";
+      input.id = `qso-contest-${f.id}`;
+      input.autocomplete = "off";
+      if (f.placeholder) input.placeholder = f.placeholder;
+      if (f.maxLength) input.maxLength = f.maxLength;
+      if (f.type === "serial") {
+        input.value = String(nextSerial).padStart(3, "0");
+        if (f.readOnly !== false) input.readOnly = true;
+      } else if (f.sticky) {
+        input.value = lastExchange[f.id] || f.default || "";
+      } else {
+        input.value = f.default || "";
+      }
+      label.appendChild(input);
+      contestFieldsRoot.appendChild(label);
+    }
+  }
+
+  // Return next serial = (max stored serial for this log's serial field) + 1.
+  // Deleting a QSO doesn't rewind — matches contest-logger convention that
+  // resetting the serial is an explicit operator action.
+  function computeNextSerial(log, contest) {
+    const serialField = (contest.exchange || []).find((f) => f.type === "serial");
+    if (!serialField) return 1;
+    let max = 0;
+    for (const q of log.qsos) {
+      const v = q.contestExchange && q.contestExchange[serialField.id];
+      const n = parseInt(v, 10);
+      if (Number.isFinite(n) && n > max) max = n;
+    }
+    return max + 1;
+  }
+
+  // Build the Cabrillo submission-header inputs from the contest config.
+  // Values persist on log.contestSubmission and are consumed by buildCabrillo.
+  function renderContestSubmissionPanel(log, contest) {
+    contestSubmissionFields.innerHTML = "";
+    const headers = (contest.cabrillo && contest.cabrillo.headerFields) || [];
+    const sub = log.contestSubmission || {};
+    for (const key of headers) {
+      const label = document.createElement("label");
+      const multiLine = (key === "SOAPBOX" || key === "ADDRESS");
+      if (multiLine) label.className = "wide";
+      const span = document.createElement("span");
+      span.textContent = key;
+      label.appendChild(span);
+      const input = multiLine
+        ? document.createElement("textarea")
+        : document.createElement("input");
+      if (multiLine) input.rows = 2; else input.type = "text";
+      input.id = `contest-sub-${key}`;
+      input.dataset.cabrilloHeader = key;
+      input.autocomplete = "off";
+      input.value = sub[key] || "";
+      input.addEventListener("input", () => {
+        log.contestSubmission = log.contestSubmission || {};
+        if (input.value) {
+          log.contestSubmission[key] = input.value;
+        } else {
+          delete log.contestSubmission[key];
+          if (!Object.keys(log.contestSubmission).length) delete log.contestSubmission;
+        }
+        save();
+      });
+      label.appendChild(input);
+      contestSubmissionFields.appendChild(label);
+    }
+  }
+
+  // Non-blocking warning chip: fired if the current UTC is outside any of the
+  // contest.windows entries, or if the currently-selected band/mode is outside
+  // contest.bands / contest.modes. Empty message = hidden.
+  function updateContestWarnings(log, contest) {
+    if (!contestWarn) return;
+    if (!log || !contest) { contestWarn.hidden = true; return; }
+    const messages = [];
+    if (contest.windows && contest.windows.length) {
+      const now = new Date();
+      const inWindow = contest.windows.some((w) => {
+        const start = new Date(w.start);
+        const end = new Date(w.end);
+        return now >= start && now <= end;
+      });
+      if (!inWindow) messages.push(t("contest.window.warn"));
+    }
+    const band = $("qso-band").value;
+    const mode = modeParent($("qso-mode").value);
+    if (contest.bands && !contest.bands.includes(band)) {
+      messages.push(t("contest.band_mode.warn.band", band));
+    }
+    if (contest.modes && !contest.modes.includes(mode)) {
+      messages.push(t("contest.band_mode.warn.mode", mode));
+    }
+    contestWarn.textContent = messages.join(" • ");
+    contestWarn.hidden = messages.length === 0;
+  }
+
   // ---------- Rendering ----------
   function render() {
     renderLogList();
@@ -912,6 +1159,7 @@
     logDetail.hidden = false;
 
     detailName.textContent = log.name;
+    renderContestUi(log);
 
     qsoTbody.innerHTML = "";
     // Newest first.
@@ -1004,12 +1252,18 @@
   }
 
   function buildAdif(log) {
+    const contest = getContest(log.contestId);
     const lines = [];
     lines.push(`ADIF export from Local QSO Logger`);
     lines.push(adifField("ADIF_VER", ADIF_VERSION).trim());
     lines.push(adifField("PROGRAMID", "local-qso").trim());
     lines.push(adifField("PROGRAMVERSION", APP_VERSION).trim());
     lines.push(adifField("CREATED_TIMESTAMP", nowAdifTimestamp()).trim());
+    // Contest-log stamp so a foreign importer (or a re-import into this app
+    // in the future) can identify the source contest.
+    if (contest) {
+      lines.push(adifField("APP_LQ_CONTEST_ID", contest.id).trim());
+    }
     lines.push("<EOH>");
     lines.push("");
 
@@ -1032,6 +1286,14 @@
         adifField("STATION_CALLSIGN", q.stationCall) +
         adifField("OPERATOR", q.operator) +
         adifField("MY_GRIDSQUARE", q.myGridSquare);
+      // Contest exchange values — emitted as APP_LQ_* per the contest config.
+      // Ignored silently for non-contest logs (q.contestExchange is absent).
+      if (contest && q.contestExchange) {
+        for (const f of contest.exchange) {
+          const v = q.contestExchange[f.id];
+          if (v) rec += adifField(f.adifField, v);
+        }
+      }
       // Preserve ADIF fields imported from other loggers that we don't model
       // as first-class UI properties (COMMENT, NAME, GRIDSQUARE, FREQ, DXCC,
       // QSL_*, POTA_REF, etc.). Full round-trip fidelity without UI churn.
@@ -1098,6 +1360,10 @@
   function parseAdif(text) {
     const bytes = new TextEncoder().encode(text);
     const eohIdx = findAsciiTag(bytes, "EOH", 0);
+    // Parse the ADIF header block (bytes 0..EOH) for identity fields we care
+    // about — currently just APP_LQ_CONTEST_ID so a re-imported contest log
+    // rehydrates as the same contest.
+    const header = eohIdx >= 0 ? parseAdifRecord(bytes.subarray(0, eohIdx)) : {};
     let cursor = eohIdx >= 0 ? eohIdx + 5 : 0; // "<EOH>" is 5 bytes
     const records = [];
     while (true) {
@@ -1107,7 +1373,7 @@
       if (Object.keys(rec).length) records.push(rec);
       cursor = eorIdx + 5; // past "<EOR>"
     }
-    return records;
+    return { header, records };
   }
 
   function adifDateToIso(d) {
@@ -1122,21 +1388,40 @@
   }
 
   function importAdif(text) {
-    const records = parseAdif(text);
+    const { header, records } = parseAdif(text);
     if (!records.length) {
       alert(t("alert.no_qsos_in_adif"));
       return;
     }
+    // Detect a re-import of one of our own contest exports: the header
+    // carries APP_LQ_CONTEST_ID, and if that contest is bundled we adopt it
+    // for the new log and split APP_LQ_* record fields into q.contestExchange
+    // via the contest's exchange schema. Unknown contest → fields fall
+    // through to q.extras (still lossless).
+    const importedContestId = (header && header.APP_LQ_CONTEST_ID) || "";
+    const importedContest = getContest(importedContestId);
+    const contestAdifFields = importedContest
+      ? new Set(importedContest.exchange.map((f) => f.adifField))
+      : null;
     const { date, time } = nowUtcParts();
     const log = {
       id: uid(),
       name: `${t("log.imported_prefix")} ${date} ${time.slice(0, 5)} ${t("log.utc_suffix")}`,
       qsos: records.map((r) => {
         // Everything the app doesn't model as a first-class field is stashed
-        // in q.extras so it survives a subsequent export unchanged.
+        // in q.extras so it survives a subsequent export unchanged. Contest
+        // exchange fields (APP_LQ_*) belonging to the imported contest are
+        // pulled into q.contestExchange instead.
         const extras = {};
+        const contestExchange = {};
         for (const [k, v] of Object.entries(r)) {
-          if (!KNOWN_ADIF_FIELDS.has(k) && v) extras[k] = v;
+          if (KNOWN_ADIF_FIELDS.has(k) || !v) continue;
+          if (contestAdifFields && contestAdifFields.has(k)) {
+            const f = importedContest.exchange.find((x) => x.adifField === k);
+            if (f) contestExchange[f.id] = v;
+          } else {
+            extras[k] = v;
+          }
         }
         // ADIF stores MODE (parent) and SUBMODE (specific) separately. Preserve
         // both. If a source omits MODE but supplies SUBMODE, derive the parent
@@ -1171,9 +1456,16 @@
         if (r.SAT_MODE)         qso.satMode      = r.SAT_MODE;
         if (r.SAT_NAME)         qso.satName      = r.SAT_NAME;
         if (Object.keys(extras).length) qso.extras = extras;
+        if (Object.keys(contestExchange).length) qso.contestExchange = contestExchange;
         return qso;
       }),
     };
+    // If we recognised the contest, flag the log so the QSO form reveals
+    // the contest exchange block and the Cabrillo button.
+    if (importedContest) {
+      log.contestId = importedContest.id;
+      log.name = `${importedContest.shortName || importedContest.name} (${t("log.imported_prefix").toLowerCase()} ${date})`;
+    }
     state.logs.push(log);
     state.selectedId = log.id;
     render();
@@ -1193,16 +1485,118 @@
     URL.revokeObjectURL(url);
   }
 
+  // ---------- Cabrillo v3 export ----------
+  // https://wwrof.org/cabrillo/
+  // Contest logs only. Header pre-fills what we can from the first QSO's
+  // station data (CALLSIGN / GRID-LOCATOR / OPERATORS); everything else
+  // comes from the Submission-info panel (log.contestSubmission).
+  // CLAIMED-SCORE is emitted as 0 — scoring is v2.
+
+  // Look up a Cabrillo column value: `rst_sent`/`rst_rcvd` come from the
+  // QSO's top-level RST fields, everything else from q.contestExchange.
+  function cabrilloValue(q, key) {
+    if (key === "rst_sent") return q.rstSent || "";
+    if (key === "rst_rcvd") return q.rstRcvd || "";
+    return (q.contestExchange && q.contestExchange[key]) || "";
+  }
+
+  function cabrilloQsoLine(q, cab, defaultCallsign) {
+    // QSO: freq mo date       time call1        sent... call2        rcvd...
+    const freq = CABRILLO_BAND_KHZ[q.band] || 0;
+    const cabMode = CABRILLO_MODE[modeParent(q.mode)] || "DG";
+    const dateStr = q.date || "0000-00-00";
+    const timeStr = (q.time || "0000").slice(0, 5).replace(":", "");
+    const myCall = q.stationCall || defaultCallsign || "";
+    const sent = (cab.sentTemplate || []).map((k) => cabrilloValue(q, k));
+    const rcvd = (cab.rcvdTemplate || []).map((k) => cabrilloValue(q, k));
+    // Cabrillo columns are whitespace-separated with recommended (not strict)
+    // widths. Single spaces keep the output valid across every submission
+    // robot the operator is likely to hit.
+    return [
+      "QSO:",
+      String(freq).padStart(5),
+      cabMode,
+      dateStr,
+      timeStr,
+      myCall,
+      ...sent,
+      q.call || "",
+      ...rcvd,
+    ].join(" ");
+  }
+
+  function buildCabrillo(log) {
+    const contest = getContest(log.contestId);
+    if (!contest || !contest.cabrillo) return "";
+    const cab = contest.cabrillo;
+    const sub = log.contestSubmission || {};
+    const lines = [];
+    lines.push("START-OF-LOG: 3.0");
+    lines.push(`CONTEST: ${cab.contest}`);
+    lines.push(`CREATED-BY: local-qso ${APP_VERSION}`);
+    // Pre-fill from the first QSO's station data — the operator will have
+    // set these in the sticky Station-data block.
+    const firstQ = log.qsos[0];
+    const stationCall = (firstQ && firstQ.stationCall) || "";
+    const myGrid = (firstQ && firstQ.myGridSquare) || "";
+    const op = (firstQ && firstQ.operator) || "";
+    if (stationCall) lines.push(`CALLSIGN: ${stationCall}`);
+    if (myGrid) lines.push(`GRID-LOCATOR: ${myGrid}`);
+    if (op && op !== stationCall) lines.push(`OPERATORS: ${op}`);
+    // Submission-panel header fields, in the config's declared order.
+    for (const key of cab.headerFields || []) {
+      const v = sub[key];
+      if (!v) continue;
+      // ADDRESS / SOAPBOX can be multi-line — one header line per source line.
+      if (key === "ADDRESS" || key === "SOAPBOX") {
+        for (const line of String(v).split(/\r?\n/)) {
+          if (line.trim()) lines.push(`${key}: ${line}`);
+        }
+      } else {
+        lines.push(`${key}: ${v}`);
+      }
+    }
+    lines.push("CLAIMED-SCORE: 0");
+    // Cabrillo convention: QSOs listed chronologically (oldest first).
+    const sorted = [...log.qsos].sort((a, b) =>
+      ((a.date || "") + (a.time || "")).localeCompare((b.date || "") + (b.time || "")));
+    for (const q of sorted) lines.push(cabrilloQsoLine(q, cab, stationCall));
+    lines.push("END-OF-LOG:");
+    return lines.join("\n") + "\n";
+  }
+
+  function exportCabrillo(log) {
+    const text = buildCabrillo(log);
+    if (!text) return;
+    const blob = new Blob([text], { type: "text/plain" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const safe = log.name.replace(/[^a-z0-9_-]+/gi, "_").replace(/^_+|_+$/g, "");
+    a.href = url;
+    a.download = `${safe || "log"}.cbr`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+  }
+
   // ---------- Event handlers ----------
   logForm.addEventListener("submit", (e) => {
     e.preventDefault();
     const typedName = $("log-name").value.trim();
+    const contestId = logContestSelect.value || "";
+    const contest = getContest(contestId);
     let name = typedName;
     if (!name) {
       const { date, time } = nowUtcParts();
-      name = `${t("log.default_prefix")} ${date} ${time.slice(0, 5)} ${t("log.utc_suffix")}`;
+      // Contest logs get "<ShortName> YYYY-MM-DD" as the default label so a
+      // fresh contest log is instantly recognisable in the sidebar.
+      name = contest
+        ? `${contest.shortName || contest.name} ${date}`
+        : `${t("log.default_prefix")} ${date} ${time.slice(0, 5)} ${t("log.utc_suffix")}`;
     }
     const log = { id: uid(), name, qsos: [] };
+    if (contestId) log.contestId = contestId;
     state.logs.push(log);
     state.selectedId = log.id;
     logForm.reset();
@@ -1251,6 +1645,19 @@
     const grid = $("qso-gridsquare").value.trim();
     const comment = $("qso-comment").value.trim();
 
+    // Contest-exchange block — one value per field defined in the active
+    // contest's exchange schema. Only present when the log is a contest log
+    // and only for fields the operator filled in (matches the "attach only
+    // when non-empty" convention for optional QSO keys).
+    const contest = getContest(log.contestId);
+    const contestExchange = {};
+    if (contest) {
+      for (const f of contest.exchange) {
+        const el = $(`qso-contest-${f.id}`);
+        if (el && el.value.trim()) contestExchange[f.id] = el.value.trim();
+      }
+    }
+
     const fields = {
       call: $("qso-call").value.trim().toUpperCase(),
       date,
@@ -1277,6 +1684,11 @@
       fields.satMode = $("qso-sat-mode").value;
       fields.satName = $("qso-sat-name").value;
     }
+    // Contest exchange — attached only for contest logs and only when any
+    // value was filled in. Replaces (never merges) so cleared fields drop.
+    if (contest && Object.keys(contestExchange).length) {
+      fields.contestExchange = contestExchange;
+    }
     if (editingId) {
       const q = log.qsos.find((x) => x.id === editingId);
       if (q) {
@@ -1296,6 +1708,11 @@
           delete q.satMode;
           delete q.satName;
         }
+        // If the contest exchange came out empty (all fields cleared), drop
+        // the whole object rather than leaving an empty {} lying around.
+        if (!contest || !Object.keys(contestExchange).length) {
+          delete q.contestExchange;
+        }
       }
       cancelEdit({ skipRender: true });
     } else {
@@ -1307,6 +1724,10 @@
       $("qso-comment").value = "";
       $("qso-rst-sent").value = "";
       $("qso-rst-rcvd").value = "";
+      // Re-render contest exchange inputs so serial advances and non-sticky
+      // received fields (like their zone/serial) reset to blank. Sticky
+      // fields prefill from the just-logged QSO's value.
+      if (contest) renderContestExchangeFields(log, contest);
     }
     // Band/mode/prop-mode stay sticky across QSOs in the same session.
     // Restore the operator's exact dropdown selection (parent OR submode),
@@ -1323,6 +1744,11 @@
   $("export-btn").addEventListener("click", () => {
     const log = selectedLog();
     if (log) exportLog(log);
+  });
+
+  exportCbrBtn.addEventListener("click", () => {
+    const log = selectedLog();
+    if (log && log.contestId) exportCabrillo(log);
   });
 
   $("import-btn").addEventListener("click", () => $("import-input").click());

@@ -20,17 +20,25 @@
     "logbook.name.placeholder": "Field Day 2026 (auto if blank)",
     "logbook.create": "Create logbook",
     "logbook.import": "Import .adi file",
+    "logbook.contest": "Contest",
+    "logbook.contest.none": "— none (regular log) —",
 
     // Detail header
     "nolog.empty": "Select or create a logbook to start logging QSOs.",
     "detail.rename": "Rename",
     "detail.export": "Export .adi",
     "detail.delete": "Delete log",
+    "contest.export_cabrillo": "Export .cbr",
+    "contest.submission.heading": "Contest submission info (for .cbr)",
+    "contest.window.warn": "Outside contest window",
+    "contest.band_mode.warn.band": "Band {0} not in contest",
+    "contest.band_mode.warn.mode": "Mode {0} not in contest",
 
     // QSO form
     "qso.block.station": "Station data",
     "qso.block.operation": "Operation mode",
     "qso.block.qso": "QSO data",
+    "qso.block.contest": "Contest exchange",
     "qso.station_callsign": "Station callsign",
     "qso.operator": "Operator",
     "qso.callsign": "Callsign",

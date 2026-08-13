@@ -909,10 +909,14 @@
     satModeSel.dispatchEvent(new Event("change"));
     $("qso-sat-name").value = q.satName || "";
     updateSatVisibility();
+    $("qso-submit").textContent = t("qso.update");
+    $("qso-cancel").hidden = false;
+    render();
     // Contest exchange — pre-fill each input from q.contestExchange (empty
-    // for fields the operator never filled in). The inputs are freshly
-    // rebuilt by renderContestUi() on each detail render, so we look them
-    // up by their generated id here.
+    // for fields the operator never filled in). Must run AFTER render(),
+    // which calls renderContestExchangeFields() and rebuilds the inputs
+    // from scratch (serial → next serial, sticky → last QSO's value,
+    // others → f.default) — pre-filling before that gets wiped.
     const editLog = selectedLog();
     const editContest = editLog && getContest(editLog.contestId);
     if (editContest) {
@@ -921,9 +925,6 @@
         if (el) el.value = (q.contestExchange && q.contestExchange[f.id]) || "";
       }
     }
-    $("qso-submit").textContent = t("qso.update");
-    $("qso-cancel").hidden = false;
-    render();
     $("qso-call").focus();
   }
 

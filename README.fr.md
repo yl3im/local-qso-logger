@@ -20,7 +20,8 @@ Par [YL3IM](https://www.qrz.com/db/YL3IM). Site du projet : [qso.lv](https://qso
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Carnets de liaison](#carnets-de-liaison)
 - [QSO](#qso)
-- [Import et export ADIF](#import-et-export-adif)
+- [Concours](#concours)
+- [Import et export](#import-et-export)
 - [Vie privée et données](#vie-privée-et-données)
 - [Langue de l'interface](#langue-de-linterface)
 - [Thèmes](#thèmes)
@@ -30,7 +31,8 @@ Par [YL3IM](https://www.qrz.com/db/YL3IM). Site du projet : [qso.lv](https://qso
 ## Fonctionnalités
 
 - Plusieurs carnets de liaison ; chacun avec sa propre liste de QSO.
-- Actions sur le carnet : créer, renommer, supprimer, importer depuis ADIF, exporter en ADIF (`.adi`).
+- **Carnets de concours** en option — choisissez dans un catalogue de 68 concours intégrés lors de la création d'un carnet. Le formulaire QSO reçoit un bloc *Échange de concours* propre au concours, la détection de doublons suit la règle du concours et *Exporter .cbr* produit un fichier de soumission Cabrillo v3 en complément de l'export ADIF habituel.
+- Actions sur le carnet : créer, renommer, supprimer, importer un fichier log (ADIF ou Cabrillo — format détecté automatiquement), exporter en ADIF (`.adi`), plus *Exporter .cbr* (Cabrillo v3) pour les carnets de concours. Réimporter un fichier `.cbr` précédemment exporté par l'application le restaure comme le même carnet de concours.
 - Formulaire QSO réparti en trois blocs : **Données station** (indicatif de la station, indicatif de l'opérateur, locator propre) qui restent mémorisés entre les QSO ; **Mode opératoire** (mode de propagation, satellite, mode, mode sat, bande, bande RX) avec les champs satellite affichés uniquement quand le mode de propagation est *Satellite* ; et **Données QSO** (indicatif contacté, locator contacté, date/heure UTC lors de l'édition, commentaire, RST envoyé, RST reçu).
 - Taxonomie complète ADIF `MODE` → `SUBMODE` dans la liste déroulante des modes — choisissez un mode parent (`SSB`, `MFSK`, …) ou descendez directement jusqu'à un sous-mode précis (`USB`, `FT4`, …) ; l'application enregistre les deux champs conformément à l'ADIF et le tableau affiche le sous-mode spécifique quand il existe.
 - Énumération complète des modes de propagation ADIF (SAT, RPT, EME, ES, MS, Aurora, etc.) en liste déroulante.
@@ -39,6 +41,7 @@ Par [YL3IM](https://www.qrz.com/db/YL3IM). Site du projet : [qso.lv](https://qso
 - Valeurs par défaut sensées : date/heure UTC pré-remplie à *maintenant*, RST par défaut selon le mode (59 pour les modes voix, 599 pour CW/numérique), données station + bande + mode + mode de propagation mémorisés entre QSO consécutifs (seuls les champs par contact — indicatif, leur locator, commentaire, RST — sont effacés après chaque *Enregistrer QSO*).
 - Indicateur en temps réel d'indicatif doublon (informatif — les doublons sont autorisés).
 - Colonne drapeau pays déduite du préfixe de l'indicatif (couvre ≥99 % des préfixes radioamateurs courants, y compris les indicatifs portables comme `9A/M0NCG`).
+- Détection automatique **Mon locator** en un tap : un bouton 🌐 à côté du champ demande vos coordonnées actuelles au navigateur et remplit le locator Maidenhead à 6 caractères (utilise l'API Geolocation du navigateur — nécessite l'autorisation de l'utilisateur).
 - Affichage de la date adapté à la locale dans le tableau QSO ; le stockage ISO et la sortie ADIF restent inchangés.
 - Interface disponible en **28 langues** (anglais plus 22 en écriture latine, 5 en cyrillique et grec) ; sélecteur à emoji drapeau dans l'en-tête.
 - Thèmes jour / nuit (jour par défaut ; le bouton est dans l'en-tête).
@@ -50,7 +53,7 @@ Par [YL3IM](https://www.qrz.com/db/YL3IM). Site du projet : [qso.lv](https://qso
 
 Ouvrez simplement `index.html` dans un navigateur moderne. Pas d'étape de compilation, pas d'installation, pas de serveur.
 
-Si vous souhaitez l'héberger, déposez les fichiers statiques (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` et le répertoire `i18n/` avec les 28 fichiers de traduction) sur n'importe quel hébergeur statique (GitHub Pages, Netlify, votre propre serveur web). Cela fonctionne aussi via `file://` — l'enregistrement du service worker est automatiquement ignoré sur le protocole `file:`, de sorte qu'ouvrir `index.html` directement depuis le disque fonctionne proprement.
+Si vous souhaitez l'héberger, déposez les fichiers statiques (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, l'unique bundle `i18n.js` qui embarque les 28 dictionnaires de langue, et l'unique bundle `contests.js` qui embarque les 68 configurations de concours) sur n'importe quel hébergeur statique (GitHub Pages, Netlify, votre propre serveur web). Cela fonctionne aussi via `file://` — l'enregistrement du service worker est automatiquement ignoré sur le protocole `file:`, de sorte qu'ouvrir `index.html` directement depuis le disque fonctionne proprement.
 
 Hébergé en HTTPS, l'application devient installable comme PWA (menu *Installer l'app* / *Ajouter à l'écran d'accueil* du navigateur) et fonctionne hors ligne dès la première visite grâce à un service worker cache-first qui pré-cache tous les fichiers statiques (UI + toutes les traductions).
 
@@ -96,7 +99,7 @@ Source en meilleure qualité : [media/Android_add_to_home_screen.mp4](media/Andr
 
 - Remplissez le formulaire et appuyez sur **Enregistrer QSO**.
 - Le formulaire est organisé en trois blocs :
-  - **Données station** — *Indicatif de la station* (votre indicatif émetteur, ADIF `STATION_CALLSIGN`), *Opérateur* (l'indicatif de l'opérateur individuel — distinct de l'*indicatif de la station* quand un opérateur invité est au micro d'une station de club ; ADIF `OPERATOR`) et *Mon locator* (ADIF `MY_GRIDSQUARE`). Ces champs restent mémorisés entre les QSO de la même session — renseignez-les une fois et ils se reportent.
+  - **Données station** — *Indicatif de la station* (votre indicatif émetteur, ADIF `STATION_CALLSIGN`), *Opérateur* (l'indicatif de l'opérateur individuel — distinct de l'*indicatif de la station* quand un opérateur invité est au micro d'une station de club ; ADIF `OPERATOR`) et *Mon locator* (ADIF `MY_GRIDSQUARE`) avec un bouton 🌐 qui remplit le locator à partir de la position actuelle de votre navigateur (API Geolocation — le navigateur demandera l'autorisation la première fois). Ces champs restent mémorisés entre les QSO de la même session — renseignez-les une fois et ils se reportent.
   - **Mode opératoire** — *Mode prop.*, *Mode*, *Bande*, plus les champs satellite *Satellite* / *Mode sat* / *Bande RX* quand le mode de propagation est *Satellite*. La bande, le mode et le mode de propagation sont mémorisés comme les données station.
   - **Données QSO** — champs par contact : *Indicatif*, *Locator* (Maidenhead de l'autre station), *Commentaire* (ADIF `COMMENT`), *RST envoyé*, *RST reçu*. Lors de l'édition d'un QSO existant, *Date (UTC)* et *Heure (UTC)* apparaissent aussi dans ce bloc. Ces champs sont effacés après chaque *Enregistrer QSO*.
 - Tous les indicatifs (contacté, station, opérateur) passent automatiquement en majuscules à la frappe ; les deux champs locator font de même.
@@ -108,12 +111,50 @@ Source en meilleure qualité : [media/Android_add_to_home_screen.mp4](media/Andr
 - **Modifier un QSO** avec le bouton *Modifier* sur la ligne. Le formulaire passe en mode *Mettre à jour QSO*, la ligne est mise en évidence et un bouton *Annuler* apparaît. Changer de carnet ou supprimer le log annule l'édition automatiquement.
 - **Supprimer un QSO** avec le bouton *Supprimer* sur la ligne (demande confirmation).
 
-## Import et export ADIF
+## Concours
 
-- **Export** : cliquez sur *Exporter .adi* dans l'en-tête du carnet. Un fichier conforme à **ADIF 3.1.7** est téléchargé. L'en-tête déclare `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` et `CREATED_TIMESTAMP` (UTC). Champs par QSO émis (s'ils ne sont pas vides) : `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — suivi de chaque champ ADIF supplémentaire préservé à l'import (voir ci-dessous).
-- **Import** : cliquez sur *Importer un fichier .adi* sous le formulaire de création de carnet et sélectionnez un fichier `.adi` / `.adif`. Un nouveau carnet est créé à partir de lui, nommé `Imported YYYY-MM-DD HH:MM UTC`. L'import ne fusionne jamais avec un carnet existant.
-- **Circuit sans perte** : à l'import, tout champ ADIF que l'application ne modélise pas dans son interface (p. ex. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, champs `APP_*`) est conservé sur le QSO et réémis mot pour mot au prochain export. Exporter un fichier lui-même importé préserve donc tout.
-- La longueur de champ est traitée comme un nombre d'octets UTF-8 comme l'exige la spécification, si bien que le texte multi-octet (p. ex. indicatifs accentués dans `COMMENT`) est analysé correctement.
+Un carnet peut, en option, être un **carnet de concours** — choisissez un concours dans la liste déroulante *Concours* du formulaire de création de carnet. Liste vide = carnet ordinaire (par défaut, comportement existant inchangé).
+
+Les carnets de concours reçoivent :
+
+- **Bloc d'échange de concours** dans le formulaire QSO, rendu dynamiquement à partir du schéma du concours choisi. Types de champs : `text`, `number` et `serial` (auto-incrémenté, en lecture seule). Les champs marqués *sticky* (votre zone / comté / district / puissance / âge / …) sont pré-remplis à partir de la valeur du QSO précédent ; les champs par QSO (leur zone, leur numéro de série, …) sont effacés après chaque *Enregistrer QSO*.
+- **Badge concours** à côté du nom du log dans l'en-tête du détail.
+- **Détection de doublons** conforme à la `duplicateRule` du concours (`per-band-mode`, `per-band`, `per-day` ou `off`). La puce reste informative — elle ne bloque jamais la validation.
+- **Puce d'avertissement** quand l'UTC actuel tombe en dehors des fenêtres de dates déclarées par le concours (12 ans préchargés, 2026–2037), ou quand la bande / le mode sélectionné n'est pas dans l'ensemble légal du concours. Ne bloque jamais.
+- **Panneau d'infos de soumission** dans l'en-tête du détail : un formulaire en ligne pour les champs d'en-tête Cabrillo déclarés par le concours (catégorie, puissance, nom, club, adresse, soapbox, …). Les valeurs sont conservées sur le carnet, pas par QSO.
+- Bouton **Exporter .cbr** dans l'en-tête du détail, à côté de *Exporter .adi*. Émet un fichier Cabrillo v3 : `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` pré-remplis à partir des données station du premier QSO, le reste depuis le panneau d'infos de soumission, puis une ligne `QSO:` par contact dans l'ordre chronologique en utilisant les colonnes `sentTemplate` / `rcvdTemplate` du concours.
+- **Réimport Cabrillo** via le bouton standard *Importer un fichier log* — un fichier `.cbr` précédemment exporté par l'application (ou par tout autre logger émettant du Cabrillo v3 standard) revient dans un nouveau carnet de concours du type correct. L'en-tête `CONTEST:` est apparié au catalogue intégré ; quand plusieurs configurations partagent le même tag (p. ex. `ARRL-10` correspond à la fois à `arrl-10m-dx` et à `arrl-10m-w`), l'app départage en comparant la lettre de mode de la ligne QSO et le nombre de colonnes au gabarit de chaque candidat, puis privilégie la variante `-dx`. Les champs d'en-tête (catégorie, nom, club, soapbox, …) réhydratent le panneau d'infos de soumission ; les valeurs d'échange des QSO réhydratent `q.contestExchange` selon le gabarit du concours.
+
+### Catalogue de concours intégré (68 configurations)
+
+Regroupés par famille :
+
+- **Famille CQ** (9) : CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **Famille ARRL** (9) : ARRL DX SSB/CW (côté DX), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (chacun livré à la fois dans la perspective DX et W/VE).
+- **IARU** (2) : IARU HF Championship, IARU R1 Field Day.
+- **WAE et autres européens** (8) : WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Europe centrale / de l'Est asymétriques — les deux perspectives** (14) : OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Club russe / RadioSport** (12) : Russian DX (les deux côtés), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Biélorussie + italien + croate + espagnol + RTTY ukrainien** (12) : Belarus BFRR CW+SSB (les deux côtés), ARI DX (les deux côtés), Croatian 9A CW (les deux côtés), Spanish CNCW (les deux côtés), Ukrainian RTTY (les deux côtés).
+- **Global** (2) : All Asian DX CW+SSB.
+
+Les concours asymétriques (où le pays hôte et le côté DX envoient des échanges différents) sont livrés avec **deux configurations** — une pour la perspective du pays hôte (code régional persistant) et une pour la perspective DX (numéro de série persistant). Le champ reçu est un unique fourre-tout en texte libre pour que l'opérateur puisse saisir n'importe quel format selon le contact.
+
+Chaque configuration comporte :
+
+- Les valeurs d'échange de concours sont réémises à l'export ADIF via l'espace de noms `APP_LQ_*` ; l'estampille d'en-tête `APP_LQ_CONTEST_ID` permet à un réimport ultérieur de restaurer le carnet comme le même concours avec tous les champs intacts.
+- 12 ans de fenêtres de dates (2026–2037) pour que la puce *hors de la fenêtre du concours* reste utile pendant une décennie sans nouvelle livraison.
+- Un gabarit Cabrillo qui associe chaque champ d'échange à la bonne colonne de la ligne `QSO:`.
+
+Ajouter un nouveau concours = coller un nouveau bloc IIFE dans [`contests.js`](contests.js) à la position alphabétique (chaque concours existant est délimité par un commentaire d'en-tête `// ==== <id> ====`, donc facile à repérer où insérer). Aucune modification à `index.html`, aucune modification à `service-worker.js`, aucune modification à `app.js` nécessaire — le rendu, le gestionnaire de validation, le détecteur de doublons, l'aller-retour ADIF et l'émetteur Cabrillo absorbent chaque configuration comme des données pures.
+
+## Import et export
+
+- **Import** de n'importe quel fichier log — cliquez sur *Importer un fichier log* sous le formulaire de création de carnet et choisissez un fichier `.adi` / `.adif` (ADIF) ou `.cbr` / `.cab` (Cabrillo v3). Le format est détecté automatiquement à partir de la première ligne du fichier (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → une alerte « EDI pas encore pris en charge »). Un nouveau carnet est toujours créé — l'import ne fusionne jamais avec un existant. Les imports ADIF arrivent comme des logs ordinaires sauf si l'en-tête porte un `APP_LQ_CONTEST_ID` écrit par notre propre export de concours (auquel cas le log est restauré comme carnet de concours de ce concours). Les imports Cabrillo arrivent toujours comme carnets de concours — voir la section *Concours* pour la correspondance de la balise `CONTEST:` avec le catalogue intégré.
+- **Export ADIF** : cliquez sur *Exporter .adi* dans l'en-tête du carnet. Un fichier conforme à **ADIF 3.1.7** est téléchargé. L'en-tête déclare `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` et `CREATED_TIMESTAMP` (UTC). Champs par QSO émis (s'ils ne sont pas vides) : `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — suivi de chaque champ ADIF supplémentaire préservé à l'import (voir ci-dessous).
+- **Export Cabrillo** est documenté dans la section *Concours* ci-dessus — il n'est disponible que pour les carnets de concours (le bouton *Exporter .cbr* apparaît dans l'en-tête du carnet quand le log a un concours).
+- **Circuit sans perte** : à l'import ADIF, tout champ que l'application ne modélise pas dans son interface (p. ex. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, champs `APP_*`) est conservé sur le QSO et réémis mot pour mot au prochain export ADIF. Exporter un fichier lui-même importé préserve donc tout.
+- La longueur de champ ADIF est traitée comme un nombre d'octets UTF-8 comme l'exige la spécification, si bien que le texte multi-octet (p. ex. indicatifs accentués dans `COMMENT`) est analysé correctement.
 
 ## Vie privée et données
 
@@ -131,7 +172,7 @@ Langues disponibles (emoji drapeau + nom natif ; ordre alphabétique par systèm
 
 Les étiquettes techniques universelles restent dans leur forme canonique dans toutes les langues : noms de bandes (`20m`, `70cm`, …), codes de mode ADIF (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` et codes pays ISO.
 
-Il manque une chaîne dans votre langue ? Chaque langue est un unique petit fichier sous [`i18n/`](i18n/) — copiez `i18n/en.js`, traduisez les valeurs, enregistrez sous `i18n/<code>.js`, puis ajoutez une balise `<script>` et une option dans `<select>` dans `index.html` et le code dans `SUPPORTED_LANGS` dans `app.js`.
+Il manque une chaîne dans votre langue ? Chaque dictionnaire de langue vit dans un unique bundle [`i18n.js`](i18n.js), divisé en 28 sections par des commentaires d'en-tête `// ==== <lang> ====`. Utilisez grep sur l'en-tête de votre langue pour sauter à sa section, puis ajoutez/éditez la clé. Ajouter une toute nouvelle langue = coller un nouveau bloc IIFE dans `i18n.js` à la position alphabétique, ajouter le code de langue à `SUPPORTED_LANGS` dans `app.js`, et ajouter une option `<select>` dans `index.html`.
 
 ## Thèmes
 
@@ -147,7 +188,8 @@ Le bouton de thème dans l'en-tête bascule entre le jour (par défaut) et la nu
   - `favicon.svg` — favicon SVG inline.
   - `manifest.webmanifest` — Web App Manifest (nom, couleur de thème, portée, icône) pour que l'app soit installable comme PWA sur mobile et bureau.
   - `service-worker.js` — service worker cache-first qui pré-cache tous les fichiers statiques à l'installation, évince les anciens caches à l'activation et maintient l'app entièrement hors ligne après la première visite. L'enregistrement est automatiquement ignoré sur le protocole `file://`, de sorte qu'ouvrir `index.html` directement depuis le disque reste propre.
-  - `i18n/<lang>.js` — un fichier de traduction par langue supportée (28 au total). Chacun est un petit IIFE qui assigne à `window.I18N[<lang>]` un dictionnaire plat clé→chaîne. `t()` et `applyLanguage()` dans `app.js` gèrent les lookups (avec repli sur l'anglais) et parcourent le DOM en mettant à jour chaque élément `[data-i18n*]`.
+  - `i18n.js` — un unique bundle maintenu à la main qui embarque les 28 dictionnaires de langue. Chaque langue est un IIFE autonome qui assigne à `window.I18N[<lang>]` un dictionnaire plat clé→chaîne. Les blocs sont délimités par des commentaires d'en-tête `// ==== <lang> ====` — utilisez grep sur l'un d'eux pour sauter à cette langue. Regroupé dans un seul fichier plutôt que 28 fichiers individuels parce que les fichiers de traduction sont très répétitifs (mêmes noms de clés, même syntaxe de placeholder) et gzip compresse l'ensemble bien mieux que 28 flux séparés — économise ~23 Ko au premier chargement et supprime 27 requêtes HTTP. `t()` et `applyLanguage()` dans `app.js` gèrent les lookups (avec repli sur l'anglais) et parcourent le DOM en mettant à jour chaque élément `[data-i18n*]`.
+  - `contests.js` — un unique bundle maintenu à la main qui embarque les 68 configurations de concours. Chaque concours est un IIFE autonome qui assigne à `window.CONTESTS[<id>]` un objet de configuration conforme au schéma (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Les blocs sont délimités par des commentaires d'en-tête `// ==== <id> ====` — utilisez grep sur l'un d'eux pour sauter à ce concours. Regroupé dans un seul fichier plutôt que 68 fichiers individuels parce que les configurations de concours sont très répétitives (même schéma, même préfixe `APP_LQ_*`, mêmes noms de champs d'en-tête Cabrillo) et gzip compresse l'ensemble bien mieux que 68 flux séparés — économise ~42 Ko au premier chargement et supprime 67 requêtes HTTP. Chargé par une unique balise `<script>` dans `index.html` avant `app.js` pour que le registre soit peuplé quand la liste déroulante des concours est construite.
 - Testé sur les versions récentes de Chromium, Firefox et Safari (bureau + iOS).
 
 ## Remerciements

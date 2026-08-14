@@ -20,7 +20,8 @@ Af [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebsted: [qso.lv](https://qso.l
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Logbøger](#logbøger)
 - [QSO'er](#qsoer)
-- [ADIF-import og -eksport](#adif-import-og--eksport)
+- [Konkurrencer](#konkurrencer)
+- [Import og eksport](#import-og-eksport)
 - [Privatliv og data](#privatliv-og-data)
 - [Brugergrænsefladesprog](#brugergrænsefladesprog)
 - [Temaer](#temaer)
@@ -30,7 +31,8 @@ Af [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebsted: [qso.lv](https://qso.l
 ## Funktioner
 
 - Flere logbøger; hver med sin egen liste over QSO'er.
-- Logbogshandlinger: opret, omdøb, slet, importer fra ADIF, eksporter til ADIF (`.adi`).
+- **Konkurrenceslogbøger** er valgfrie — vælg fra et katalog med 68 indbyggede konkurrencer, når du opretter en logbog. QSO-formularen får en konkurrencespecifik blok *Konkurrenceudveksling*, dublet-detektionen følger konkurrencens regel, og *Eksporter .cbr* udsender en Cabrillo v3-indsendelsesfil ved siden af den sædvanlige ADIF-eksport.
+- Logbogshandlinger: opret, omdøb, slet, importer en logfil (ADIF eller Cabrillo — format registreres automatisk), eksporter til ADIF (`.adi`), samt *Eksporter .cbr* (Cabrillo v3) for konkurrencelogbøger. Genimport af en `.cbr`-fil, der tidligere er eksporteret af appen, genskaber den som samme konkurrencelogbog.
 - QSO-formularen er grupperet i tre blokke: **Stationsdata** (stationens kaldesignal, operatørens kaldesignal, eget gitter) der forbliver klæbrige på tværs af QSO'er; **Driftstilstand** (udbredelsestilstand, satellit, tilstand, satellittilstand, bånd, RX-bånd) med satellitfelter, der kun vises når udbredelsestilstanden er *Satellit*; og **QSO-data** (kontaktet kaldesignal, kontaktet gitter, UTC-dato/-tid ved redigering, kommentar, RST sendt, RST modtaget).
 - Komplet ADIF `MODE` → `SUBMODE`-taksonomi i tilstandsdropdownen — vælg en overordnet tilstand (`SSB`, `MFSK`, …) eller gå direkte til en specifik undertilstand (`USB`, `FT4`, …); appen gemmer begge felter per ADIF, og tabellen viser den specifikke undertilstand når der er en.
 - Komplet ADIF-udbredelsestilstandsopregning (SAT, RPT, EME, ES, MS, Aurora osv.) som dropdown.
@@ -39,6 +41,7 @@ Af [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebsted: [qso.lv](https://qso.l
 - Fornuftige standarder: UTC-dato/-tid forudfyldt til *nu*, tilstandsbevidste RST-standarder (59 for stemmetilstande, 599 for CW/digitalt), klæbrige stationsdata + bånd + tilstand + udbredelsestilstand på tværs af på hinanden følgende QSO'er (kun per-kontaktfelterne — kaldesignal, deres gitter, kommentar, RST — ryddes efter hvert *Log QSO*).
 - Live duplikat-kaldesignalindikator (informativ — dubletter er tilladt).
 - Landeflag-kolonne afledt af kaldesignalpræfikset (dækker ≥99 % af almindelige amatørradiopræfikser, herunder bærbare kald som `9A/M0NCG`).
+- Ét-tryk **Mit gitter**-autoregistrering: en 🌐-knap ved siden af feltet beder browseren om dine aktuelle koordinater og udfylder det 6-tegns Maidenhead-gitter (bruger browserens Geolocation-API — kræver brugertilladelse).
 - Lokalitetssensitiv datovisning i QSO-tabellen; ISO-lagring og ADIF-output forbliver uændrede.
 - Grænsefladen er tilgængelig på **28 sprog** (engelsk plus 22 latin-skrift, 5 kyrillisk-skrift og græsk); flagemoji-præfikseret vælger i overskriften.
 - Dag-/nattetemaer (dag er standard; skifteren er i overskriften).
@@ -50,7 +53,7 @@ Af [YL3IM](https://www.qrz.com/db/YL3IM). Projektwebsted: [qso.lv](https://qso.l
 
 Åbn blot `index.html` i en moderne browser. Intet byggetrin, ingen installation, ingen server.
 
-Hvis du vil hoste det, drop de statiske filer (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` og mappen `i18n/` med 28 oversættelsesfiler) på en statisk host (GitHub Pages, Netlify, din egen webserver). Det virker også over `file://` — service worker-registreringen springes automatisk over på `file:`-protokollen, så åbning af `index.html` direkte fra disk stadig fungerer rent.
+Hvis du vil hoste det, drop de statiske filer (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, den enkelte `i18n.js`-bundt, der bærer alle 28 sprogordbøger, og den enkelte `contests.js`-bundt, der bærer alle 68 konkurrencekonfigurationer) på en statisk host (GitHub Pages, Netlify, din egen webserver). Det virker også over `file://` — service worker-registreringen springes automatisk over på `file:`-protokollen, så åbning af `index.html` direkte fra disk stadig fungerer rent.
 
 Når det hostes over HTTPS, bliver appen installerbar som PWA (browserens *Installer app* / *Føj til startskærm*-menu) og virker offline efter første besøg takket være en cache-first service worker, der forhåndscacher alle statiske filer (UI + alle oversættelser).
 
@@ -96,7 +99,7 @@ Højere kvalitetskilde: [media/Android_add_to_home_screen.mp4](media/Android_add
 
 - Udfyld formularen og tryk **Log QSO**.
 - Formularen er organiseret i tre blokke:
-  - **Stationsdata** — *Stationens kaldesignal* (dit sendekaldesignal, ADIF `STATION_CALLSIGN`), *Operatør* (den individuelle operatørs kaldesignal — adskilt fra *Stationens kaldesignal* når en gæsteoperatør er ved mikrofonen på en klubstation; ADIF `OPERATOR`) og *Mit gitter* (ADIF `MY_GRIDSQUARE`). Disse forbliver klæbrige på tværs af QSO'er i samme session — sæt dem én gang, og de overføres.
+  - **Stationsdata** — *Stationens kaldesignal* (dit sendekaldesignal, ADIF `STATION_CALLSIGN`), *Operatør* (den individuelle operatørs kaldesignal — adskilt fra *Stationens kaldesignal* når en gæsteoperatør er ved mikrofonen på en klubstation; ADIF `OPERATOR`) og *Mit gitter* (ADIF `MY_GRIDSQUARE`) med en 🌐-knap, der udfylder gitteret ud fra din browsers aktuelle placering (Geolocation-API — browseren beder om tilladelse første gang). Disse forbliver klæbrige på tværs af QSO'er i samme session — sæt dem én gang, og de overføres.
   - **Driftstilstand** — *Udbredelsestilstand*, *Tilstand*, *Bånd*, plus de satellit-only felter *Satellit* / *Satellittilstand* / *RX-bånd* når udbredelsestilstanden er *Satellit*. Bånd, tilstand og udbredelsestilstand er klæbrige ligesom stationsdata.
   - **QSO-data** — per-kontaktfelter: *Kaldesignal*, *Gitter* (den anden stations Maidenhead), *Kommentar* (ADIF `COMMENT`), *RST sendt*, *RST modtaget*. Ved redigering af et eksisterende QSO vises *Dato (UTC)* og *Tid (UTC)* også i denne blok. Disse felter ryddes efter hvert *Log QSO*.
 - Alle kaldesignaler (kontaktet, station, operatør) skrives automatisk med store bogstaver mens du skriver; begge gitterfelter gør det samme.
@@ -108,12 +111,50 @@ Højere kvalitetskilde: [media/Android_add_to_home_screen.mp4](media/Android_add
 - **Rediger et QSO** med knappen *Rediger* på rækken. Formularen skifter til *Opdater QSO*-tilstand, rækken fremhæves, og en *Annuller*-knap vises. Skift af logbøger eller sletning af loggen annullerer redigeringen automatisk.
 - **Slet et QSO** med knappen *Slet* på rækken (beder om bekræftelse).
 
-## ADIF-import og -eksport
+## Konkurrencer
 
-- **Eksport**: klik på *Eksporter .adi* i logbogsoverskriften. En fil downloades i overensstemmelse med **ADIF 3.1.7**. Overskriften erklærer `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` og `CREATED_TIMESTAMP` (UTC). Per-QSO-felter udsendt (når ikke-tomme): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — efterfulgt af hvert ekstra ADIF-felt bevaret ved import (se nedenfor).
-- **Import**: klik på *Importer .adi-fil* under Opret-logbog-formularen og vælg en `.adi` / `.adif`-fil. En ny logbog oprettes fra den, navngivet `Imported YYYY-MM-DD HH:MM UTC`. Import flettes aldrig ind i en eksisterende logbog.
-- **Tabsfri overførsel**: ved import bevares ethvert ADIF-felt, som appen ikke modellerer i sin brugergrænseflade (f.eks. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*`-felter) på QSO'et og genudsender det ordret ved næste eksport. Eksport af en fil der selv var importeret bevarer således alt.
-- Feltlængde behandles som et UTF-8-byteantal som specifikationen kræver, så flerbyte-tekst (f.eks. accenterede tegn i `COMMENT`) parses korrekt.
+En logbog kan valgfrit være en **konkurrencelogbog** — vælg en konkurrence fra *Konkurrence*-dropdown'en i formularen for at oprette en logbog. Tom dropdown = almindelig logbog (standard, eksisterende funktionalitet uændret).
+
+Konkurrencelogbøger får:
+
+- **Konkurrenceudvekslingsblok** i QSO-formularen, dynamisk gengivet ud fra den valgte konkurrences skema. Felttyper er `text`, `number` og `serial` (auto-inkrementerende, skrivebeskyttet). Felter markeret som *sticky* (din egen zone / amt / distrikt / effekt / alder / …) forudfyldes fra det forrige QSO's værdi; per-QSO-felter (deres zone, deres serienummer, …) ryddes efter hvert *Log QSO*.
+- **Konkurrencemærke** ved siden af lognavnet i detaljeoverskriften.
+- **Dublet-detektion** følger konkurrencens `duplicateRule` (`per-band-mode`, `per-band`, `per-day` eller `off`). Chippen er stadig kun informativ — blokerer aldrig indsendelse.
+- **Advarselschip**, når den aktuelle UTC falder uden for et af konkurrencens deklarerede datovinduer (12 år forhåndsindlæst, 2026–2037), eller når det valgte bånd/tilstand ikke er i konkurrencens tilladte sæt. Blokerer aldrig.
+- **Indsendelsesinfopanel** i detaljeoverskriften: en indlejret formular til de Cabrillo-headerfelter, som konkurrencen deklarerer (kategori, effekt, navn, klub, adresse, soapbox, …). Værdier gemmes på logbogen, ikke per QSO.
+- **Eksporter .cbr**-knap i detaljeoverskriften, ved siden af *Eksporter .adi*. Udsender en Cabrillo v3-fil: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` forudfyldt fra det første QSO's stationsdata, resten fra indsendelsesinfopanelet, derefter én `QSO:`-linje per kontakt i kronologisk rækkefølge ved brug af konkurrencens `sentTemplate` / `rcvdTemplate`-kolonner.
+- **Cabrillo-genimport** via standardknappen *Importer logfil* — en `.cbr`-fil, der tidligere er eksporteret af appen (eller af enhver anden logger, der udsender standard-Cabrillo v3), går tilbage til en frisk konkurrencelogbog af den rigtige type. `CONTEST:`-headeren matches mod det indbyggede katalog; når flere konfigurationer deler samme mærke (f.eks. matcher `ARRL-10` både `arrl-10m-dx` og `arrl-10m-w`), skelner appen ved at matche QSO-linjens tilstandsbogstav og kolonneantal mod hver kandidats skabelon, og foretrækker derefter `-dx`-varianten. Headerfelter (kategori, navn, klub, soapbox, …) genopfrisker indsendelsesinfopanelet; QSO-udvekslingsværdier genopfrisker `q.contestExchange` efter konkurrencens skabelon.
+
+### Indbygget konkurrencekatalog (68 konfigurationer)
+
+Grupperet efter familie:
+
+- **CQ-familien** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **ARRL-familien** (9): ARRL DX SSB/CW (DX-siden), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (hver leveret fra *begge* DX- og W/VE-perspektiver).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE og andre europæiske** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Central-/østeuropæiske asymmetriske — begge perspektiver** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Russisk klub / RadioSport** (12): Russian DX (begge sider), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Hviderusland + Italien + Kroatien + Spanien + ukrainsk RTTY** (12): Belarus BFRR CW+SSB (begge sider), ARI DX (begge sider), Croatian 9A CW (begge sider), Spanish CNCW (begge sider), Ukrainian RTTY (begge sider).
+- **Global** (2): All Asian DX CW+SSB.
+
+Asymmetriske konkurrencer (hvor værtslandet og DX-siden sender forskellige udvekslinger) leveres med **to konfigurationer** — én for værtslandets perspektiv (klæbrig regionskode) og én for DX-perspektivet (klæbrigt serienummer). Det modtagne felt er et enkelt fritekstfelt, så operatøren kan indtaste begge formater afhængigt af kontakten.
+
+Hver konfiguration indeholder:
+
+- Konkurrenceudvekslingsværdier, der genudsendes ved ADIF-eksport via `APP_LQ_*`-navnerumsfelter; headerstemplet `APP_LQ_CONTEST_ID` lader en efterfølgende genimport genskabe logbogen som samme konkurrence med alle felter intakte.
+- 12 års datovinduer (2026–2037), så chippen *uden for konkurrencevinduet* forbliver nyttig i et årti uden en ny udgivelse.
+- En Cabrillo-skabelon, der kortlægger hvert udvekslingsfelt til den korrekte kolonne på `QSO:`-linjen.
+
+At tilføje en ny konkurrence = indsæt en ny IIFE-blok i [`contests.js`](contests.js) på den alfabetiske position (hver eksisterende konkurrence er afgrænset af en `// ==== <id> ====`-headerkommentar, så det er nemt at finde, hvor man skal indsætte). Ingen ændring i `index.html`, ingen ændring i `service-worker.js`, ingen ændring i `app.js` nødvendig — rendereren, indsendelseshåndteringen, dublet-detektoren, ADIF-tur-retur og Cabrillo-udsenderen absorberer hver konfiguration som ren data.
+
+## Import og eksport
+
+- **Import** af enhver logfil — klik på *Importer logfil* under formularen til oprettelse af logbog og vælg en `.adi` / `.adif` (ADIF)- eller `.cbr` / `.cab` (Cabrillo v3)-fil. Formatet registreres automatisk ud fra filens første linje (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → en "EDI understøttes endnu ikke"-advarsel). Der oprettes altid en ny logbog — import flettes aldrig ind i en eksisterende. ADIF-importer kommer ind som almindelige logs, medmindre headeren bærer en `APP_LQ_CONTEST_ID` skrevet af vores egen konkurrenceeksport (i så fald genskabes loggen som en konkurrencelog af den konkurrence). Cabrillo-importer kommer altid ind som konkurrencelogs — se afsnittet *Konkurrencer* for, hvordan `CONTEST:`-tagget matches mod det indbyggede katalog.
+- **ADIF-eksport**: klik på *Eksporter .adi* i logbogsoverskriften. En fil downloades i overensstemmelse med **ADIF 3.1.7**. Overskriften erklærer `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` og `CREATED_TIMESTAMP` (UTC). Per-QSO-felter udsendt (når ikke-tomme): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — efterfulgt af hvert ekstra ADIF-felt bevaret ved import (se nedenfor).
+- **Cabrillo-eksport** er dokumenteret i afsnittet *Konkurrencer* ovenfor — den er kun tilgængelig for konkurrencelogbøger (knappen *Eksporter .cbr* vises i logbogsoverskriften, når loggen har en konkurrence).
+- **Tabsfri overførsel**: ved ADIF-import bevares ethvert felt, som appen ikke modellerer i sin brugergrænseflade (f.eks. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*`-felter) på QSO'et og genudsendes ordret ved næste ADIF-eksport. Eksport af en fil der selv var importeret bevarer således alt.
+- Feltlængde i ADIF behandles som et UTF-8-byteantal som specifikationen kræver, så flerbyte-tekst (f.eks. accenterede tegn i `COMMENT`) parses korrekt.
 
 ## Privatliv og data
 
@@ -131,7 +172,7 @@ Tilgængelige sprog (flagemoji + modersmålsnavn; alfabetisk ordnet inden for hv
 
 Universelle tekniske etiketter forbliver i deres kanoniske form på tværs af alle sprog: bændnavne (`20m`, `70cm`, …), ADIF-tilstandskoder (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` og ISO-landekoder.
 
-Mangler du en streng på dit sprog? Hvert sprog er en enkelt lille fil under [`i18n/`](i18n/) — kopier `i18n/en.js`, oversæt værdierne, gem som `i18n/<code>.js`, tilføj derefter et `<script>`-tag plus en `<select>`-mulighed i `index.html` og koden i `SUPPORTED_LANGS` i `app.js`.
+Mangler du en streng på dit sprog? Hver sprogordbog lever i en enkelt [`i18n.js`](i18n.js)-bundt, opdelt i 28 sektioner med `// ==== <lang> ====`-headerkommentarer. Grep efter headeren for dit sprog for at hoppe til dets sektion, tilføj/rediger derefter nøglen. Tilføjelse af et helt nyt sprog = indsæt en ny IIFE-blok i `i18n.js` på den alfabetiske position, tilføj sprogkoden til `SUPPORTED_LANGS` i `app.js`, og tilføj en `<select>`-mulighed i `index.html`.
 
 ## Temaer
 
@@ -147,7 +188,8 @@ Temaskifteren i overskriften skifter mellem dag (standard) og nat. Præferencen 
   - `favicon.svg` — inline SVG-favicon.
   - `manifest.webmanifest` — Web App Manifest (navn, temafarve, omfang, ikon) så appen er installerbar som PWA på mobil og desktop.
   - `service-worker.js` — cache-first service worker der forhåndscacher alle statiske filer ved installation, fjerner gamle caches ved aktivering og holder appen fuldt offline efter første besøg. Registreringen springes automatisk over på `file://`-protokollen, så åbning af `index.html` direkte fra disk forbliver rent.
-  - `i18n/<lang>.js` — én oversættelsesfil per understøttet sprog (28 i alt). Hver er en lille IIFE der tildeler `window.I18N[<lang>]` et fladt nøgle→streng-kort. `t()` og `applyLanguage()` i `app.js` håndterer opslag (med engelsk fallback) og gennemgår DOM'en og opdaterer hvert `[data-i18n*]`-element.
+  - `i18n.js` — en enkelt håndholdt vedligeholdt bundt, der bærer alle 28 sprogordbøger. Hvert sprog er en selvstændig IIFE, der tildeler `window.I18N[<lang>]` et fladt nøgle→streng-kort. Blokke er afgrænset af `// ==== <lang> ====`-headerkommentarer — grep efter en for at hoppe til dette sprog. Bundtet i én fil frem for 28 individuelle filer, fordi oversættelsesfiler er meget repetitive (samme nøglenavne, samme pladsholder-syntaks), og gzip komprimerer hele sættet langt bedre end 28 separate streams — sparer ~23 KB ved første indlæsning og skærer 27 HTTP-anmodninger. `t()` og `applyLanguage()` i `app.js` håndterer opslag (med engelsk fallback) og gennemgår DOM'en og opdaterer hvert `[data-i18n*]`-element.
+  - `contests.js` — en enkelt håndholdt vedligeholdt bundt, der bærer alle 68 konkurrencekonfigurationer. Hver konkurrence er en selvstændig IIFE, der tildeler `window.CONTESTS[<id>]` et skemakonformt konfigurationsobjekt (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Blokke er afgrænset af `// ==== <id> ====`-headerkommentarer — grep efter en for at hoppe til denne konkurrence. Bundtet i én fil frem for 68 individuelle filer, fordi konkurrencekonfigurationer er meget repetitive (samme skema, samme `APP_LQ_*`-præfiks, samme Cabrillo-headerfeltnavne), og gzip komprimerer hele sættet langt bedre end 68 separate streams — sparer ~42 KB ved første indlæsning og skærer 67 HTTP-anmodninger. Indlæses af et enkelt `<script>`-tag i `index.html` før `app.js`, så registret er befolket, når Konkurrence-dropdown'en bygges.
 - Testet på nylige Chromium, Firefox og Safari (desktop + iOS).
 
 ## Tak til

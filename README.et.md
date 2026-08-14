@@ -20,7 +20,8 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Projekti veebisait: [qso.lv](https
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Logiraamatud](#logiraamatud)
 - [QSOd](#qsod)
-- [ADIF-import ja -eksport](#adif-import-ja--eksport)
+- [Võistlused](#võistlused)
+- [Import ja eksport](#import-ja-eksport)
 - [Privaatsus ja andmed](#privaatsus-ja-andmed)
 - [Liidese keel](#liidese-keel)
 - [Teemad](#teemad)
@@ -30,7 +31,8 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Projekti veebisait: [qso.lv](https
 ## Funktsioonid
 
 - Mitu logiraamatut; igaühel oma QSO-de loend.
-- Logiraamatu toimingud: loomine, ümbernimetamine, kustutamine, ADIF-import, ADIF-eksport (`.adi`).
+- **Võistluslogid** on valikulised — vali logiraamatu loomisel 68 sisseehitatud võistluse kataloogist. QSO-vorm saab võistlusspetsiifilise *Võistluse vahetus*-ploki, duplikaatide tuvastamine austab võistluse reeglit ning *Ekspordi .cbr* loob tavalise ADIF-ekspordi kõrvale Cabrillo v3 esitamisfaili.
+- Logiraamatu toimingud: loomine, ümbernimetamine, kustutamine, logifaili import (ADIF või Cabrillo — vorming tuvastatakse automaatselt), ADIF-eksport (`.adi`), ning *Ekspordi .cbr* (Cabrillo v3) võistluslogide jaoks. Varem rakenduse poolt eksporditud `.cbr`-faili taasimportimine taastab selle sama võistluslogina.
 - QSO-vorm jaotatud kolmeks plokiks: **Jaama andmed** (jaama kutsung, operaatori kutsung, oma ruudustik), mis jäävad QSO-de vahel kleepuvaks; **Töörežiim** (levirežiim, satelliit, režiim, satelliidi režiim, sagedusala, RX-sagedusala) satelliidiväljadega, mis kuvatakse ainult siis, kui levirežiim on *Satelliit*; ja **QSO andmed** (kontakteeritud kutsung, kontakteeritud ruudustik, UTC kuupäev/kellaaeg muutmisel, kommentaar, RST saadetud, RST vastu võetud).
 - Täielik ADIF `MODE` → `SUBMODE` taksonoomia režiimi rippmenüüs — vali peamine režiim (`SSB`, `MFSK`, …) või mine otse konkreetsele alamrežiimile (`USB`, `FT4`, …); rakendus salvestab mõlemad väljad vastavalt ADIFile ja tabel näitab konkreetset alamrežiimi, kui see on olemas.
 - Täielik ADIF-levirežiimide loetelu (SAT, RPT, EME, ES, MS, Aurora jne) rippmenüüna.
@@ -39,6 +41,7 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Projekti veebisait: [qso.lv](https
 - Mõistlikud vaikeväärtused: UTC kuupäev/kellaaeg eeltäidetud *praeguse* ajaga, režiimitundlik RST vaikeväärtus (59 häälrežiimidele, 599 CW/digitaalsele), kleepuvad jaama andmed + sagedusala + režiim + levirežiim järjestikustel QSO-del (ainult kontaktipõhised väljad — kutsung, nende ruudustik, kommentaar, RST — tühjendatakse pärast iga *QSO logimine*).
 - Reaalajas duplikaatkutsungu indikaator (informatiivne — duplikaadid on lubatud).
 - Riigi lipu veerg, mis on tuletatud kutsungu prefiksist (katab ≥99 % tavalistest amatöörraadiose prefiksitest, sealhulgas kandekohtade kutsungid nagu `9A/M0NCG`).
+- Ühe puudutusega **Minu ruudustik** automaatne tuvastus: nupp 🌐 välja kõrval küsib brauserilt sinu praegust asukohta ja täidab 6-kohalise Maidenhead-ruudustiku (kasutab brauseri Geolocation API-t — nõuab kasutaja luba).
 - Lokaliteeditoeline kuupäevakuvamine QSO tabelis; ISO-salvestus ja ADIF-väljund jäävad muutumatuks.
 - Liides saadaval **28 keeles** (inglise keel pluss 22 ladina kirjas, 5 kirillitsas ja kreeka keel); lipuemoji-selektor päises.
 - Päeva-/ööteem (päev on vaikimisi; lüliti on päises).
@@ -50,7 +53,7 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Projekti veebisait: [qso.lv](https
 
 Ava lihtsalt `index.html` kaasaegses brauseris. Ei ehitusetappi, ei installimist, ei serverit.
 
-Kui soovid seda hostida, pane staatilised failid (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` ja kataloog `i18n/` 28 tõlkefailiga) mis tahes staatilisele hostile (GitHub Pages, Netlify, oma veebiserver). Töötab ka `file://` kaudu — teenusttöötaja registreerimine jäetakse `file:` protokollil automaatselt vahele, nii et `index.html` otse kettalt avamine toimib kenasti.
+Kui soovid seda hostida, pane staatilised failid (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, üksik `i18n.js` pakett, mis kannab kõiki 28 keeleraamatut, ja üksik `contests.js` pakett, mis kannab kõiki 68 võistluskonfiguratsiooni) mis tahes staatilisele hostile (GitHub Pages, Netlify, oma veebiserver). Töötab ka `file://` kaudu — teenusttöötaja registreerimine jäetakse `file:` protokollil automaatselt vahele, nii et `index.html` otse kettalt avamine toimib kenasti.
 
 HTTPS-i kaudu hostimisel muutub rakendus installitavaks PWA-na (brauseri menüü *Installi rakendus* / *Lisa avakuvale*) ja töötab esimese külastuse järel võrguühenduseta tänu vahemälupõhisele teenusttöötajale, mis eellaadib kõik staatilised failid (UI + kõik tõlked).
 
@@ -58,7 +61,7 @@ Esimesel külastusel luuakse automaatselt vaikimisi logiraamat, nii et saad kohe
 
 ## Installimine PWA-na mobiiliseadmesse
 
-Kui rakendust hostitakse HTTPS-i kaudu (nt GitHub Pages), saad selle installida oma telefoni avakuvale, kus see töötab täisekraanil ilma brauseri kroomita. Pärast esimest käivitamist salvestab teenusttöötaja kõik vahemällu, nii et järgmised käivitamised töötavad täielikult võrguühenduseta.
+Kui rakendust hostitakse HTTPS-i kaudu (nt GitHub Pages), saad selle installida oma telefoni avakuvale, kus see töötab täisekraanil ilma brauseri kroomita. Pärast esimest käivitamist salvestab teenusttöötaja kõik vahemällu, nii et järgmised käivitamised toimivad täielikult võrguühenduseta.
 
 ### iOS (ainult Safari)
 
@@ -96,24 +99,62 @@ Kõrgema kvaliteediga allikas: [media/Android_add_to_home_screen.mp4](media/Andr
 
 - Täida vorm ja vajuta **QSO logimine**.
 - Vorm on korraldatud kolmeks plokiks:
-  - **Jaama andmed** — *Jaama kutsung* (sinu saatekutsung, ADIF `STATION_CALLSIGN`), *Operaator* (üksiku operaatori kutsung — erineb *Jaama kutsungist*, kui klubi jaamas on külalisoperaator mikrofoni juures; ADIF `OPERATOR`) ja *Minu ruudustik* (ADIF `MY_GRIDSQUARE`). Need jäävad samas seansis QSO-de vahel kleepuvaks — sea need korra ja need kanduvad üle.
-  - **Töörežiim** — *Levirežiim*, *Režiim*, *Sagedusala*, pluss satelliidi-ainult väljad *Satelliit* / *Satelliidi režiim* / *RX-sagedusala*, kui levirežiim on *Satelliit*. Sagedusala, režiim ja levirežiim on kleepuvad nagu jaama andmed.
+  - **Jaama andmed** — *Jaama kutsung* (sinu saatekutsung, ADIF `STATION_CALLSIGN`), *Operaator* (üksiku operaatori kutsung — erineb *Jaama kutsungist*, kui klubi jaamas on külalisoperaator mikrofoni juures; ADIF `OPERATOR`) ja *Minu ruudustik* (ADIF `MY_GRIDSQUARE`) koos nupuga 🌐, mis täidab ruudustiku sinu brauseri praeguse asukoha järgi (Geolocation API — brauser küsib esimesel korral luba). Need jäävad samas seansis QSO-de vahel kleepuvaks — sea need korra ja need kanduvad üle.
+  - **Töörežiim** — *Levirežiim*, *Режiim*, *Sagedusala*, pluss satelliidi-ainult väljad *Satelliit* / *Satelliidi režiim* / *RX-sagedusala*, kui levirežiim on *Satelliit*. Sagedusala, režiim ja levirežiim on kleepuvad nagu jaama andmed.
   - **QSO andmed** — kontaktipõhised väljad: *Kutsung*, *Ruudustik* (teise jaama Maidenhead), *Kommentaar* (ADIF `COMMENT`), *RST saadetud*, *RST vastu võetud*. Olemasoleva QSO muutmisel ilmuvad sellesse plokki ka *Kuupäev (UTC)* ja *Kellaaeg (UTC)*. Need väljad tühjendatakse pärast iga *QSO logimine*.
 - Kõiki kutsungeid (kontakteeritud, jaam, operaator) suurendatakse automaatselt kirjutamisel; mõlemad ruudustikeväljad teevad sama.
 - Kuupäev ja kellaaeg eeltäidetakse esitamisel *praeguse* UTC ajaga; muutmisel saad sisestada mis tahes väärtuse.
 - RST saadetud / RST vastu võetud, kui need on tühjaks jäetud, on vaikimisi **59** häälrežiimidele (SSB/FM/DIGITALVOICE) ja **599** CW ja digitaalsetele režiimidele (CW/FT8/FT4/RTTY/PSK31/JT65). Vaikeväärtus järgib ema-MODE'i, nii et konkreetse alamrežiimi nagu *USB* või *FT4* valimine annab siiski õige vaikeväärtuse.
 - *Duplikaat selles logis* kiip ilmub kutsunguvälja alla, kui kutsung juba praeguses logiraamatus eksisteerib. Duplikaadid *ei ole* blokeeritud.
 - **Levirežiim** — valikuline ADIF-levirežiimide rippmenüü (SAT, RPT, EME, F2, Es, MS, LOS jne). Tavaliste maapealse HF-QSO-de jaoks jäta tühjaks.
-- **Satelliidi QSOd** — levirežiimi *Satelliit* valimine paljastab kolm satelliidi-ainult välja: **Satelliit** (rippmenüü ~110 AMSAT-registreeritud satelliidiga), **Satelliidi režiim** (AMSAT-tähtedega tähistused, grupeeritud *moodsa* kahetähelise uplink/downlink koodidena üleval ja *aegunud* ühetäheliste koodidena all) ja **RX-sagedusala** (downlink-sagedusala). Satelliit, satelliidi režiim ja RX-sagedusala on kohustuslikud — brauser keeldub ilma nendeta esitamast. **Satelliidi režiimi** valimine täidab automaatselt peamise **Sagedusala** uplink-sagedusalaga ja **RX-sagedusala** downlink-sagedusalaga (nt režiim J → 2m uplink, 70cm downlink). *Tagasi* satelliidile lülitumine teisest levirežiimist lähtestab satelliidi režiimi, et saaksid valida uue. Mittesatelliidi QSO-del ei ole kunagi satelliidi-ainult välju; olemasoleva QSO lülitamine satelliidilt teisele levirežiimile eemaldab need puhtalt. **Ruudustik** ja **Minu ruudustik** on üldväljad (kasulikud ka VHF/UHF-ruudustiku võistlusteks) ja jäävad kõigi QSO-de jaoks nähtavaks.
+- **Satelliidi QSOd** — levirežiimi *Satelliit* valimine paljastab kolm satelliidi-ainult välja: **Satelliit** (rippmenüü ~110 AMSAT-registreeritud satelliidiga), **Satelliidi režiim** (AMSAT-tähtedega tähistused, grupeeritud *moodsa* kahetähelise uplink/downlink koodidena üleval ja *aegunud* ühetäheliste koodidena all) ja **RX-sagedusala** (downlink-sagedusala). Satelliit, satelliidi režiim ja RX-sagedusala on kohustuslikud — brauser keeldub ilma nendeta esitamast. **Satelliidi režiimi** valimine täidab automaatselt peamise **Sagedusala** uplink-sagedusalaga ja **RX-sagedusala** downlink-sagedusalaga (nt režiim J → 2m uplink, 70cm downlink). *Tagasi* satelliidile lülitumine teisest levirežiimist lähtestab satelliidi režiimi, et saaksid valida uue. Mittesatelliidi QSO-del ei ole kunagi satelliidi-ainult välju; olemasoleva QSO lülitamine satelliidilt teisele levirežiimile eemaldab need puhtalt. **Ruudustik** ja **Minu ruudustik** on üldväljad (kasulikud ka VHF/UHF-ruudustiku võistlusteks) ja jäävad nähtavaks iga QSO puhul.
 - **Muuda QSOd** read *Muuda* nupuga. Vorm lülitub *Uuenda QSOd* režiimile, rida tõstetakse esile ja ilmub nupp *Tühista*. Logiraamatute vaheldamine või logi kustutamine tühistab muutmise automaatselt.
 - **Kustuta QSO** real *Kustuta* nupuga (küsib kinnitust).
 
-## ADIF-import ja -eksport
+## Võistlused
 
-- **Eksport**: klõpsa logiraamatu päises *Ekspordi .adi*. Laaditakse alla fail, mis vastab **ADIF 3.1.7**. Päis deklareerib `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` ja `CREATED_TIMESTAMP` (UTC). QSO-väljad (kui mitte tühjad): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — millele järgneb iga impordil säilitatud lisa-ADIF-väli (vt allpool).
-- **Import**: klõpsa logiraamatu loomise vormi all *Impordi .adi fail* ja vali `.adi` / `.adif` fail. Sellest luuakse uus logiraamat, nimega `Imported YYYY-MM-DD HH:MM UTC`. Import ei ühine kunagi olemasoleva logiraamatuga.
-- **Kadudeta läbilask**: importimisel säilitatakse iga ADIF-väli, mida rakendus oma liideses ei modelleeri (nt `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` väljad) QSO-l ja saadetakse järgmisel ekspordil sõna-sõnalt uuesti välja. Seega säilitab ise imporditud faili eksportimine kõike.
-- Välja pikkust käsitletakse UTF-8 baitide arvuna, nagu spetsifikatsioon nõuab, nii et mitmebaidine tekst (nt aktsendimärgiga tähemärgid `COMMENT`is) parsitakse õigesti.
+Logiraamat võib valikuliselt olla **võistluslogi** — vali logiraamatu loomise vormis *Võistlus* rippmenüüst võistlus. Tühi rippmenüü = tavaline logiraamat (vaikimisi, olemasolev käitumine muutumatu).
+
+Võistluslogid saavad:
+
+- **Võistluse vahetuse ploki** QSO-vormil, mis renderdub dünaamiliselt valitud võistluse skeemi järgi. Väljatüübid on `text`, `number` ja `serial` (automaatselt kasvav, ainult loetav). *Sticky*-märgisega väljad (sinu enda tsoon / maakond / piirkond / võimsus / vanus / …) täidetakse eelnevalt eelmise QSO väärtusega; QSO-spetsiifilised väljad (nende tsoon, nende seerianumber, …) tühjendatakse pärast iga *QSO logimine*.
+- **Võistluse embleemi** logi nime kõrval detailipäises.
+- **Duplikaatide tuvastuse**, mis austab võistluse `duplicateRule`-i (`per-band-mode`, `per-band`, `per-day` või `off`). Kiip on jätkuvalt vaid informatiivne — ei blokeeri kunagi esitamist.
+- **Hoiatuskiibi**, kui praegune UTC jääb väljapoole ühtegi võistluse deklareeritud kuupäevaakent (12 aastat ette laaditud, 2026–2037) või kui valitud sagedusala/režiim ei ole võistluse lubatud komplektis. Ei blokeeri kunagi.
+- **Esitamise infopaneeli** detailipäises: sisseehitatud vorm Cabrillo päiseväljadele, mida võistlus deklareerib (kategooria, võimsus, nimi, klubi, aadress, soapbox, …). Väärtused säilivad logiraamatul, mitte iga QSO puhul.
+- **Ekspordi .cbr**-nupu detailipäises, *Ekspordi .adi* kõrval. Loob Cabrillo v3 faili: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` eeltäidetud esimese QSO jaama andmetest, ülejäänu esitamise infopaneelist, seejärel üks `QSO:` rida iga kontakti kohta kronoloogilises järjekorras, kasutades võistluse `sentTemplate` / `rcvdTemplate` veerge.
+- **Cabrillo taasimpordi** standardse *Impordi logifail* nupu kaudu — `.cbr`-fail, mille rakendus varem eksportis (või mis tahes muu logija, mis loob standardse Cabrillo v3), naaseb uue õiget tüüpi võistluslogina. `CONTEST:` päist võrreldakse sisseehitatud kataloogiga; kui mitu konfiguratsiooni jagavad sama silti (nt `ARRL-10` sobib nii `arrl-10m-dx` kui ka `arrl-10m-w`), lahendab rakendus ebamäärasuse, sobitades QSO-rea režiimitähe ja veergude arvu iga kandidaadi mallile, seejärel eelistab `-dx` varianti. Päiseväljad (kategooria, nimi, klubi, soapbox, …) taastavad esitamise infopaneeli; QSO vahetuse väärtused taastavad `q.contestExchange`'i vastavalt võistluse mallile.
+
+### Sisseehitatud võistluste kataloog (68 konfiguratsiooni)
+
+Grupeeritud perekondade kaupa:
+
+- **CQ perekond** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **ARRL perekond** (9): ARRL DX SSB/CW (DX pool), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (igaüks tarnitud nii DX kui W/VE perspektiivist).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE ja muud Euroopa** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Kesk-/Ida-Euroopa asümmeetrilised — mõlemad perspektiivid** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Vene klubi / RadioSport** (12): Russian DX (mõlemad pooled), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Valgevene + Itaalia + Horvaatia + Hispaania + Ukraina RTTY** (12): Belarus BFRR CW+SSB (mõlemad pooled), ARI DX (mõlemad pooled), Croatian 9A CW (mõlemad pooled), Spanish CNCW (mõlemad pooled), Ukrainian RTTY (mõlemad pooled).
+- **Globaalne** (2): All Asian DX CW+SSB.
+
+Asümmeetrilised võistlused (kus võõrustajariik ja DX pool saadavad erinevaid vahetusi) tarnitakse **kahe konfiguratsiooniga** — üks võõrustajariigi perspektiivi jaoks (kleepuv piirkonnakood) ja üks DX perspektiivi jaoks (kleepuv seerianumber). Vastuvõetud pool on üksik vaba tekstiga koondväli, et operaator saaks sisestada kummagi vormingu vastavalt kontaktile.
+
+Iga konfiguratsioon kannab:
+
+- Võistluse vahetuse väärtused, mis saadetakse ADIF-ekspordis uuesti `APP_LQ_*` nimeruumi väljade kaudu; päisetempel `APP_LQ_CONTEST_ID` võimaldab hilisemal taasimpordil taastada logiraamatu sama võistlusena kõigi väljadega puutumatuna.
+- 12 aastat kuupäevaaknaid (2026–2037), nii et *võistlusaknast väljas*-kiip püsib kasulik aastakümme ilma uue tarneta.
+- Cabrillo malli, mis kaardistab iga vahetuse välja õigesse `QSO:` rea veergu.
+
+Uue võistluse lisamine = kleebi uus IIFE-plokk faili [`contests.js`](contests.js) tähestikulisse asukohta (iga olemasolev võistlus on piiritletud `// ==== <id> ====` päisekommentaariga, seega on lihtne leida, kuhu sisestada). Ei ole vaja muuta `index.html`, `service-worker.js` ega `app.js` — renderdaja, esitamise käsitleja, duplikaatide tuvastaja, ADIF-i edasi-tagasi liikumine ja Cabrillo väljastaja neelavad iga konfiguratsiooni puhta andmena.
+
+## Import ja eksport
+
+- **Impordi** mis tahes logifail — klõpsa *Impordi logifail* logiraamatu loomise vormi all ja vali `.adi` / `.adif` (ADIF) või `.cbr` / `.cab` (Cabrillo v3) fail. Vorming tuvastatakse automaatselt faili esimese rea järgi (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → hoiatus «EDI-t ei toetata veel»). Alati luuakse uus logiraamat — import ei ühine kunagi olemasolevaga. ADIF-i importimisel tekib tavaline logi, välja arvatud juhul, kui päis kannab meie enda võistluseksportist kirjutatud `APP_LQ_CONTEST_ID`-d (sel juhul taastatakse logi selle võistluse võistluslogina). Cabrillo importimisel tekib alati võistluslogi — vaata *Võistlused* jaotist selle kohta, kuidas `CONTEST:` silti sisseehitatud kataloogiga võrreldakse.
+- **ADIF-eksport**: klõpsa logiraamatu päises *Ekspordi .adi*. Laaditakse alla fail, mis vastab **ADIF 3.1.7**. Päis deklareerib `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` ja `CREATED_TIMESTAMP` (UTC). QSO-väljad (kui mitte tühjad): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — millele järgneb iga impordil säilitatud lisa-ADIF-väli (vt allpool).
+- **Cabrillo eksport** on dokumenteeritud ülal jaotises *Võistlused* — see on saadaval ainult võistluslogide jaoks (nupp *Ekspordi .cbr* ilmub logiraamatu päisesse, kui logil on võistlus).
+- **Kadudeta läbilask**: ADIF-i importimisel säilitatakse iga väli, mida rakendus oma liideses ei modelleeri (nt `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, `APP_*` väljad) QSO-l ja saadetakse järgmisel ADIF-eksordil sõna-sõnalt uuesti välja. Seega säilitab ise imporditud faili eksportimine kõike.
+- Välja pikkust käsitletakse ADIF-is UTF-8 baitide arvuna, nagu spetsifikatsioon nõuab, nii et mitmebaidine tekst (nt aksendimärgiga tähemärgid `COMMENT`-väljal) parsitakse õigesti.
 
 ## Privaatsus ja andmed
 
@@ -131,7 +172,7 @@ Saadaval olevad keeled (lipuemoji + emakeelne nimi; tähestiku järjekorras iga 
 
 Universaalsed tehnilised sildid jäävad kõigis keeltes oma kanoonilisse vormi: sagedusalade nimed (`20m`, `70cm`, …), ADIF-režiimikoodid (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` ja ISO riigikoodid.
 
-Kas puudub string sinu keeles? Iga keel on üks väike fail [`i18n/`](i18n/) all — kopeeri `i18n/en.js`, tõlgi väärtused, salvesta failina `i18n/<code>.js`, seejärel lisa `<script>` silt pluss `<select>` valik `index.html`-is ja kood `SUPPORTED_LANGS`-is `app.js`-is.
+Kas puudub string sinu keeles? Iga keeleraamat elab ühes ainsas [`i18n.js`](i18n.js)-paketis, mis on jagatud 28 sektsiooniks `// ==== <lang> ====` päisekommentaaridega. Otsi grep'iga oma keele päist, et hüpata selle sektsioonile, seejärel lisa/muuda võtit. Täiesti uue keele lisamine = kleebi uus IIFE-plokk `i18n.js`-i tähestikulisse asukohta, lisa keelekood `SUPPORTED_LANGS`-i `app.js`-is ja lisa `<select>` valik `index.html`-is.
 
 ## Teemad
 
@@ -143,11 +184,12 @@ Päises olev teemavahetaja lülitab päeva (vaikimisi) ja öö vahel. Eelistus s
 - Lähtekoodifailid:
   - `index.html` — märgistus ja meta-sildid.
   - `style.css` — teemad ja paigutus (päeva/öö muutujad, mobiili meediapäringud).
-  - `app.js` — olek, püsimine, renderdamine, ADIF-parser/seerializeerija, kutsunguprefiksi → riigi otsing.
+  - `app.js` — olek, püsimine, renderdamine, ADIF-parser/-serializeerija, kutsunguprefiksi → riigi otsing.
   - `favicon.svg` — sissehitletud SVG-favicon.
   - `manifest.webmanifest` — veebirakenduse manifest (nimi, teemavärv, ulatus, ikoon), et rakendus oleks installitav PWA-na mobiilil ja töölaual.
   - `service-worker.js` — vahemälupõhine teenusttöötaja, mis eellaadib kõik staatilised failid installimisel, eemaldab vanad vahemälud aktiveerimisel ja hoiab rakenduse pärast esimest külastust täielikult võrguühenduseta. Registreerimine jäetakse `file://` protokollil automaatselt vahele, nii et `index.html` otse kettalt avamine jääb puhtaks.
-  - `i18n/<lang>.js` — üks tõlkefail iga toetatud keele jaoks (kokku 28). Igaüks on väike IIFE, mis määrab `window.I18N[<lang>]` lame võti→string kaardistus. `t()` ja `applyLanguage()` `app.js`-is käsitlevad otsinguid (ingliskeelse varukaitsega) ja läbivad DOM-i, uuendades iga `[data-i18n*]` elementi.
+  - `i18n.js` — üks käsitsi hallatav pakett, mis kannab kõiki 28 keeleraamatut. Iga keel on iseseisev IIFE, mis määrab `window.I18N[<lang>]` lame võti→string kaardistuse. Blokid on eraldatud `// ==== <lang> ====` päisekommentaaridega — otsi grep'iga ühte, et hüpata sellele keelele. Ühte faili pakendatud 28 eraldi faili asemel, kuna tõlkefailid on väga korduvad (samad võtmenimed, sama kohatäitesüntaks) ja gzip pakib kogu komplekti palju paremini kui 28 eraldi voogu — säästab ~23 KB esimesel laadimisel ja vähendab 27 HTTP-päringut. `t()` ja `applyLanguage()` `app.js`-is käsitlevad otsinguid (ingliskeelse varukaitsega) ja läbivad DOM-i, uuendades iga `[data-i18n*]` elementi.
+  - `contests.js` — üks käsitsi hallatav pakett, mis kannab kõiki 68 võistluskonfiguratsiooni. Iga võistlus on iseseisev IIFE, mis määrab `window.CONTESTS[<id>]` skeemile vastava konfiguratsiooniobjekti (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Blokid on eraldatud `// ==== <id> ====` päisekommentaaridega — otsi grep'iga ühte, et hüpata sellele võistlusele. Ühte faili pakendatud 68 eraldi faili asemel, kuna võistluskonfiguratsioonid on väga korduvad (sama skeem, sama `APP_LQ_*` prefiks, samad Cabrillo päiseväljade nimed) ja gzip pakib kogu komplekti palju paremini kui 68 eraldi voogu — säästab ~42 KB esimesel laadimisel ja vähendab 67 HTTP-päringut. Laaditakse ühe `<script>` sildiga `index.html`-is enne `app.js`-i, nii et register on täidetud, kui Võistluse rippmenüü ehitatakse.
 - Testitud hiljutistel Chromiumil, Firefoxil ja Safaril (töölaud + iOS).
 
 ## Tänuavaldused

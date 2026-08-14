@@ -20,7 +20,8 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Webové stránky projektu: [qso.lv
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Zápisníky](#zápisníky)
 - [QSO](#qso)
-- [Import a export ADIF](#import-a-export-adif)
+- [Závody](#závody)
+- [Import a export](#import-a-export)
 - [Soukromí a data](#soukromí-a-data)
 - [Jazyk rozhraní](#jazyk-rozhraní)
 - [Témata](#témata)
@@ -30,7 +31,8 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Webové stránky projektu: [qso.lv
 ## Funkce
 
 - Více zápisníků; každý s vlastním seznamem QSO.
-- Akce se zápisníkem: vytvoření, přejmenování, smazání, import z ADIF, export do ADIF (`.adi`).
+- **Závodní zápisníky** jsou volitelné — při vytváření zápisníku vyberte z katalogu 68 zabudovaných závodů. Formulář QSO získá blok *Výměna v závodě* specifický pro daný závod, detekce duplicit respektuje pravidlo závodu a *Exportovat .cbr* vytvoří soubor Cabrillo v3 pro odeslání vedle běžného exportu ADIF.
+- Akce se zápisníkem: vytvoření, přejmenování, smazání, import souboru logu (ADIF nebo Cabrillo — formát se rozpozná automaticky), export do ADIF (`.adi`) a *Exportovat .cbr* (Cabrillo v3) pro závodní zápisníky. Opětovný import souboru `.cbr`, který aplikace dříve exportovala, jej obnoví jako stejný závodní zápisník.
 - Formulář QSO rozdělený do tří bloků: **Data stanice** (volací značka stanice, volací značka operátora, vlastní čtverec), který zůstává přilepený přes jednotlivá QSO; **Provozní mód** (mód šíření, satelit, mód, satelitní mód, pásmo, přijímací pásmo) se satelitními poli zobrazenými pouze tehdy, když je propagační mód *Satelit*; a **Data QSO** (volaná značka, čtverec protistanice, datum/čas UTC při editaci, komentář, RST odeslané, RST přijaté).
 - Kompletní taxonomie ADIF `MODE` → `SUBMODE` v rozevíracím seznamu módů — vyberte nadřazený mód (`SSB`, `MFSK`, …) nebo přejděte přímo na konkrétní submód (`USB`, `FT4`, …); aplikace ukládá obě pole podle ADIF a tabulka zobrazuje konkrétní submód, pokud existuje.
 - Kompletní výčet propagačních módů ADIF (SAT, RPT, EME, ES, MS, Aurora atd.) jako rozevírací seznam.
@@ -39,6 +41,7 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Webové stránky projektu: [qso.lv
 - Rozumné výchozí hodnoty: datum/čas UTC předvyplněný na *nyní*, výchozí RST podle módu (59 pro hlasové módy, 599 pro CW/digitální), přilepená data stanice + pásmo + mód + propagační mód přes po sobě jdoucí QSO (pouze pole pro daný kontakt — značka, jejich čtverec, komentář, RST — se po každém *Zaznamenat QSO* vymažou).
 - Živý indikátor duplicitní volací značky (informační — duplikáty jsou povoleny).
 - Sloupec vlajky země odvozený z prefixu volací značky (pokrývá ≥99 % běžných radioamatérských prefixů, včetně přenosných jako `9A/M0NCG`).
+- Jednodotykové automatické zjištění pole **Můj čtverec**: tlačítko 🌐 vedle pole požádá prohlížeč o vaši aktuální polohu a vyplní 6místný Maidenheadův čtverec (používá Geolocation API prohlížeče — vyžaduje svolení uživatele).
 - Zobrazení data v tabulce QSO dle lokálního nastavení; úložiště ISO a výstup ADIF zůstávají nezměněny.
 - Rozhraní dostupné v **28 jazycích** (angličtina plus 22 jazyků latinkou, 5 jazyků azbukou a řečtina); volič s vlajkovými emoji v záhlaví.
 - Denní / noční témata (denní je výchozí; přepínač je v záhlaví).
@@ -50,7 +53,7 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Webové stránky projektu: [qso.lv
 
 Stačí otevřít `index.html` v moderním prohlížeči. Žádný krok sestavení, žádná instalace, žádný server.
 
-Pokud chcete aplikaci hostovat, zkopírujte statické soubory (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` a adresář `i18n/` s 28 překladovými soubory) na libovolný statický hostitel (GitHub Pages, Netlify, váš vlastní webový server). Funguje i přes `file://` — registrace service workeru se na protokolu `file:` automaticky přeskočí, takže přímé otevření `index.html` z disku funguje čistě.
+Pokud chcete aplikaci hostovat, zkopírujte statické soubory (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, jediný balíček `i18n.js` nesoucí všech 28 jazykových slovníků a jediný balíček `contests.js` nesoucí všech 68 konfigurací závodů) na libovolný statický hostitel (GitHub Pages, Netlify, váš vlastní webový server). Funguje i přes `file://` — registrace service workeru se na protokolu `file:` automaticky přeskočí, takže přímé otevření `index.html` z disku funguje čistě.
 
 Při hostování přes HTTPS se aplikace stane instalovatelnou jako PWA (nabídka prohlížeče *Instalovat aplikaci* / *Přidat na plochu*) a po první návštěvě funguje offline díky service workeru s předností z mezipaměti, který předukládá každý statický soubor (UI + všechny překlady).
 
@@ -96,7 +99,7 @@ Zdroj ve vyšší kvalitě: [media/Android_add_to_home_screen.mp4](media/Android
 
 - Vyplňte formulář a stiskněte **Zaznamenat QSO**.
 - Formulář je uspořádán do tří bloků:
-  - **Data stanice** — *Volací značka stanice* (vaše vysílací volací značka, ADIF `STATION_CALLSIGN`), *Operátor* (volací značka jednotlivého operátora — odlišná od *Volací značky stanice*, pokud je na mikrofonu klubové stanice hostující operátor; ADIF `OPERATOR`) a *Můj čtverec* (ADIF `MY_GRIDSQUARE`). Tato pole zůstávají přilepena přes QSO ve stejné relaci — nastavte je jednou a přenesou se.
+  - **Data stanice** — *Volací značka stanice* (vaše vysílací volací značka, ADIF `STATION_CALLSIGN`), *Operátor* (volací značka jednotlivého operátora — odlišná od *Volací značky stanice*, pokud je na mikrofonu klubové stanice hostující operátor; ADIF `OPERATOR`) a *Můj čtverec* (ADIF `MY_GRIDSQUARE`) s tlačítkem 🌐, které vyplní čtverec z aktuální polohy vašeho prohlížeče (Geolocation API — prohlížeč si při prvním použití vyžádá svolení). Tato pole zůstávají přilepena přes QSO ve stejné relaci — nastavte je jednou a přenesou se.
   - **Provozní mód** — *Mód šíření*, *Mód*, *Pásmo*, plus satelitní pole *Satelit* / *Satelitní mód* / *Přijímací pásmo* tehdy, když je propagační mód *Satelit*. Pásmo, mód a propagační mód jsou přilepeny stejně jako data stanice.
   - **Data QSO** — pole pro daný kontakt: *Volací značka*, *Čtverec* (Maidenhův čtverec protistanice), *Komentář* (ADIF `COMMENT`), *RST odeslané*, *RST přijaté*. Při úpravě existujícího QSO se v tomto bloku zobrazí také *Datum (UTC)* a *Čas (UTC)*. Tato pole se po každém *Zaznamenat QSO* vymažou.
 - Všechny volací značky (kontaktovaná, stanice, operátor) se automaticky převádějí na velká písmena při psaní; obě pole čtverce fungují stejně.
@@ -108,12 +111,50 @@ Zdroj ve vyšší kvalitě: [media/Android_add_to_home_screen.mp4](media/Android
 - **Úprava QSO** tlačítkem *Upravit* na řádku. Formulář se přepne do režimu *Aktualizovat QSO*, řádek se zvýrazní a zobrazí se tlačítko *Zrušit*. Přepnutí zápisníků nebo smazání záznamu úpravu automaticky zruší.
 - **Smazání QSO** tlačítkem *Smazat* na řádku (vyžaduje potvrzení).
 
-## Import a export ADIF
+## Závody
 
-- **Export**: klikněte na *Exportovat .adi* v záhlaví zápisníku. Stáhne se soubor odpovídající **ADIF 3.1.7**. Záhlaví deklaruje `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` a `CREATED_TIMESTAMP` (UTC). Pole QSO emitovaná (pokud nejsou prázdná): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — následováno každým dalším polem ADIF zachovaným při importu (viz níže).
-- **Import**: klikněte na *Importovat soubor .adi* pod formulářem pro vytvoření zápisníku a vyberte soubor `.adi` / `.adif`. Z něj se vytvoří nový zápisník pojmenovaný `Imported YYYY-MM-DD HH:MM UTC`. Import nikdy nesloučí s existujícím zápisníkem.
-- **Bezeztrátový přenos**: při importu se každé pole ADIF, které aplikace nemodeluje ve svém uživatelském rozhraní (např. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, pole `APP_*`), zachová v QSO a při dalším exportu se znovu emituje doslovně. Export souboru, který byl sám importován, tedy vše zachová.
-- Délka pole se považuje za počet bajtů UTF-8, jak vyžaduje specifikace, takže vícebajtový text (např. akcentované znaky v `COMMENT`) se správně parsuje.
+Zápisník může být volitelně **závodním zápisníkem** — v ​​​formuláři pro vytvoření zápisníku vyberte závod z rozevíracího seznamu *Závod*. Prázdný seznam = běžný zápisník (výchozí, dosavadní chování beze změny).
+
+Závodní zápisníky získávají:
+
+- **Blok výměny v závodě** ve formuláři QSO, dynamicky vykreslený podle schématu vybraného závodu. Typy polí jsou `text`, `number` a `serial` (automaticky se zvyšující, jen ke čtení). Pole označená jako *sticky* (vaše vlastní zóna / okres / distrikt / výkon / věk / …) se předvyplní hodnotou z předchozího QSO; pole pro každé QSO (jejich zóna, jejich pořadové číslo, …) se po každém *Zaznamenat QSO* vymažou.
+- **Odznak závodu** vedle názvu záznamu v záhlaví detailu.
+- **Detekce duplicit** respektuje `duplicateRule` závodu (`per-band-mode`, `per-band`, `per-day` nebo `off`). Čip je stále jen informační — nikdy neblokuje odeslání.
+- **Varovný čip**, když aktuální UTC spadá mimo některé z deklarovaných časových oken závodu (12 let předem načteno, 2026–2037), nebo když vybrané pásmo / mód nejsou v povolené sadě závodu. Nikdy neblokuje.
+- **Panel informací o odeslání** v záhlaví detailu: vestavěný formulář pro pole hlavičky Cabrillo, která závod deklaruje (kategorie, výkon, jméno, klub, adresa, soapbox, …). Hodnoty se ukládají u zápisníku, nikoli u jednotlivého QSO.
+- **Tlačítko Exportovat .cbr** v záhlaví detailu vedle *Exportovat .adi*. Vytvoří soubor Cabrillo v3: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` předvyplněné z dat stanice prvního QSO, zbytek z panelu informací o odeslání, poté jeden řádek `QSO:` na kontakt v chronologickém pořadí podle sloupců `sentTemplate` / `rcvdTemplate` závodu.
+- **Opětovný import Cabrillo** přes standardní tlačítko *Importovat soubor logu* — soubor `.cbr`, dříve exportovaný aplikací (nebo jakýmkoli jiným loggerem, který vytváří standardní Cabrillo v3), se vrátí zpět jako nový závodní zápisník správného typu. Hlavička `CONTEST:` se porovná se zabudovaným katalogem; pokud více konfigurací sdílí stejnou značku (např. `ARRL-10` odpovídá jak `arrl-10m-dx`, tak `arrl-10m-w`), aplikace určí, o který jde, porovnáním písmena módu na řádku QSO a počtu sloupců se šablonou každého kandidáta, poté upřednostní variantu `-dx`. Pole hlavičky (kategorie, jméno, klub, soapbox, …) obnoví panel informací o odeslání; hodnoty výměny QSO obnoví `q.contestExchange` podle šablony závodu.
+
+### Zabudovaný katalog závodů (68 konfigurací)
+
+Seskupeno podle rodin:
+
+- **Rodina CQ** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **Rodina ARRL** (9): ARRL DX SSB/CW (strana DX), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (každý dodáván z obou pohledů — DX i W/VE).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE a další evropské** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Středo-/východoevropské asymetrické — obě perspektivy** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Ruský klub / RadioSport** (12): Russian DX (obě strany), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Bělorusko + Itálie + Chorvatsko + Španělsko + ukrajinský RTTY** (12): Belarus BFRR CW+SSB (obě strany), ARI DX (obě strany), Croatian 9A CW (obě strany), Spanish CNCW (obě strany), Ukrainian RTTY (obě strany).
+- **Globální** (2): All Asian DX CW+SSB.
+
+Asymetrické závody (kde hostitelská země a DX strana posílají odlišné výměny) se dodávají se **dvěma konfiguracemi** — jednou pro perspektivu hostitelské země (přilepený regionální kód) a jednou pro perspektivu DX (přilepené pořadové číslo). Pole přijaté strany je jediné volné textové pole, takže operátor může zadat kterýkoli formát podle kontaktu.
+
+Každá konfigurace nese:
+
+- Hodnoty výměny v závodě znovu vysílané při exportu ADIF přes pole v jmenném prostoru `APP_LQ_*`; hlavičkové razítko `APP_LQ_CONTEST_ID` umožňuje následnému opětovnému importu obnovit zápisník jako stejný závod se všemi poli neporušenými.
+- 12 let časových oken (2026–2037), takže čip *mimo okno závodu* zůstává užitečný desetiletí bez nutnosti nové dodávky.
+- Šablonu Cabrillo mapující každé pole výměny na správný sloupec řádku `QSO:`.
+
+Přidání nového závodu = vložení nového bloku IIFE do [`contests.js`](contests.js) na abecední pozici (každý stávající závod je ohraničen komentářem hlavičky `// ==== <id> ====`, takže je snadné najít, kam vložit). Není potřeba žádná změna `index.html`, žádná změna `service-worker.js`, žádná změna `app.js` — vykreslovač, obslužná rutina odeslání, detektor duplicit, obousměrný přenos ADIF a emitor Cabrillo přijímají každou konfiguraci jako čistá data.
+
+## Import a export
+
+- **Import** libovolného souboru logu — klikněte na *Importovat soubor logu* pod formulářem pro vytvoření zápisníku a vyberte soubor `.adi` / `.adif` (ADIF) nebo `.cbr` / `.cab` (Cabrillo v3). Formát se automaticky rozpozná podle prvního řádku souboru (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → upozornění „EDI zatím není podporováno“). Vždy se vytvoří nový zápisník — import se nikdy nesloučí s existujícím. Importy ADIF přicházejí jako běžné záznamy, pokud hlavička nenese `APP_LQ_CONTEST_ID` zapsaný naším vlastním exportem závodu (v takovém případě se záznam obnoví jako závodní záznam daného závodu). Importy Cabrillo vždy přicházejí jako závodní záznamy — viz sekci *Závody* pro popis, jak se značka `CONTEST:` porovnává se zabudovaným katalogem.
+- **Export ADIF**: klikněte na *Exportovat .adi* v záhlaví zápisníku. Stáhne se soubor odpovídající **ADIF 3.1.7**. Záhlaví deklaruje `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` a `CREATED_TIMESTAMP` (UTC). Pole QSO emitovaná (pokud nejsou prázdná): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — následováno každým dalším polem ADIF zachovaným při importu (viz níže).
+- **Export Cabrillo** je popsán výše v sekci *Závody* — je dostupný pouze pro závodní zápisníky (tlačítko *Exportovat .cbr* se zobrazí v záhlaví zápisníku, když má záznam přiřazen závod).
+- **Bezeztrátový přenos**: při importu ADIF se každé pole, které aplikace nemodeluje ve svém uživatelském rozhraní (např. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, pole `APP_*`), zachová v QSO a při dalším exportu ADIF se znovu emituje doslovně. Export souboru, který byl sám importován, tedy vše zachová.
+- Délka pole se v ADIF považuje za počet bajtů UTF-8, jak vyžaduje specifikace, takže vícebajtový text (např. akcentované znaky v `COMMENT`) se správně parsuje.
 
 ## Soukromí a data
 
@@ -131,7 +172,7 @@ Dostupné jazyky (vlajkové emoji + nativní název; seřazeny abecedně v rámc
 
 Univerzální technické popisky zůstávají ve své kanonické formě ve všech jazycích: názvy pásem (`20m`, `70cm`, …), kódy módů ADIF (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` a kódy zemí ISO.
 
-Chybí vám řetězec ve vašem jazyce? Každý jazyk je jediný malý soubor v [`i18n/`](i18n/) — zkopírujte `i18n/en.js`, přeložte hodnoty, uložte jako `i18n/<code>.js`, pak přidejte `<script>` tag plus možnost do `<select>` v `index.html` a kód do `SUPPORTED_LANGS` v `app.js`.
+Chybí vám řetězec ve vašem jazyce? Každý jazykový slovník žije v jediném balíčku [`i18n.js`](i18n.js), rozděleném do 28 sekcí komentáři hlavičky `// ==== <lang> ====`. Vyhledejte hlavičku svého jazyka a přejděte na jeho sekci, poté přidejte/upravte klíč. Přidání zcela nového jazyka = vložení nového bloku IIFE do `i18n.js` na abecední pozici, přidání kódu jazyka do `SUPPORTED_LANGS` v `app.js` a přidání možnosti `<select>` v `index.html`.
 
 ## Témata
 
@@ -147,7 +188,8 @@ Přepínač tématu v záhlaví přepíná mezi denním (výchozím) a nočním.
   - `favicon.svg` — inline SVG favicon.
   - `manifest.webmanifest` — Web App Manifest (název, barva tématu, rozsah, ikona), aby aplikace byla instalovatelná jako PWA na mobilních zařízeních a počítačích.
   - `service-worker.js` — service worker s předností z mezipaměti, který při instalaci předuloží každý statický soubor, při aktivaci vymaže staré mezipaměti a po první návštěvě udržuje aplikaci plně offline. Registrace se automaticky přeskočí na protokolu `file://`, takže přímé otevření `index.html` z disku zůstane čisté.
-  - `i18n/<lang>.js` — jeden překladový soubor pro každý podporovaný jazyk (celkem 28). Každý je malý IIFE, který přiřadí `window.I18N[<lang>]` plochý klíč→řetězec mapa. `t()` a `applyLanguage()` v `app.js` zpracovávají vyhledávání (s anglickým záložním) a procházejí DOM aktualizací každého prvku `[data-i18n*]`.
+  - `i18n.js` — jediný ručně udržovaný balíček nesoucí všech 28 jazykových slovníků. Každý jazyk je samostatná IIFE, která přiřadí `window.I18N[<lang>]` plochou mapu klíč→řetězec. Bloky jsou ohraničeny komentáři hlavičky `// ==== <lang> ====` — vyhledejte jeden a přejděte na daný jazyk. Sloučeno do jednoho souboru namísto 28 samostatných, protože překladové soubory jsou vysoce repetitivní (stejné názvy klíčů, stejná syntaxe zástupných symbolů) a gzip komprimuje celou sadu mnohem lépe než 28 samostatných proudů — ušetří ~23 KB při prvním načtení a ubere 27 HTTP požadavků. `t()` a `applyLanguage()` v `app.js` zpracovávají vyhledávání (s anglickým záložním) a procházejí DOM aktualizací každého prvku `[data-i18n*]`.
+  - `contests.js` — jediný ručně udržovaný balíček nesoucí všech 68 konfigurací závodů. Každý závod je samostatná IIFE, která přiřadí `window.CONTESTS[<id>]` objekt konfigurace odpovídající schématu (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Bloky jsou ohraničeny komentáři hlavičky `// ==== <id> ====` — vyhledejte jeden a přejděte na daný závod. Sloučeno do jednoho souboru namísto 68 samostatných, protože konfigurace závodů jsou vysoce repetitivní (stejné schéma, stejný prefix `APP_LQ_*`, stejné názvy polí hlavičky Cabrillo) a gzip komprimuje celou sadu mnohem lépe než 68 samostatných proudů — ušetří ~42 KB při prvním načtení a ubere 67 HTTP požadavků. Načítán jediným tagem `<script>` v `index.html` před `app.js`, takže je registr naplněn ve chvíli, kdy se sestavuje rozevírací seznam Závod.
 - Testováno na aktuálním Chromiu, Firefoxu a Safari (desktop + iOS).
 
 ## Poděkování

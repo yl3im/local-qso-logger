@@ -20,7 +20,8 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Strona projektu: [qso.lv](https://
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Dzienniki](#dzienniki)
 - [QSO](#qso)
-- [Import i eksport ADIF](#import-i-eksport-adif)
+- [Zawody](#zawody)
+- [Import i eksport](#import-i-eksport)
 - [Prywatność i dane](#prywatność-i-dane)
 - [Język interfejsu](#język-interfejsu)
 - [Motywy](#motywy)
@@ -30,7 +31,8 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Strona projektu: [qso.lv](https://
 ## Funkcje
 
 - Wiele dzienników; każdy z własną listą QSO.
-- Akcje dziennika: tworzenie, zmiana nazwy, usuwanie, import z ADIF, eksport do ADIF (`.adi`).
+- **Dzienniki zawodów** są opcjonalne — wybierz z katalogu 68 wbudowanych zawodów przy tworzeniu dziennika. Formularz QSO zyskuje specyficzny dla zawodów blok *Wymiana zawodów*, wykrywanie duplikatów respektuje regułę zawodów, a *Eksportuj .cbr* generuje plik zgłoszenia Cabrillo v3 obok zwykłego eksportu ADIF.
+- Akcje dziennika: tworzenie, zmiana nazwy, usuwanie, import pliku dziennika (ADIF lub Cabrillo — format wykrywany automatycznie), eksport do ADIF (`.adi`), plus *Eksportuj .cbr* (Cabrillo v3) dla dzienników zawodów. Ponowny import pliku `.cbr` wcześniej wyeksportowanego przez aplikację przywraca go jako ten sam dziennik zawodów.
 - Formularz QSO podzielony na trzy bloki: **Dane stacji** (znak stacji, znak operatora, własny kwadrat), które pozostają przyklejone między QSO; **Tryb pracy** (tryb propagacji, satelita, tryb emisji, tryb satelitarny, pasmo, pasmo odbiorcze) z polami satelitarnymi widocznymi tylko gdy tryb propagacji to *Satelita*; i **Dane QSO** (znak wywoływanego, kwadrat wywoływanego, data/czas UTC podczas edycji, komentarz, RST nadany, RST odebrany).
 - Pełna taksonomia ADIF `MODE` → `SUBMODE` w liście emisji — wybierz emisję nadrzędną (`SSB`, `MFSK`, …) lub przejdź bezpośrednio do konkretnej subemisji (`USB`, `FT4`, …); aplikacja przechowuje oba pola zgodnie z ADIF, a tabela pokazuje konkretną subemisję gdy istnieje.
 - Pełne wyliczenie trybów propagacji ADIF (SAT, RPT, EME, ES, MS, Aurora itd.) jako lista rozwijana.
@@ -39,6 +41,7 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Strona projektu: [qso.lv](https://
 - Rozsądne wartości domyślne: data/czas UTC wypełnione wstępnie na *teraz*, domyślny RST zależny od emisji (59 dla emisji głosowych, 599 dla CW/cyfrowych), przyklejone dane stacji + pasmo + emisja + tryb propagacji dla kolejnych QSO (tylko pola per-kontakt — znak, ich kwadrat, komentarz, RST — są czyszczone po każdym *Zaloguj QSO*).
 - Wskaźnik duplikatu znaku w czasie rzeczywistym (informacyjny — duplikaty są dozwolone).
 - Kolumna flagi kraju wywiedziona z prefiksu znaku (pokrywa ≥99 % popularnych prefiksów radioamatorskich, w tym przenośne jak `9A/M0NCG`).
+- Automatyczne wykrywanie **Mój kwadrat** jednym dotknięciem: przycisk 🌐 obok pola pyta przeglądarkę o twoje aktualne współrzędne i wypełnia 6-znakowy kwadrat Maidenhead (używa API Geolocation przeglądarki — wymaga zgody użytkownika).
 - Lokalizowane wyświetlanie daty w tabeli QSO; przechowywanie ISO i wyjście ADIF pozostają niezmienione.
 - Interfejs dostępny w **28 językach** (angielski plus 22 pisma łacińskie, 5 cyrylickich i greka); selektor z emoji flag w nagłówku.
 - Motywy dzienny / nocny (dzienny jest domyślny; przełącznik jest w nagłówku).
@@ -50,7 +53,7 @@ Autor: [YL3IM](https://www.qrz.com/db/YL3IM). Strona projektu: [qso.lv](https://
 
 Wystarczy otworzyć `index.html` w nowoczesnej przeglądarce. Bez etapu budowania, bez instalacji, bez serwera.
 
-Jeśli chcesz to hostować, umieść pliki statyczne (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` i katalog `i18n/` z 28 plikami tłumaczeń) na dowolnym hoście statycznym (GitHub Pages, Netlify, własny serwer WWW). Działa też przez `file://` — rejestracja service workera jest automatycznie pomijana na protokole `file:`, więc otwieranie `index.html` bezpośrednio z dysku działa czysto.
+Jeśli chcesz to hostować, umieść pliki statyczne (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, pojedynczy pakiet `i18n.js` niosący wszystkie 28 słowników językowych, i pojedynczy pakiet `contests.js` niosący wszystkie 68 konfiguracji zawodów) na dowolnym hoście statycznym (GitHub Pages, Netlify, własny serwer WWW). Działa też przez `file://` — rejestracja service workera jest automatycznie pomijana na protokole `file:`, więc otwieranie `index.html` bezpośrednio z dysku działa czysto.
 
 Przy hostowaniu przez HTTPS aplikacja staje się instalowalna jako PWA (menu przeglądarki *Zainstaluj aplikację* / *Dodaj do ekranu głównego*) i działa offline po pierwszej wizycie dzięki service workerowi cache-first, który z wyprzedzeniem buforuje wszystkie pliki statyczne (UI + wszystkie tłumaczenia).
 
@@ -96,7 +99,7 @@ Instrukcja:
 
 - Wypełnij formularz i naciśnij **Zaloguj QSO**.
 - Formularz jest zorganizowany w trzy bloki:
-  - **Dane stacji** — *Znak stacji* (twój znak nadawczy, ADIF `STATION_CALLSIGN`), *Operator* (znak wywoławczy indywidualnego operatora — różny od *znaku stacji* gdy gościny operator jest przy mikrofonie stacji klubowej; ADIF `OPERATOR`) i *Mój kwadrat* (ADIF `MY_GRIDSQUARE`). Te pola pozostają przyklejone między QSO w tej samej sesji — ustaw je raz i przenoszą się.
+  - **Dane stacji** — *Znak stacji* (twój znak nadawczy, ADIF `STATION_CALLSIGN`), *Operator* (znak wywoławczy indywidualnego operatora — różny od *znaku stacji* gdy gościny operator jest przy mikrofonie stacji klubowej; ADIF `OPERATOR`) i *Mój kwadrat* (ADIF `MY_GRIDSQUARE`) z przyciskiem 🌐, który wypełnia kwadrat na podstawie aktualnej lokalizacji twojej przeglądarki (API Geolocation — przeglądarka poprosi o zgodę pierwszym razem). Te pola pozostają przyklejone między QSO w tej samej sesji — ustaw je raz i przenoszą się.
   - **Tryb pracy** — *Tryb propagacji*, *Emisja*, *Pasmo*, plus pola wyłącznie satelitarne *Satelita* / *Tryb satelitarny* / *Pasmo odbiorcze* gdy tryb propagacji to *Satelita*. Pasmo, emisja i tryb propagacji są przyklejone jak dane stacji.
   - **Dane QSO** — pola per-kontakt: *Znak*, *Kwadrat* (Maidenhead drugiej stacji), *Komentarz* (ADIF `COMMENT`), *RST nadany*, *RST odebrany*. Podczas edycji istniejącego QSO w tym bloku pojawiają się też *Data (UTC)* i *Godzina (UTC)*. Te pola czyszczone są po każdym *Zaloguj QSO*.
 - Wszystkie znaki (wywoływanego, stacji, operatora) są automatycznie zamieniane na wielkie litery podczas pisania; oba pola kwadratów działają tak samo.
@@ -108,12 +111,50 @@ Instrukcja:
 - **Edytuj QSO** przyciskiem *Edytuj* w wierszu. Formularz przechodzi w tryb *Zaktualizuj QSO*, wiersz jest podświetlony, a pojawia się przycisk *Anuluj*. Przełączenie dzienników lub usunięcie dziennika automatycznie anuluje edycję.
 - **Usuń QSO** przyciskiem *Usuń* w wierszu (prosi o potwierdzenie).
 
-## Import i eksport ADIF
+## Zawody
 
-- **Eksport**: kliknij *Eksportuj .adi* w nagłówku dziennika. Pobierany jest plik zgodny z **ADIF 3.1.7**. Nagłówek deklaruje `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` i `CREATED_TIMESTAMP` (UTC). Pola per-QSO emitowane (gdy niepuste): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — a po nich każde dodatkowe pole ADIF zachowane podczas importu (patrz niżej).
-- **Import**: kliknij *Importuj plik .adi* pod formularzem tworzenia dziennika i wybierz plik `.adi` / `.adif`. Zostanie z niego utworzony nowy dziennik o nazwie `Imported YYYY-MM-DD HH:MM UTC`. Import nigdy nie łączy z istniejącym dziennikiem.
-- **Bezstratny obieg**: przy imporcie każde pole ADIF, które aplikacja nie modeluje w interfejsie (np. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, pola `APP_*`), jest zachowywane w QSO i dosłownie emitowane ponownie przy następnym eksporcie. Eksportowanie pliku, który sam był importowany, zachowuje więc wszystko.
-- Długość pola jest traktowana jako liczba bajtów UTF-8, jak wymaga specyfikacja, więc wielobajtowy tekst (np. znaki ze znakami diakrytycznymi w `COMMENT`) jest poprawnie parsowany.
+Dziennik może opcjonalnie być **dziennikiem zawodów** — wybierz zawody z listy rozwijanej *Zawody* w formularzu tworzenia dziennika. Pusta lista = zwykły dziennik (domyślnie, istniejące zachowanie bez zmian).
+
+Dzienniki zawodów otrzymują:
+
+- **Blok wymiany zawodów** w formularzu QSO, renderowany dynamicznie na podstawie schematu wybranych zawodów. Typy pól to `text`, `number` i `serial` (auto-inkrementujące, tylko do odczytu). Pola oznaczone jako *sticky* (twoja własna strefa / powiat / dystrykt / moc / wiek / …) są wstępnie wypełniane wartością z poprzedniego QSO; pola per-QSO (ich strefa, ich numer seryjny, …) są czyszczone po każdym *Zaloguj QSO*.
+- **Odznaka zawodów** obok nazwy dziennika w nagłówku szczegółów.
+- **Wykrywanie duplikatów** respektujące `duplicateRule` zawodów (`per-band-mode`, `per-band`, `per-day` lub `off`). Chip pozostaje wyłącznie informacyjny — nigdy nie blokuje przesłania.
+- **Chip ostrzegawczy**, gdy bieżący UTC wypada poza którymkolwiek z deklarowanych okien dat zawodów (12 lat wczytanych z wyprzedzeniem, 2026–2037), lub gdy wybrane pasmo / emisja nie są w dozwolonym zestawie zawodów. Nigdy nie blokuje.
+- **Panel informacji o zgłoszeniu** w nagłówku szczegółów: wbudowany formularz dla pól nagłówka Cabrillo, które deklarują zawody (kategoria, moc, imię, klub, adres, soapbox, …). Wartości zapisywane są na dzienniku, nie per QSO.
+- **Przycisk Eksportuj .cbr** w nagłówku szczegółów, obok *Eksportuj .adi*. Emituje plik Cabrillo v3: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` wypełnione wstępnie z danych stacji pierwszego QSO, reszta z panelu informacji o zgłoszeniu, następnie jeden wiersz `QSO:` na kontakt w porządku chronologicznym, wykorzystujący kolumny `sentTemplate` / `rcvdTemplate` zawodów.
+- **Ponowny import Cabrillo** przez standardowy przycisk *Importuj plik dziennika* — plik `.cbr` wcześniej wyeksportowany przez aplikację (lub przez dowolny inny logger emitujący standardowy Cabrillo v3) wraca jako nowy dziennik zawodów właściwego typu. Nagłówek `CONTEST:` jest porównywany z wbudowanym katalogiem; gdy kilka konfiguracji dzieli ten sam tag (np. `ARRL-10` pasuje zarówno do `arrl-10m-dx`, jak i `arrl-10m-w`), aplikacja rozstrzyga niejednoznaczność, dopasowując literę emisji wiersza QSO i liczbę kolumn do szablonu każdego kandydata, a następnie preferuje wariant `-dx`. Pola nagłówka (kategoria, imię, klub, soapbox, …) odtwarzają panel informacji o zgłoszeniu; wartości wymiany QSO odtwarzają `q.contestExchange` zgodnie z szablonem zawodów.
+
+### Wbudowany katalog zawodów (68 konfiguracji)
+
+Pogrupowane według rodzin:
+
+- **Rodzina CQ** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **Rodzina ARRL** (9): ARRL DX SSB/CW (strona DX), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (każdy dostarczony z obu perspektyw — DX i W/VE).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE i inne europejskie** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Środkowo-/wschodnioeuropejskie asymetryczne — obie perspektywy** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Klub rosyjski / RadioSport** (12): Russian DX (obie strony), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Białoruś + Włochy + Chorwacja + Hiszpania + ukraiński RTTY** (12): Belarus BFRR CW+SSB (obie strony), ARI DX (obie strony), Croatian 9A CW (obie strony), Spanish CNCW (obie strony), Ukrainian RTTY (obie strony).
+- **Globalne** (2): All Asian DX CW+SSB.
+
+Asymetryczne zawody (gdzie kraj gospodarz i strona DX wysyłają różne wymiany) dostarczane są z **dwiema konfiguracjami** — jedna dla perspektywy kraju gospodarza (przyklejony kod regionu) i jedna dla perspektywy DX (przyklejony numer seryjny). Pole strony otrzymanej to pojedyncze pole wolnego tekstu, aby operator mógł wpisać dowolny format w zależności od kontaktu.
+
+Każda konfiguracja niesie:
+
+- Wartości wymiany zawodów ponownie emitowane w eksporcie ADIF przez pola przestrzeni nazw `APP_LQ_*`; znacznik nagłówka `APP_LQ_CONTEST_ID` pozwala kolejnemu ponownemu importowi odtworzyć dziennik jako te same zawody z wszystkimi polami nienaruszonymi.
+- 12 lat okien dat (2026–2037), aby chip *poza oknem zawodów* pozostawał użyteczny przez dekadę bez nowego wydania.
+- Szablon Cabrillo mapujący każde pole wymiany na właściwą kolumnę wiersza `QSO:`.
+
+Dodanie nowych zawodów = wklej nowy blok IIFE do [`contests.js`](contests.js) na pozycji alfabetycznej (każde istniejące zawody są ograniczone komentarzem nagłówka `// ==== <id> ====`, więc łatwo znaleźć, gdzie wstawić). Nie jest potrzebna żadna zmiana w `index.html`, żadna zmiana w `service-worker.js`, żadna zmiana w `app.js` — renderer, obsługa przesyłania, detektor duplikatów, obieg ADIF i emiter Cabrillo pochłaniają każdą konfigurację jako czyste dane.
+
+## Import i eksport
+
+- **Import** dowolnego pliku dziennika — kliknij *Importuj plik dziennika* pod formularzem tworzenia dziennika i wybierz plik `.adi` / `.adif` (ADIF) lub `.cbr` / `.cab` (Cabrillo v3). Format jest wykrywany automatycznie na podstawie pierwszej linii pliku (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → alert „EDI nie jest jeszcze obsługiwane”). Zawsze tworzony jest nowy dziennik — import nigdy nie łączy z istniejącym. Importy ADIF przychodzą jako zwykłe dzienniki, chyba że nagłówek nosi `APP_LQ_CONTEST_ID` zapisany przez nasz własny eksport zawodów (w takim przypadku dziennik jest odtwarzany jako dziennik zawodów tych zawodów). Importy Cabrillo zawsze przychodzą jako dzienniki zawodów — zobacz sekcję *Zawody* dla sposobu, w jaki tag `CONTEST:` jest porównywany z wbudowanym katalogiem.
+- **Eksport ADIF**: kliknij *Eksportuj .adi* w nagłówku dziennika. Pobierany jest plik zgodny z **ADIF 3.1.7**. Nagłówek deklaruje `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` i `CREATED_TIMESTAMP` (UTC). Pola per-QSO emitowane (gdy niepuste): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — a po nich każde dodatkowe pole ADIF zachowane podczas importu (patrz niżej).
+- **Eksport Cabrillo** jest udokumentowany w sekcji *Zawody* powyżej — dostępny tylko dla dzienników zawodów (przycisk *Eksportuj .cbr* pojawia się w nagłówku dziennika, gdy dziennik ma zawody).
+- **Bezstratny obieg**: przy imporcie ADIF każde pole, którego aplikacja nie modeluje w interfejsie (np. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, pola `APP_*`), jest zachowywane w QSO i dosłownie emitowane ponownie przy następnym eksporcie ADIF. Eksportowanie pliku, który sam był importowany, zachowuje więc wszystko.
+- Długość pola w ADIF jest traktowana jako liczba bajtów UTF-8, jak wymaga specyfikacja, więc wielobajtowy tekst (np. znaki ze znakami diakrytycznymi w `COMMENT`) jest poprawnie parsowany.
 
 ## Prywatność i dane
 
@@ -131,7 +172,7 @@ Dostępne języki (emoji flagi + nazwa własna; alfabetycznie w obrębie każdeg
 
 Uniwersalne etykiety techniczne pozostają w swojej kanonicznej formie we wszystkich językach: nazwy pasm (`20m`, `70cm`, …), kody emisji ADIF (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` i kody krajów ISO.
 
-Brakuje tekstu w twoim języku? Każdy język to jeden mały plik w [`i18n/`](i18n/) — skopiuj `i18n/en.js`, przetłumacz wartości, zapisz jako `i18n/<code>.js`, następnie dodaj znacznik `<script>` plus opcję `<select>` w `index.html` i kod do `SUPPORTED_LANGS` w `app.js`.
+Brakuje tekstu w twoim języku? Każdy słownik językowy żyje w jednym pakiecie [`i18n.js`](i18n.js), podzielonym na 28 sekcji komentarzami nagłówka `// ==== <lang> ====`. Znajdź (grep) nagłówek swojego języka, aby przejść do jego sekcji, następnie dodaj/edytuj klucz. Dodanie zupełnie nowego języka = wklej nowy blok IIFE do `i18n.js` na pozycji alfabetycznej, dodaj kod języka do `SUPPORTED_LANGS` w `app.js`, i dodaj opcję `<select>` w `index.html`.
 
 ## Motywy
 
@@ -147,7 +188,8 @@ Przełącznik motywu w nagłówku przełącza między dniem (domyślny) a nocą.
   - `favicon.svg` — wbudowana ikona SVG.
   - `manifest.webmanifest` — Web App Manifest (nazwa, kolor motywu, zakres, ikona), aby aplikacja była instalowalna jako PWA na urządzeniach mobilnych i stacjonarnych.
   - `service-worker.js` — service worker cache-first, który przy instalacji z wyprzedzeniem buforuje wszystkie pliki statyczne, przy aktywacji usuwa stare bufory i po pierwszej wizycie utrzymuje aplikację w pełni offline. Rejestracja jest automatycznie pomijana na protokole `file://`, więc otwieranie `index.html` bezpośrednio z dysku pozostaje czyste.
-  - `i18n/<lang>.js` — jeden plik tłumaczenia na obsługiwany język (28 łącznie). Każdy to mały IIFE, który przypisuje `window.I18N[<lang>]` płaską mapę klucz→ciąg. `t()` i `applyLanguage()` w `app.js` obsługują wyszukiwania (z angielskim rezerwowym) i przeglądają DOM aktualizując każdy element `[data-i18n*]`.
+  - `i18n.js` — jeden ręcznie utrzymywany pakiet niosący wszystkie 28 słowników językowych. Każdy język to samodzielny IIFE, który przypisuje `window.I18N[<lang>]` płaską mapę klucz→ciąg. Bloki są ograniczone komentarzami nagłówka `// ==== <lang> ====` — znajdź (grep) jeden, aby przejść do tego języka. Spakowane w jeden plik zamiast 28 osobnych, ponieważ pliki tłumaczeń są bardzo powtarzalne (te same nazwy kluczy, ta sama składnia symboli zastępczych) i gzip kompresuje cały zestaw znacznie lepiej niż 28 osobnych strumieni — oszczędza ~23 KB przy pierwszym wczytaniu i tnie 27 żądań HTTP. `t()` i `applyLanguage()` w `app.js` obsługują wyszukiwania (z angielskim rezerwowym) i przeglądają DOM aktualizując każdy element `[data-i18n*]`.
+  - `contests.js` — jeden ręcznie utrzymywany pakiet niosący wszystkie 68 konfiguracji zawodów. Każde zawody to samodzielny IIFE, który przypisuje `window.CONTESTS[<id>]` obiekt konfiguracji zgodny ze schematem (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Bloki są ograniczone komentarzami nagłówka `// ==== <id> ====` — znajdź (grep) jeden, aby przejść do tych zawodów. Spakowane w jeden plik zamiast 68 osobnych, ponieważ konfiguracje zawodów są bardzo powtarzalne (ten sam schemat, ten sam prefiks `APP_LQ_*`, te same nazwy pól nagłówka Cabrillo) i gzip kompresuje cały zestaw znacznie lepiej niż 68 osobnych strumieni — oszczędza ~42 KB przy pierwszym wczytaniu i tnie 67 żądań HTTP. Wczytywany przez pojedynczy znacznik `<script>` w `index.html` przed `app.js`, aby rejestr był wypełniony, gdy budowana jest lista rozwijana Zawody.
 - Testowane na aktualnych wersjach Chromium, Firefoksa i Safari (desktop + iOS).
 
 ## Podziękowania

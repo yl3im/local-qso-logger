@@ -8,7 +8,7 @@ Dnevnik QSO za radioamaterje, ki spoštuje zasebnost in deluje povsem v vašem b
 
 Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.lv](https://qso.lv).
 
-![Local QSO Logger running on iPad](media/iPad.png)
+![Local QSO Logger na iPadu](media/iPad.png)
 
 ## Vsebina
 
@@ -20,7 +20,8 @@ Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.lv](h
   - [Android (Chrome / Edge / Firefox)](#android-chrome--edge--firefox)
 - [Dnevniki](#dnevniki)
 - [QSO-ji](#qso-ji)
-- [Uvoz in izvoz ADIF](#uvoz-in-izvoz-adif)
+- [Tekmovanja](#tekmovanja)
+- [Uvoz in izvoz](#uvoz-in-izvoz)
 - [Zasebnost in podatki](#zasebnost-in-podatki)
 - [Jezik vmesnika](#jezik-vmesnika)
 - [Teme](#teme)
@@ -30,7 +31,8 @@ Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.lv](h
 ## Funkcije
 
 - Več dnevnikov; vsak z lastnim seznamom QSO-jev.
-- Dejanja z dnevnikom: ustvarjanje, preimenovanje, brisanje, uvoz iz ADIF, izvoz v ADIF (`.adi`).
+- **Tekmovalni dnevniki** so izbirni — pri ustvarjanju dnevnika izberi iz kataloga 68 vgrajenih tekmovanj. Obrazec QSO pridobi tekmovanju specifičen blok *Izmenjava tekmovanja*, zaznavanje podvojenih spoštuje pravilo tekmovanja, *Izvozi .cbr* pa ustvari datoteko za oddajo Cabrillo v3 poleg običajnega izvoza ADIF.
+- Dejanja z dnevnikom: ustvarjanje, preimenovanje, brisanje, uvoz datoteke dnevnika (ADIF ali Cabrillo — format se zazna samodejno), izvoz v ADIF (`.adi`) ter *Izvozi .cbr* (Cabrillo v3) za tekmovalne dnevnike. Ponovni uvoz datoteke `.cbr`, ki jo je aplikacija predhodno izvozila, jo obnovi kot isti tekmovalni dnevnik.
 - Obrazec QSO razdeljen v tri bloke: **Podatki postaje** (klicni znak postaje, klicni znak operaterja, lastna mreža) ostane lepljiv med QSO-ji; **Način delovanja** (način razširjanja, satelit, način, satelitni način, pas, RX pas) s satelitskimi polji, ki se razkrijejo le pri načinu razširjanja *Satelit*; in **Podatki QSO** (klicni znak klicane postaje, mreža klicane postaje, datum/čas UTC pri urejanju, komentar, RST poslan, RST sprejet).
 - Polna taksonomija ADIF `MODE` → `SUBMODE` v spustnem meniju — izberite nadrejeni način (`SSB`, `MFSK`, …) ali se spustite neposredno do specifičnega podnačina (`USB`, `FT4`, …); aplikacija shrani obe polji po ADIF in tabela prikaže specifični podnačin, kadar obstaja.
 - Polno naštevanje načinov razširjanja ADIF (SAT, RPT, EME, ES, MS, Aurora itd.) kot spustni meni.
@@ -39,6 +41,7 @@ Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.lv](h
 - Razumne privzete vrednosti: današnji datum/čas UTC pred-izpolnjen, privzeti RST glede na način (59 za glasovne načine, 599 za CW/digitalne), lepljivi Podatki postaje + pas + način + način razširjanja med zaporednimi QSO-ji (le polja per-kontakt — klicni znak, mreža, komentar, RST — se počistijo po vsakem *Zabeleži QSO*).
 - Živi indikator podvojenega klicnega znaka (informativno — podvojene QSO so dovoljene).
 - Stolpec z zastavico države, izpeljan iz predpone klicnega znaka (pokriva ≥99 % pogostih radioamaterskih predpon, vključno s prenosnimi klici kot `9A/M0NCG`).
+- Samodejno zaznavanje **Moje mreže** z enim dotikom: gumb 🌐 ob polju vpraša brskalnik za tvoje trenutne koordinate in izpolni 6-mestno Maidenhead mrežo (uporablja Geolocation API brskalnika — zahteva dovoljenje uporabnika).
 - Prikaz datuma glede na lokalne nastavitve v tabeli QSO; shranjevanje in ADIF izhod ostaneta v ISO.
 - Vmesnik v **28 jezikih** (angleščina plus 22 latiničnih, 5 cirilskih in grščina); selektor z zastavičnimi emojiji v glavi.
 - Dnevna / nočna tema (dan je privzeta; stikalo je v glavi).
@@ -50,7 +53,7 @@ Avtor: [YL3IM](https://www.qrz.com/db/YL3IM). Spletna stran projekta: [qso.lv](h
 
 Preprosto odprite `index.html` v sodobnem brskalniku. Brez koraka gradnje, brez namestitve, brez strežnika.
 
-Če ga želite gostovati, preprosto spustite statične datoteke (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js` in mapo `i18n/` z 28 prevodnimi datotekami) na katerikoli statični gostovalnik (GitHub Pages, Netlify, vaš spletni strežnik). Deluje tudi prek `file://` — registracija storitvenega delavca se na protokolu `file:` preskoči samodejno, tako da neposredno odpiranje `index.html` z diska deluje čisto.
+Če ga želite gostovati, preprosto spustite statične datoteke (`index.html`, `style.css`, `app.js`, `favicon.svg`, `manifest.webmanifest`, `service-worker.js`, edini sveženj `i18n.js`, ki nosi vseh 28 jezikovnih slovarjev, in edini sveženj `contests.js`, ki nosi vseh 68 konfiguracij tekmovanj) na katerikoli statični gostovalnik (GitHub Pages, Netlify, vaš spletni strežnik). Deluje tudi prek `file://` — registracija storitvenega delavca se na protokolu `file:` preskoči samodejno, tako da neposredno odpiranje `index.html` z diska deluje čisto.
 
 Ko je gostovano prek HTTPS, postane aplikacija namestljiva kot PWA (meni *Namesti aplikacijo* / *Dodaj na začetni zaslon*) in deluje brez povezave po prvem obisku, zahvaljujoč storitvenemu delavcu najprej iz predpomnilnika, ki vnaprej predpomnilniči vsako statično datoteko (UI + vse prevode).
 
@@ -70,7 +73,7 @@ V iOS lahko PWA namestijo samo Safari — brskalniki tretjih oseb tega ne morejo
 
 Vodič:
 
-![iOS install walkthrough](media/iOS_add_to_home_screen.gif)
+![iOS namestitveni vodič](media/iOS_add_to_home_screen.gif)
 
 Vir višje kakovosti: [media/iOS_add_to_home_screen.mp4](media/iOS_add_to_home_screen.mp4).
 
@@ -81,7 +84,7 @@ Vir višje kakovosti: [media/iOS_add_to_home_screen.mp4](media/iOS_add_to_home_s
 
 Vodič:
 
-![Android install walkthrough](media/Android_add_to_home_screen.gif)
+![Android namestitveni vodič](media/Android_add_to_home_screen.gif)
 
 Vir višje kakovosti: [media/Android_add_to_home_screen.mp4](media/Android_add_to_home_screen.mp4).
 
@@ -96,7 +99,7 @@ Vir višje kakovosti: [media/Android_add_to_home_screen.mp4](media/Android_add_t
 
 - Izpolnite obrazec in pritisnite **Zabeleži QSO**.
 - Obrazec je razdeljen v tri bloke:
-  - **Podatki postaje** — *Klicni znak postaje* (vaš oddajni klicni znak, ADIF `STATION_CALLSIGN`), *Operater* (klicni znak posameznega operaterja — ločen od *Klicnega znaka postaje*, ko je gostujoči operater pri mikrofonu klubske postaje; ADIF `OPERATOR`) in *Moja mreža* (ADIF `MY_GRIDSQUARE`). Ti ostanejo lepljivi med QSO-ji v isti seji — nastavite jih enkrat in se prenesejo.
+  - **Podatki postaje** — *Klicni znak postaje* (vaš oddajni klicni znak, ADIF `STATION_CALLSIGN`), *Operater* (klicni znak posameznega operaterja — ločen od *Klicnega znaka postaje*, ko je gostujoči operater pri mikrofonu klubske postaje; ADIF `OPERATOR`) in *Moja mreža* (ADIF `MY_GRIDSQUARE`) z gumbom 🌐, ki izpolni mrežo iz trenutne lokacije vašega brskalnika (Geolocation API — brskalnik bo prvič vprašal za dovoljenje). Ti ostanejo lepljivi med QSO-ji v isti seji — nastavite jih enkrat in se prenesejo.
   - **Način delovanja** — *Način razš.*, *Način*, *Pas* in satelitska polja *Satelit* / *Sat mode* / *RX pas*, kadar je način razširjanja *Satelit*. Pas, način in način razširjanja so lepljivi kot Podatki postaje.
   - **Podatki QSO** — polja per-kontakt: *Klicni znak*, *Mreža* (Maidenheadova mreža druge postaje), *Komentar* (ADIF `COMMENT`), *RST poslan*, *RST sprejet*. Pri urejanju obstoječega QSO-ja se v tem bloku prikažeta tudi *Datum (UTC)* in *Čas (UTC)*. Ta polja se počistijo po vsakem *Zabeleži QSO*.
 - Vsi klicni znaki (klicana, postaja, operater) se med tipkanjem samodejno pretvorijo v velike črke; obe mrežni polji enako.
@@ -108,12 +111,50 @@ Vir višje kakovosti: [media/Android_add_to_home_screen.mp4](media/Android_add_t
 - **Uredi QSO** z gumbom *Uredi* na vrstici. Obrazec preklopi v način *Posodobi QSO*, vrstica se označi in prikaže se gumb *Prekliči*. Preklop dnevnikov ali brisanje dnevnika samodejno prekliče urejanje.
 - **Izbriši QSO** z gumbom *Izbriši* na vrstici (zahteva potrditev).
 
-## Uvoz in izvoz ADIF
+## Tekmovanja
 
-- **Izvoz**: kliknite *Izvozi .adi* v glavi dnevnika. Prenese se datoteka v skladu z **ADIF 3.1.7**. Glava deklarira `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` in `CREATED_TIMESTAMP` (UTC). Oddana polja QSO (kadar niso prazna): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — čemur sledijo vsa dodatna polja ADIF, ohranjena pri uvozu (glejte spodaj).
-- **Uvoz**: kliknite *Uvozi datoteko .adi* pod obrazcem za ustvarjanje dnevnika in izberite datoteko `.adi` / `.adif`. Ustvari se nov dnevnik, poimenovan `Imported YYYY-MM-DD HH:MM UTC`. Uvoz se nikoli ne zlije z obstoječim dnevnikom.
-- **Brezizgubni round-trip**: pri uvozu se vsako polje ADIF, ki ga aplikacija ne modelira v UI (npr. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, polja `APP_*`) ohrani na QSO-ju in se pri naslednjem izvozu re-emitira verbatim. Izvoz datoteke, ki je bila sama uvožena, torej ohrani vse.
-- Dolžina polja se obravnava kot število UTF-8 bajtov po specifikaciji, tako da se večbajtno besedilo (npr. naglašeni klicni znaki v `COMMENT`) razčleni pravilno.
+Dnevnik je lahko izbirno **tekmovalni dnevnik** — izberi tekmovanje iz spustnega menija *Tekmovanje* v obrazcu za ustvarjanje dnevnika. Prazen spustni meni = običajen dnevnik (privzeto, obstoječe vedenje nespremenjeno).
+
+Tekmovalni dnevniki dobijo:
+
+- **Blok izmenjave tekmovanja** v obrazcu QSO, dinamično prikazan glede na shemo izbranega tekmovanja. Vrste polj so `text`, `number` in `serial` (samodejno naraščajoč, samo za branje). Polja, označena kot *sticky* (vaša lastna cona / okrožje / okraj / moč / starost / …), se pred-izpolnijo z vrednostjo prejšnjega QSO-ja; polja na posamezen QSO (njihova cona, njihova serijska številka, …) se počistijo po vsakem *Zabeleži QSO*.
+- **Značka tekmovanja** poleg imena dnevnika v glavi podrobnosti.
+- **Zaznavanje podvojenih**, ki spoštuje `duplicateRule` tekmovanja (`per-band-mode`, `per-band`, `per-day` ali `off`). Žeton ostaja le informativen — nikoli ne blokira oddaje.
+- **Opozorilni žeton**, kadar trenutni UTC pade zunaj katerega koli od datumskih oken, ki jih je deklariralo tekmovanje (12 let vnaprej naloženih, 2026–2037), ali kadar izbrani pas / način ni v dovoljenem naboru tekmovanja. Nikoli ne blokira.
+- **Podatkovna plošča o oddaji** v glavi podrobnosti: vgrajen obrazec za polja glave Cabrillo, ki jih tekmovanje deklarira (kategorija, moč, ime, klub, naslov, soapbox, …). Vrednosti se ohranijo na dnevniku, ne za vsak QSO.
+- **Gumb Izvozi .cbr** v glavi podrobnosti, poleg *Izvozi .adi*. Ustvari datoteko Cabrillo v3: `CALLSIGN` / `GRID-LOCATOR` / `OPERATORS` pred-izpolnjeni iz podatkov postaje prvega QSO-ja, preostalo iz podatkovne plošče o oddaji, nato ena vrstica `QSO:` na kontakt v kronološkem vrstnem redu z uporabo stolpcev `sentTemplate` / `rcvdTemplate` tekmovanja.
+- **Ponovni uvoz Cabrillo** prek standardnega gumba *Uvozi datoteko dnevnika* — datoteka `.cbr`, ki jo je aplikacija predhodno izvozila (ali kateri koli drug dnevnik, ki ustvari standardni Cabrillo v3), se vrne nazaj v svež tekmovalni dnevnik pravega tipa. Glava `CONTEST:` se primerja z vgrajenim katalogom; ko si več konfiguracij deli isto oznako (npr. `ARRL-10` ustreza tako `arrl-10m-dx` kot `arrl-10m-w`), aplikacija razreši dvoumnost s primerjavo črke načina vrstice QSO in števila stolpcev s predlogo vsakega kandidata, nato pa daje prednost različici `-dx`. Polja glave (kategorija, ime, klub, soapbox, …) obnovijo podatkovno ploščo o oddaji; vrednosti izmenjave QSO obnovijo `q.contestExchange` po predlogi tekmovanja.
+
+### Vgrajen katalog tekmovanj (68 konfiguracij)
+
+Razvrščeno po družinah:
+
+- **Družina CQ** (9): CQ WW SSB/CW/RTTY, CQ WPX SSB/CW/RTTY, CQ 160 CW/SSB, CQ-M International.
+- **Družina ARRL** (9): ARRL DX SSB/CW (stran DX), ARRL Field Day, ARRL 10m/160m/RTTY Roundup (vsak dobavljen z *obeh* perspektiv, DX in W/VE).
+- **IARU** (2): IARU HF Championship, IARU R1 Field Day.
+- **WAE in druga evropska** (8): WAE DX SSB/CW, EU HF Championship, LZ DX, Baltic Contest, NRAU-Baltic SSB/CW, SP DX.
+- **Srednje-/vzhodnoevropska asimetrična — obe perspektivi** (14): OK/OM DX CW+SSB, HA DX, YO DX HF, Ukrainian DX, REF Contest CW+SSB.
+- **Ruski klub / RadioSport** (12): Russian DX (obe strani), Russian WW RTTY, Russian WW MultiMode, Yuri Gagarin International, Cup of the Russian Federation CW+SSB, RRTC, Asiatic Russia Championship, UA1DZ Memorial Cup, RDAC, RAEM.
+- **Belorusija + Italija + Hrvaška + Španija + ukrajinski RTTY** (12): Belarus BFRR CW+SSB (obe strani), ARI DX (obe strani), Croatian 9A CW (obe strani), Spanish CNCW (obe strani), Ukrainian RTTY (obe strani).
+- **Globalno** (2): All Asian DX CW+SSB.
+
+Asimetrična tekmovanja (kjer gostiteljska država in stran DX pošiljata različne izmenjave) so dobavljena z **dvema konfiguracijama** — eno za perspektivo gostiteljske države (lepljiva regijska koda) in eno za perspektivo DX (lepljiva serijska številka). Polje prejete strani je eno samo prosto besedilno polje, tako da lahko operater vnese kateri koli format, odvisno od kontakta.
+
+Vsaka konfiguracija nosi:
+
+- Vrednosti izmenjave tekmovanja se ponovno oddajo v izvozu ADIF prek polj imenskega prostora `APP_LQ_*`; žig glave `APP_LQ_CONTEST_ID` omogoča poznejšemu ponovnemu uvozu, da obnovi dnevnik kot isto tekmovanje z vsemi nedotaknjenimi polji.
+- 12 let datumskih oken (2026–2037), tako da žeton *zunaj okna tekmovanja* ostane koristen desetletje brez nove izdaje.
+- Predlogo Cabrillo, ki preslika vsako polje izmenjave v pravilni stolpec vrstice `QSO:`.
+
+Dodajanje novega tekmovanja = prilepite nov blok IIFE v [`contests.js`](contests.js) na abecedno mesto (vsako obstoječe tekmovanje je omejeno s komentarjem glave `// ==== <id> ====`, zato je lahko najti, kam vstaviti). Ni potrebna nobena sprememba v `index.html`, nobena sprememba v `service-worker.js`, nobena sprememba v `app.js` — izrisovalnik, upravljalec oddaje, detektor podvojenih, ADIF povratni krog in oddajnik Cabrillo absorbirajo vsako konfiguracijo kot čiste podatke.
+
+## Uvoz in izvoz
+
+- **Uvozi** katero koli datoteko dnevnika — kliknite *Uvozi datoteko dnevnika* pod obrazcem za ustvarjanje dnevnika in izberite datoteko `.adi` / `.adif` (ADIF) ali `.cbr` / `.cab` (Cabrillo v3). Format se samodejno zazna iz prve vrstice datoteke (`<...>` → ADIF, `START-OF-LOG:` → Cabrillo, `[REG1TEST;1]` → opozorilo »EDI še ni podprt«). Vedno se ustvari nov dnevnik — uvoz se nikoli ne združi z obstoječim. Uvozi ADIF pridejo kot običajni dnevniki, razen če glava nosi `APP_LQ_CONTEST_ID`, ki ga je zapisal naš lastni izvoz tekmovanja (v tem primeru se dnevnik obnovi kot tekmovalni dnevnik tega tekmovanja). Uvozi Cabrillo vedno pridejo kot tekmovalni dnevniki — glejte razdelek *Tekmovanja* za način, kako se oznaka `CONTEST:` primerja z vgrajenim katalogom.
+- **Izvoz ADIF**: kliknite *Izvozi .adi* v glavi dnevnika. Prenese se datoteka v skladu z **ADIF 3.1.7**. Glava deklarira `ADIF_VER 3.1.7`, `PROGRAMID local-qso`, `PROGRAMVERSION` in `CREATED_TIMESTAMP` (UTC). Oddana polja QSO (kadar niso prazna): `CALL`, `QSO_DATE`, `TIME_ON`, `BAND`, `MODE`, `SUBMODE`, `PROP_MODE`, `GRIDSQUARE`, `BAND_RX`, `SAT_MODE`, `SAT_NAME`, `RST_SENT`, `RST_RCVD`, `COMMENT`, `STATION_CALLSIGN`, `OPERATOR`, `MY_GRIDSQUARE` — čemur sledijo vsa dodatna polja ADIF, ohranjena pri uvozu (glejte spodaj).
+- **Izvoz Cabrillo** je opisan zgoraj v razdelku *Tekmovanja* — na voljo je le za tekmovalne dnevnike (gumb *Izvozi .cbr* se prikaže v glavi dnevnika, ko ima dnevnik tekmovanje).
+- **Brezizgubni round-trip**: pri uvozu ADIF se vsako polje, ki ga aplikacija ne modelira v UI (npr. `NAME`, `FREQ`, `TX_PWR`, `DXCC`, `QSL_SENT`/`QSL_RCVD`, `POTA_REF`, polja `APP_*`), ohrani na QSO-ju in se pri naslednjem izvozu ADIF re-emitira verbatim. Izvoz datoteke, ki je bila sama uvožena, torej ohrani vse.
+- Dolžina polja se v ADIF obravnava kot število UTF-8 bajtov po specifikaciji, tako da se večbajtno besedilo (npr. naglašeni klicni znaki v `COMMENT`) razčleni pravilno.
 
 ## Zasebnost in podatki
 
@@ -131,7 +172,7 @@ Razpoložljivi jeziki (zastavica emoji + domače ime; razvrščeni po abecedi zn
 
 Splošne tehnične oznake ostajajo v kanonični obliki v vseh jezikih: imena pasov (`20m`, `70cm`, …), kode načinov ADIF (`SSB`, `FT8`, `CW`, …), `QSO`, `RST`, `UTC` in ISO kode držav.
 
-Manjka niz v vašem jeziku? Vsak jezik je ena majhna datoteka v [`i18n/`](i18n/) — kopirajte `i18n/en.js`, prevedite vrednosti, shranite kot `i18n/<code>.js`, nato dodajte oznako `<script>` in možnost `<select>` v `index.html` ter kodo v `SUPPORTED_LANGS` v `app.js`.
+Manjka niz v vašem jeziku? Vsak jezikovni slovar živi v enem samem svežnju [`i18n.js`](i18n.js), razdeljenem v 28 razdelkov s komentarji glave `// ==== <lang> ====`. Poiščite (grep) glavo svojega jezika, da preskočite na njegov razdelek, nato dodajte/uredite ključ. Dodajanje popolnoma novega jezika = prilepite nov blok IIFE v `i18n.js` na abecedno mesto, dodajte kodo jezika v `SUPPORTED_LANGS` v `app.js`, in dodajte možnost `<select>` v `index.html`.
 
 ## Teme
 
@@ -147,7 +188,8 @@ Stikalo teme v glavi preklopi med dnevno (privzeto) in nočno. Nastavitev je shr
   - `favicon.svg` — vgrajeni SVG favicon.
   - `manifest.webmanifest` — Web App Manifest (ime, barva teme, obseg, ikona), da je aplikacija namestljiva kot PWA na mobilni napravi in namizju.
   - `service-worker.js` — storitveni delavec najprej iz predpomnilnika, ki vnaprej predpomnilniči vsako statično datoteko pri namestitvi, izprazni stare predpomnilnike pri aktivaciji in ohranja aplikacijo v celoti brez povezave po prvem obisku. Registracija se na protokolu `file://` preskoči samodejno, tako da neposredno odpiranje `index.html` z diska ostane čisto.
-  - `i18n/<lang>.js` — ena prevodna datoteka za vsak podprti jezik (skupaj 28). Vsaka je majhen IIFE, ki dodeli `window.I18N[<lang>]` plosko preslikavo ključ→niz. `t()` in `applyLanguage()` v `app.js` upravljata iskanja (z angleškim nadomestnim) in hodita po DOM-u posodabljajočem vsak element `[data-i18n*]`.
+  - `i18n.js` — en ročno vzdrževan sveženj, ki nosi vseh 28 jezikovnih slovarjev. Vsak jezik je samostojen IIFE, ki dodeli `window.I18N[<lang>]` plosko preslikavo ključ→niz. Bloki so omejeni s komentarji glave `// ==== <lang> ====` — poiščite (grep) enega, da skočite na ta jezik. Združeno v eno datoteko namesto 28 posameznih, ker so prevodne datoteke zelo ponavljajoče se (ista imena ključev, ista sintaksa nadomestnih znakov) in gzip stisne celoten nabor veliko bolje kot 28 ločenih tokov — prihrani ~23 KB pri prvem nalaganju in odreže 27 HTTP zahtev. `t()` in `applyLanguage()` v `app.js` upravljata iskanja (z angleškim nadomestnim) in hodita po DOM-u posodabljajočem vsak element `[data-i18n*]`.
+  - `contests.js` — en ročno vzdrževan sveženj, ki nosi vseh 68 konfiguracij tekmovanj. Vsako tekmovanje je samostojen IIFE, ki dodeli `window.CONTESTS[<id>]` konfiguracijski objekt, skladen s shemo (`{name, shortName, windows[], bands[], modes[], exchange[], duplicateRule, cabrillo}`). Bloki so omejeni s komentarji glave `// ==== <id> ====` — poiščite (grep) enega, da skočite na to tekmovanje. Združeno v eno datoteko namesto 68 posameznih, ker so konfiguracije tekmovanj zelo ponavljajoče se (ista shema, isti predpona `APP_LQ_*`, ista imena polj glave Cabrillo) in gzip stisne celoten nabor veliko bolje kot 68 ločenih tokov — prihrani ~42 KB pri prvem nalaganju in odreže 67 HTTP zahtev. Naložen z eno samo oznako `<script>` v `index.html` pred `app.js`, tako da je register napolnjen, ko se zgradi spustni meni Tekmovanje.
 - Testirano na aktualnem Chromium, Firefox in Safari (namizje + iOS).
 
 ## Zahvale

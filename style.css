@@ -238,6 +238,16 @@ button.danger:hover { background: var(--danger); color: #fff; }
 .contest-fields { display: flex; flex-wrap: wrap; gap: 0.6rem; align-items: end; }
 .contest-fields label { width: 150px; }
 
+/* SWL log mode — hide fields the SWL operator doesn't use. RST rcvd,
+   Comment, Grid (of the heard station), Prop. mode, and any sat-only
+   fields collapse; the two counterpart callsigns + RSTs live in the
+   contest-exchange block instead. */
+.qso-form.is-swl .field-rst-rcvd,
+.qso-form.is-swl .field-comment,
+.qso-form.is-swl .field-gridsquare,
+.qso-form.is-swl .field-prop,
+.qso-form.is-swl .sat-only { display: none; }
+
 /* .cbr export button + submission-info panel: contest logs only.
    Kept hidden by the `hidden` attribute; toggled in renderDetail(). */
 .contest-badge {

@@ -500,7 +500,13 @@
       const opt = document.createElement("option");
       opt.value = c.id;
       opt.textContent = c.shortName || c.name;
-      logContestSelect.appendChild(opt);
+      // SWL (the special listener-log pseudo-contest) goes to the very top
+      // right after the empty "none" option; regular contests append.
+      if (c.isSwl) {
+        logContestSelect.insertBefore(opt, logContestSelect.options[1] || null);
+      } else {
+        logContestSelect.appendChild(opt);
+      }
     }
   }
   fillContestSelect();
@@ -991,11 +997,19 @@
   function renderContestUi(log) {
     const contest = log && getContest(log.contestId);
     const isContest = !!contest;
+    const isSwl = isContest && contest.isSwl;
+    const hasCabrillo = isContest && !!contest.cabrillo;
     qsoForm.classList.toggle("is-contest", isContest);
+    // SWL is a pseudo-contest — .is-swl on the form drives the extra CSS
+    // that hides RST rcvd / Comment / Grid / Prop-mode / sat-only fields
+    // (see .qso-form.is-swl … in style.css).
+    qsoForm.classList.toggle("is-swl", isSwl);
     contestBadge.hidden = !isContest;
     contestBadge.textContent = isContest ? (contest.shortName || contest.name) : "";
-    contestSubmission.hidden = !isContest;
-    exportCbrBtn.hidden = !isContest;
+    // Cabrillo pieces (submission-info panel + .cbr export button) are only
+    // relevant for contests that declare a `cabrillo` block — SWL doesn't.
+    contestSubmission.hidden = !hasCabrillo;
+    exportCbrBtn.hidden = !hasCabrillo;
     if (!isContest) {
       contestFieldsRoot.innerHTML = "";
       contestSubmissionFields.innerHTML = "";
@@ -1003,7 +1017,8 @@
       return;
     }
     renderContestExchangeFields(log, contest);
-    renderContestSubmissionPanel(log, contest);
+    if (hasCabrillo) renderContestSubmissionPanel(log, contest);
+    else contestSubmissionFields.innerHTML = "";
     updateContestWarnings(log, contest);
   }
 
@@ -1021,6 +1036,10 @@
       const label = document.createElement("label");
       label.className = "field-contest";
       label.dataset.contestField = f.id;
+      // Optional per-field width override (px). Short-value fields like RST
+      // or zone numbers can request e.g. 75px to match the standard RST
+      // input width rather than the 150px contest-fields default.
+      if (typeof f.width === "number") label.style.width = `${f.width}px`;
       const span = document.createElement("span");
       span.textContent = f.label;
       label.appendChild(span);
@@ -1031,6 +1050,17 @@
       input.autocomplete = "off";
       if (f.placeholder) input.placeholder = f.placeholder;
       if (f.maxLength) input.maxLength = f.maxLength;
+      // Fields flagged `uppercase: true` (e.g. SWL partner_call) get the
+      // same auto-uppercase behaviour as the main callsign input — makes
+      // sense for callsigns and grid squares in an exchange schema.
+      if (f.uppercase) {
+        input.autocapitalize = "characters";
+        input.addEventListener("input", () => {
+          const pos = input.selectionStart;
+          input.value = input.value.toUpperCase();
+          try { input.setSelectionRange(pos, pos); } catch (e) { /* noop */ }
+        });
+      }
       if (f.type === "serial") {
         input.value = String(nextSerial).padStart(3, "0");
         if (f.readOnly !== false) input.readOnly = true;
@@ -1113,10 +1143,12 @@
     }
     const band = $("qso-band").value;
     const mode = modeParent($("qso-mode").value);
-    if (contest.bands && !contest.bands.includes(band)) {
+    // Empty bands/modes arrays mean "no restriction" (used by SWL logs which
+    // accept any band and any mode) — check length before flagging.
+    if (contest.bands && contest.bands.length && !contest.bands.includes(band)) {
       messages.push(t("contest.band_mode.warn.band", band));
     }
-    if (contest.modes && !contest.modes.includes(mode)) {
+    if (contest.modes && contest.modes.length && !contest.modes.includes(mode)) {
       messages.push(t("contest.band_mode.warn.mode", mode));
     }
     contestWarn.textContent = messages.join(" • ");
@@ -1280,16 +1312,49 @@
     return `<${name}:${len}>${v} `;
   }
 
+  // Build one ADIF record for an SWL "heard" observation. Emits the minimal
+  // SWL-relevant field set only (no RST_RCVD, no contact GRIDSQUARE, no
+  // PROP_MODE, no submode, no sat fields). The COMMENT is synthesised to
+  // name the OTHER counterpart and their RST, per the ADIF SWL convention.
+  function buildSwlRecord(q, primaryCall, primaryRst, otherCall, otherRst) {
+    const freqKhz = CABRILLO_BAND_KHZ[q.band];
+    const freq = freqKhz ? (freqKhz / 1000).toFixed(3) : "";
+    return (
+      adifField("CALL", primaryCall) +
+      adifField("QSO_DATE", q.date.replace(/-/g, "")) +
+      adifField("TIME_ON", q.time.replace(/:/g, "").slice(0, 4)) +
+      adifField("BAND", q.band) +
+      adifField("FREQ", freq) +
+      adifField("MODE", q.mode) +
+      adifField("RST_SENT", primaryRst) +
+      adifField("STATION_CALLSIGN", q.stationCall) +
+      adifField("OPERATOR", q.operator) +
+      adifField("MY_GRIDSQUARE", q.myGridSquare) +
+      adifField("SWL", "Y") +
+      adifField("QSL_SENT", "N") +
+      adifField("COMMENT", `Heard working ${otherCall} ${otherRst}`) +
+      "<EOR>"
+    );
+  }
+
   function buildAdif(log) {
     const contest = getContest(log.contestId);
+    const isSwl = !!(contest && contest.isSwl);
     const lines = [];
-    lines.push(`ADIF export from Local QSO Logger`);
+    // Header comment line — customised for SWL to name the listening station.
+    if (isSwl) {
+      const firstQso = log.qsos[0];
+      const owner = (firstQso && (firstQso.stationCall || firstQso.operator || firstQso.call)) || "";
+      lines.push(owner ? `SWL log of ${owner}` : `SWL log`);
+    } else {
+      lines.push(`ADIF export from Local QSO Logger`);
+    }
     lines.push(adifField("ADIF_VER", ADIF_VERSION).trim());
     lines.push(adifField("PROGRAMID", "local-qso").trim());
     lines.push(adifField("PROGRAMVERSION", APP_VERSION).trim());
     lines.push(adifField("CREATED_TIMESTAMP", nowAdifTimestamp()).trim());
     // Contest-log stamp so a foreign importer (or a re-import into this app
-    // in the future) can identify the source contest.
+    // in the future) can identify the source contest. Also identifies SWL.
     if (contest) {
       lines.push(adifField("APP_LQ_CONTEST_ID", contest.id).trim());
     }
@@ -1297,6 +1362,16 @@
     lines.push("");
 
     for (const q of log.qsos) {
+      if (isSwl) {
+        // Two records per QSO: one for each counterpart, with the OTHER
+        // counterpart's callsign + RST written into COMMENT.
+        const ex = q.contestExchange || {};
+        const partnerCall = ex.partner_call || "";
+        const partnerRst  = ex.partner_rst  || "";
+        lines.push(buildSwlRecord(q, q.call, q.rstSent, partnerCall, partnerRst));
+        lines.push(buildSwlRecord(q, partnerCall, partnerRst, q.call, q.rstSent));
+        continue;
+      }
       let rec =
         adifField("CALL", q.call) +
         adifField("QSO_DATE", q.date.replace(/-/g, "")) +

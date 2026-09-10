@@ -8,7 +8,54 @@
  * repetitive (same schema, same APP_LQ_* prefix, same Cabrillo header
  * fields) and gzip works far better across the whole set than 68 tiny
  * per-file streams.
+ *
+ * The "swl" block below is a special pseudo-contest — not a contest at
+ * all, but rides on the same infrastructure to serve Short-Wave Listener
+ * logs (two counterpart callsigns + two RSTs per stored QSO; ADIF export
+ * emits two records per QSO with synthesised COMMENT fields). Marked
+ * isSwl:true so app.js can branch on it; kept at the very top of the
+ * file so it appears first in the Contest dropdown.
  */
+
+// ================================================================
+// ==== swl
+// ================================================================
+/* SWL log — Short-Wave Listener logging.
+ * Not a contest. The operator captures both counterpart callsigns and
+ * both RSTs of a QSO they *heard* between two other stations. On ADIF
+ * export each stored QSO becomes TWO records (one per counterpart) with
+ * the other counterpart's callsign + RST written into the synthesised
+ * COMMENT field, per the ADIF SWL convention.
+ * Empty windows/bands/modes = no restriction (any time, any band, any
+ * mode). duplicateRule "off" because "heard again" isn't a duplicate.
+ */
+(function () {
+  window.CONTESTS = window.CONTESTS || {};
+  window.CONTESTS["swl"] = {
+    id: "swl",
+    name: "SWL log",
+    shortName: "SWL",
+    isSwl: true,
+    url: "",
+    windows: [],
+    bands: [],
+    modes: [],
+    exchange: [
+      {
+        id: "partner_call", type: "text", label: "Partner callsign",
+        placeholder: "R1BLH", required: true, maxLength: 15,
+        uppercase: true, adifField: "APP_LQ_PARTNER_CALL",
+      },
+      {
+        id: "partner_rst", type: "text", label: "Partner RST",
+        placeholder: "59", required: true, maxLength: 4, width: 75,
+        adifField: "APP_LQ_PARTNER_RST",
+      },
+    ],
+    duplicateRule: "off",
+    cabrillo: null,
+  };
+})();
 
 // ================================================================
 // ==== 9a-cw-9a

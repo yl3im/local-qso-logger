@@ -47,7 +47,7 @@
         uppercase: true, adifField: "APP_LQ_PARTNER_CALL",
       },
       {
-        id: "partner_rst", type: "text", label: "Partner RST",
+        id: "partner_rst", type: "text", label: "Partner RST sent",
         placeholder: "59", required: true, maxLength: 4, width: 75,
         adifField: "APP_LQ_PARTNER_RST",
       },

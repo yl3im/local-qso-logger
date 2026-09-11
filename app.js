@@ -1250,7 +1250,9 @@
       cells[6].textContent = q.submode || q.mode || "—";
       cells[7].textContent = q.propMode || "—";
       cells[8].textContent = q.rstSent || "—";
-      cells[9].textContent = q.rstRcvd || "—";
+      // SWL rows have no meaningful "RST received" (the SWL didn't transmit)
+      // — render the cell truly empty rather than the em-dash placeholder.
+      cells[9].textContent = (contest && contest.isSwl) ? "" : (q.rstRcvd || "—");
       if (contest) {
         for (const f of contest.exchange) {
           const td = document.createElement("td");
@@ -1992,6 +1994,7 @@
     // and only for fields the operator filled in (matches the "attach only
     // when non-empty" convention for optional QSO keys).
     const contest = getContest(log.contestId);
+    const isSwl = !!(contest && contest.isSwl);
     const contestExchange = {};
     if (contest) {
       for (const f of contest.exchange) {
@@ -2008,7 +2011,9 @@
       mode,
       propMode,
       rstSent: $("qso-rst-sent").value.trim() || defaultRst,
-      rstRcvd: $("qso-rst-rcvd").value.trim() || defaultRst,
+      // SWL: no default 59 for RST rcvd — the SWL didn't transmit, so
+      // there's no "RST I sent them" to record. Leave empty.
+      rstRcvd: isSwl ? "" : ($("qso-rst-rcvd").value.trim() || defaultRst),
     };
     // Only attach submode when the operator actually picked one; keeps the
     // stored model clean and matches ADIF (SUBMODE is optional).
